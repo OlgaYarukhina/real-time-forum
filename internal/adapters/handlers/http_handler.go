@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"real-time-forum/internal/core/entities"
 	"real-time-forum/internal/core/services"
-	"real-time-forum/pkg/utils"
 	"strconv"
 )
 
@@ -42,15 +41,14 @@ func (handler *HTTPHandler) LoginHandler(w http.ResponseWriter, r *http.Request)
 
 func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("register handler worked")
-	hashedPass, err := utils.HashPassword(r.FormValue("newPassword"))
-	if err != nil {
-		//add error to json errors
-	}
+	// hashedPass, err := utils.HashPassword(r.FormValue("newPassword"))
+	// if err != nil {
+	// 	//add error to json errors
+	// }
 	age, err := strconv.Atoi(r.FormValue("age"))
 	if err != nil {
 		//add error to json errors
 	}
-	//if any errors on top send response with errors and code 4** (400 - bad request or 422 - unprocessable entity)
 
 	newUser := entities.User{
 		Nickname:     r.FormValue("newNickname"),
@@ -59,7 +57,7 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 		FirstName:    r.FormValue("firstName"),
 		LastName:     r.FormValue("lastName"),
 		Email:        r.FormValue("newEmail"),
-		PasswordHash: []byte(hashedPass),
+		PasswordHash: []byte(r.FormValue("newPassword")),
 	}
 
 	err = handler.authService.Register(newUser)

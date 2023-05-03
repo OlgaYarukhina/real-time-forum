@@ -3,8 +3,8 @@ package services
 import (
 	"fmt"
 	"real-time-forum/internal/core/entities"
-	"real-time-forum/internal/core/helpers"
 	"real-time-forum/internal/interfaces"
+	"real-time-forum/pkg/utils"
 )
 
 type AuthService struct {
@@ -40,7 +40,8 @@ func (service AuthService) Register(user entities.User) error {
 	//var checkForms [] Errors
 	checkForms := make(map[string]string)
 
-	checkForms = helpers.FormsVerification(user)
+	//checkForms = helpers.FormsVerification(user)
+	checkForms = utils.ValidateFormData(user)
 
 	if len(checkForms) == 0 {
 

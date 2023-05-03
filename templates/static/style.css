@@ -1,0 +1,160 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url(https://cdn.theculturetrip.com/wp-content/uploads/2015/12/supertree-1158602_1920-1024x683.jpg) no-repeat;
+    background-size: cover;
+}
+
+.wrapper {
+    position: relative;
+    width: 400px;
+    height: 440px;
+    background: rgba(135, 116, 116, 0.7);
+    border: 2px solid rgb(142, 131, 131);
+    border-radius: 20px;
+    /*backdrop-filter: blur(20px);*/
+    box-shadow: 0 0 30px rgb(74, 70, 70);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: height .2s ease;
+}
+
+.wrapper.active {
+height: 800px;
+}
+
+.wrapper .form-box {
+    width: 100%;
+    padding: 40px;
+}
+
+.wrapper .form-box.login {
+    transition: transform .18s ease;
+    transform: translateX(0);
+}
+
+.wrapper.active .form-box.login {
+    transition: none;
+    transform: translateX(-400px);
+}
+
+.wrapper .form-box.registration {
+    position: absolute;
+    transition: none;
+    transform: translateX(400px);
+}
+
+
+.wrapper.active .form-box.registration {
+    transition: transform .18s ease;
+    transform: translateX(0);
+}
+
+
+.form-box h3 {
+    font-family: 2em;
+    color: rgb(131, 7, 98);
+    text-align: center;
+}
+
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid black;
+    margin: 30px 0;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: rgb(34, 30, 30);
+    font-weight: 500;
+    pointer-events: none;
+    transition: -5s;
+}
+
+.input-box input:focus~label,
+.input-box input:valid~label {
+    top: -5px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: rgb(184, 20, 69);
+    font-weight: 300;
+    padding: 0 35px 0 5px;
+}
+
+.input-box .icon {
+    position: absolute;
+    right: 8px;
+    font-size: 1.2em;
+    color: black;
+    line-height: 57px;
+}
+
+.remember {
+    font-size: .9em;
+    color: rgb(56, 54, 54);
+    font-weight: 300;
+    margin: -15px 0 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.remember lable input {
+    accent-color: rgb(131, 7, 98);
+    margin-right: 5px;
+}
+
+.btn {
+    width: 100%;
+    height: 45px;
+    background: rgb(131, 7, 98);
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: antiquewhite;
+    font-size: 500;
+    margin-top: 10px;
+}
+
+.login-regist {
+    font-size: .9em;
+    color: rgb(131, 7, 98);
+    text-align: center;
+    font-weight: 500;
+    margin: 25px 0 10px;
+}
+
+.login-regist p a {
+    color: rgb(131, 7, 98);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-regist p a:hover {
+    text-decoration: underline;
+}

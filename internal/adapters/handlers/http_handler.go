@@ -1,6 +1,6 @@
-//handle for concrete url X
-//use concrete middleware from pkg/middleware
-//use service from internal/domain/services to do logic
+// handle for concrete url X
+// use concrete middleware from pkg/middleware
+// use service from internal/domain/services to do logic
 package handlers
 
 import (
@@ -40,11 +40,18 @@ func (handler *HTTPHandler) LoginHandler(w http.ResponseWriter, r *http.Request)
 
 func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("register handler worked")
-	user := entities.User{
-		Email: "egor@gmail.com",
-		//...
+
+	newUser := entities.User{
+		Nickname:     r.FormValue("newNickname"),
+		Age:          r.FormValue("age"),   // here, we can not use int, only string
+		Gender:       r.FormValue("gender"),
+		FirstName:    r.FormValue("firstName"),
+		LastName:     r.FormValue("lastName"),
+		Email:        r.FormValue("newEmail"),
+	//	PasswordHash: r.FormValue("newPassword"),
 	}
-	err := handler.authService.Register(user)
+
+	err := handler.authService.Register(newUser)
 	if err != nil {
 
 	}

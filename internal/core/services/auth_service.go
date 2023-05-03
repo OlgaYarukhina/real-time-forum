@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"real-time-forum/internal/core/entities"
+	"real-time-forum/internal/helpers"
 	"real-time-forum/internal/interfaces"
 )
 
@@ -26,10 +27,27 @@ func (service AuthService) Login(credentials entities.UserCredentials) (string, 
 	return "session token?", nil
 }
 
+// check new user
+
 func (service AuthService) Register(user entities.User) error {
 	fmt.Println("auth service register job")
+
 	//verify user data
-	//...
+	type Errors struct {
+		Error string `json:"errorMessage"`
+	}
+
+	//var checkForms [] Errors
+	checkForms := make(map[string]string)
+
+	checkForms = helpers.FormsVerification(user)
+
+	if len(checkForms) == 0 {
+
+	}
+
+
+	//try create new user
 	err := service.repo.CreateUser(user)
 	if err != nil {
 

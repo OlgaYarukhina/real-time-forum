@@ -5,7 +5,7 @@ import "time"
 type User struct {
 	UserID       int       `json:"user_id"`
 	Nickname     string    `json:"nickname"`
-	Age          int       `json:"age"`
+	Age          string    `json:"age"`
 	Gender       string    `json:"gender"`
 	FirstName    string    `json:"first_name"`
 	LastName     string    `json:"last_name"`

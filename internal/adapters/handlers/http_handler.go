@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"real-time-forum/internal/core/entities"
 	"real-time-forum/internal/core/services"
+	"real-time-forum/pkg/utils"
+	"strconv"
 )
 
 type HTTPHandler struct {
@@ -40,20 +42,29 @@ func (handler *HTTPHandler) LoginHandler(w http.ResponseWriter, r *http.Request)
 
 func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("register handler worked")
+	hashedPass, err := utils.HashPassword(r.FormValue("newPassword"))
+	if err != nil {
+		//add error to json errors
+	}
+	age, err := strconv.Atoi(r.FormValue("age"))
+	if err != nil {
+		//add error to json errors
+	}
+	//if any errors on top send response with errors and code 4** (400 - bad request or 422 - unprocessable entity)
 
 	newUser := entities.User{
 		Nickname:     r.FormValue("newNickname"),
-		Age:          r.FormValue("age"),   // here, we can not use int, only string
+		Age:          age,
 		Gender:       r.FormValue("gender"),
 		FirstName:    r.FormValue("firstName"),
 		LastName:     r.FormValue("lastName"),
 		Email:        r.FormValue("newEmail"),
-	//	PasswordHash: r.FormValue("newPassword"),
+		PasswordHash: []byte(hashedPass),
 	}
 
-	err := handler.authService.Register(newUser)
+	err = handler.authService.Register(newUser)
 	if err != nil {
-
+		//send response with server error code 5**
 	}
 	fmt.Println("register handler ended")
 	return

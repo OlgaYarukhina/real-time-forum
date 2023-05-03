@@ -3,7 +3,7 @@ package services
 import (
 	"fmt"
 	"real-time-forum/internal/core/entities"
-	"real-time-forum/internal/helpers"
+	"real-time-forum/internal/core/helpers"
 	"real-time-forum/internal/interfaces"
 )
 
@@ -45,7 +45,6 @@ func (service AuthService) Register(user entities.User) error {
 	if len(checkForms) == 0 {
 
 	}
-
 
 	//try create new user
 	err := service.repo.CreateUser(user)

@@ -4,19 +4,27 @@ import (
 	"database/sql"
 	"fmt"
 	"real-time-forum/internal/core/entities"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Database struct {
 	db *sql.DB
 }
 
-func NewDatabase() *Database {
+func NewDatabase(dsn string) (*Database, error) {
 	fmt.Println(" database connection created and db is ready to use through adapter")
-	//creation
-
-	return &Database{
-		//db: db,
+	//fmt.Println("dsn - " + dsn)
+	db, err := sql.Open("sqlite3", dsn)
+	if err != nil {
+		return nil, err
 	}
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+	return &Database{
+		db: db,
+	}, nil
 }
 
 func (d *Database) GetUserCredentials(login string) (entities.UserCredentials, error) {
@@ -26,6 +34,17 @@ func (d *Database) GetUserCredentials(login string) (entities.UserCredentials, e
 
 func (d *Database) CreateUser(user entities.User) error {
 	fmt.Println("database creating new user ")
+
+	stmt := `INSERT INTO users (nickname, age, gender, first_name, last_name, email, password_hash, created_at)
+    VALUES(?, ?, ?, ?, ?, ?, ?, current_date)`
+
+	_, err := d.db.Exec(stmt, user.Nickname, user.Age, user.Gender,
+		user.FirstName, user.LastName, user.Email, user.PasswordHash)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
 	return nil
 }
 

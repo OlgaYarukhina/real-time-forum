@@ -31,7 +31,12 @@ var ( //move to pkg config??
 func main() {
 	templateCache = cacheTemplate("../../templates/")
 
-	store := database.NewDatabase()
+	store, err := database.NewDatabase("../../db/database.db")
+	if err != nil {
+		log.Fatalln("Error with database: ", err)
+		os.Exit(1)
+	}
+
 	messengerService = services.NewMessengerService(store)
 	authService = services.NewAuthService(store)
 	handler := handlers.NewHTTPHandler(*authService, *messengerService)
@@ -42,7 +47,7 @@ func main() {
 	http.HandleFunc("/register", handler.RegisterHandler)
 
 	log.Println("Starting server on: http://localhost:8080")
-	err := http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
 	if errors.Is(err, http.ErrServerClosed) {
 		log.Fatalln("Server stopped: ", err)
 		os.Exit(1)

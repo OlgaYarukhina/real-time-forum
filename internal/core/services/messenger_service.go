@@ -21,8 +21,8 @@ func NewMessengerService(repo interfaces.Repository) *MessengerService {
 	}
 }
 
-func (m *MessengerService) SendMessage(message entities.Message) error {
+func (service *MessengerService) SendMessage(message entities.Message) error {
 	//logic before sending
 	fmt.Println("message service did job before saving")
-	return m.repo.SaveMessage(message)
+	return service.repo.SaveMessage(message)
 }

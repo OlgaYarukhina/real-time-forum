@@ -9,6 +9,7 @@ package main
 
 import (
 	"errors"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -24,6 +25,7 @@ var ( //move to pkg config??
 	httpHandler      *handlers.HTTPHandler
 	templateCache    *template.Template
 	messengerService *services.MessengerService
+	authService      *services.AuthService
 )
 
 func main() {
@@ -31,10 +33,13 @@ func main() {
 
 	store := database.NewDatabase()
 	messengerService = services.NewMessengerService(store)
-	handler := handlers.NewHTTPHandler(*messengerService)
+	authService = services.NewAuthService(store)
+	handler := handlers.NewHTTPHandler(*authService, *messengerService)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/", handler.TestMiddleware(handler.TestHandler))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/login", handler.LoginHandler)
+	http.HandleFunc("/register", handler.RegisterHandler)
 
 	log.Println("Starting server on: http://localhost:8080")
 	err := http.ListenAndServe(":8080", nil)
@@ -45,6 +50,15 @@ func main() {
 		log.Fatalln("Error starting server: ", err)
 		os.Exit(1)
 	}
+}
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	html, err := ioutil.ReadFile("../../templates/index.html")
+	if err != nil {
+		http.Error(w, "Error reading file", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write(html)
 }
 
 //move to pkg??

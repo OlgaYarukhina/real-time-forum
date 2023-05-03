@@ -11,20 +11,50 @@ import (
 )
 
 type HTTPHandler struct {
-	i services.MessengerService
+	authService      services.AuthService
+	messengerService services.MessengerService
 	//services
 }
 
-func NewHTTPHandler(messenger services.MessengerService) *HTTPHandler {
+func NewHTTPHandler(authService services.AuthService, messenger services.MessengerService) *HTTPHandler {
 	return &HTTPHandler{
-		i: messenger,
+		authService:      authService,
+		messengerService: messenger,
 		//services
 	}
 }
 
+func (handler *HTTPHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("login handler worked")
+	credentials := entities.UserCredentials{
+		Email:    "egor@gmail.com",
+		PassHash: []byte("a1s2d3f4g5"),
+	}
+	_, err := handler.authService.Login(credentials)
+	if err != nil {
+
+	}
+	fmt.Println("login handler ends")
+	return
+}
+
+func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("register handler worked")
+	user := entities.User{
+		Email: "egor@gmail.com",
+		//...
+	}
+	err := handler.authService.Register(user)
+	if err != nil {
+
+	}
+	fmt.Println("register handler ended")
+	return
+}
+
 func (handler *HTTPHandler) TestHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("handler worked")
-	handler.i.SendMessage(entities.Message{Body: "my msg"})
+	handler.messengerService.SendMessage(entities.Message{Body: "my msg"})
 	w.Write([]byte("just text"))
 	return
 }

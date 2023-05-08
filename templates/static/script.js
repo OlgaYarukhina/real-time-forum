@@ -3,39 +3,35 @@ const loginLink = document.querySelector('.login-link');
 const registrLink = document.querySelector('.regist-link');
 
 registrLink.addEventListener('click', () => {
-    wrapper.classList.add('active');
+  wrapper.classList.add('active');
 });
 
 loginLink.addEventListener('click', () => {
-    wrapper.classList.remove('active');
+  wrapper.classList.remove('active');
 });
 
-console.log("Here1")
 
-const register = () => {
-    console.log("Here2")
-    const formData = new FormData();
-    const arrayOfRegisterId = ['newNickname', 'age', 'gender', 'lastName', 'newEmail', 'newPassword'];
+const register = async () => {
 
-    for (let i = 0; i < 6; i++) {
-        formData.append(arrayOfRegisterId[i], document.getElementById(arrayOfRegisterId[i]))
-    }
-   
-    fetch('/register', {
-        method: 'POST',
-        body: formData
-    })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            console.log(data);
-        })
-        .catch(function (err) {
-            console.log('Fetch Error', err);
-        });
-       
+  const formData = {
+    newNickname:   document.getElementById('newNickname').value,
+    age:           document.getElementById('age').value,
+    gender:        document.getElementById('gender').value,
+    lastName:      document.getElementById('lastName').value,
+    newEmail:      document.getElementById('newEmail').value,
+    newPassword:   document.getElementById('newPassword').value,
+  }
 
-        console.log(formData)
-    console.log("Here3")
+  console.log(formData)
+
+ await fetch('http://localhost:8080/register', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  });
+
+  console.log("Here3")
 }

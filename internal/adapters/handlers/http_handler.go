@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"real-time-forum/internal/core/entities"
 	"real-time-forum/internal/core/services"
-	"strconv"
+	//"strconv"
 )
 
 type HTTPHandler struct {
@@ -45,25 +45,30 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 	// if err != nil {
 	// 	//add error to json errors
 	// }
-	age, err := strconv.Atoi(r.FormValue("age"))
-	if err != nil {
-		//add error to json errors
-	}
 
-	newUser := entities.User{
-		Nickname:     r.FormValue("newNickname"),
-		Age:          age,
-		Gender:       r.FormValue("gender"),
-		FirstName:    r.FormValue("firstName"),
-		LastName:     r.FormValue("lastName"),
-		Email:        r.FormValue("newEmail"),
-		PasswordHash: []byte(r.FormValue("newPassword")),
-	}
+	if r.Method == "POST" {
 
-	err = handler.authService.Register(newUser)
-	if err != nil {
-		//send response with server error code 5**
+
 	}
+	// age, err := strconv.Atoi(r.FormValue("age"))
+	// if err != nil {
+	// 	//add error to json errors
+	// }
+
+	// newUser := entities.User{
+	// 	Nickname:     r.FormValue("newNickname"),
+	// 	Age:          age,
+	// 	Gender:       r.FormValue("gender"),
+	// 	FirstName:    r.FormValue("firstName"),
+	// 	LastName:     r.FormValue("lastName"),
+	// 	Email:        r.FormValue("newEmail"),
+	// 	PasswordHash: []byte(r.FormValue("newPassword")),
+	// }
+
+	// err = handler.authService.Register(newUser)
+	// if err != nil {
+	// 	//send response with server error code 5**
+	// }
 	fmt.Println("register handler ended")
 	return
 }

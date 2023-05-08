@@ -31,7 +31,7 @@ const register = async () => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(formData)
-  });
+  }).then(response => response.json())
 
   console.log("Here3")
 }

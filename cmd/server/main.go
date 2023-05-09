@@ -42,11 +42,11 @@ func main() {
 	handler := handlers.NewHTTPHandler(*authService, *messengerService)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/login", handler.LoginHandler)
+	http.HandleFunc("/login", indexHandler)
+	//http.HandleFunc("/login", handler.LoginHandler)
 	http.HandleFunc("/register", handler.RegisterHandler)
 
-	log.Println("Starting server on: http://localhost:8080")
+	log.Println("Starting server on: http://localhost:8080/login")
 	err = http.ListenAndServe(":8080", nil)
 	if errors.Is(err, http.ErrServerClosed) {
 		log.Fatalln("Server stopped: ", err)

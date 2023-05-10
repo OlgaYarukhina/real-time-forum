@@ -8,12 +8,15 @@
 package main
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	handlers "real-time-forum/internal/adapters/primary/http"
+	ws "real-time-forum/internal/adapters/primary/ws"
 	"real-time-forum/internal/application/services"
 	"text/template"
 )
@@ -29,6 +32,11 @@ var ( //move to pkg config??
 )
 
 func main() {
+	rootCtx := context.Background()
+	ctx, cancel := context.WithCancel(rootCtx)
+
+	defer cancel()
+
 	// templateCache = cacheTemplate("../../templates/")
 
 	// store, err := database.NewDatabase("../../db/database.db")
@@ -42,11 +50,22 @@ func main() {
 	// userManager = services.NewUserManagerService(store)
 	// handler := handlers.NewHTTPHandler(*authService, *messengerService, *userManager)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
+	//http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
 	http.HandleFunc("/", indexHandler)
 	// http.HandleFunc("/login", handler.LoginHandler)
 	// http.HandleFunc("/register", handler.RegisterHandler)
 	// http.HandleFunc("/ws", handler.ServeWS)
+
+	manager := ws.NewManager(ctx)
+
+	// Serve the ./frontend directory at Route /
+	//http.Handle("/", http.FileServer(http.Dir("./frontend")))
+	http.HandleFunc("/login", manager.LoginHandler)
+	http.HandleFunc("/ws", manager.ServeWS)
+
+	http.HandleFunc("/debug", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, len(manager.Clients))
+	})
 
 	log.Println("Starting server on: http://localhost:8080")
 	err := http.ListenAndServe(":8080", nil)

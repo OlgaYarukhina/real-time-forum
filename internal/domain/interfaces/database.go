@@ -1,6 +1,6 @@
 package interfaces
 
-import "real-time-forum/internal/core/entities"
+import "real-time-forum/internal/domain/entities"
 
 type Repository interface {
 	GetUserCredentials(login string) (entities.UserCredentials, error)

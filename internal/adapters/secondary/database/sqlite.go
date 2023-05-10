@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"real-time-forum/internal/core/entities"
+	"real-time-forum/internal/domain/entities"
 
 	_ "github.com/mattn/go-sqlite3"
 )

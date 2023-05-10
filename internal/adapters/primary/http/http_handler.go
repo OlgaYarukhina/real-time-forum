@@ -5,22 +5,28 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
-	"real-time-forum/internal/core/entities"
-	"real-time-forum/internal/core/services"
+	"real-time-forum/internal/application/services"
+	"real-time-forum/internal/domain/entities"
 	"strconv"
+
+	"github.com/gorilla/websocket"
 )
 
 type HTTPHandler struct {
-	authService      services.AuthService
-	messengerService services.MessengerService
+	authService        services.AuthService
+	messengerService   services.MessengerService
+	userManagerService services.UserManagerService
 	//services
 }
 
-func NewHTTPHandler(authService services.AuthService, messenger services.MessengerService) *HTTPHandler {
+func NewHTTPHandler(authService services.AuthService,
+	messenger services.MessengerService, userManager services.UserManagerService) *HTTPHandler {
 	return &HTTPHandler{
-		authService:      authService,
-		messengerService: messenger,
+		authService:        authService,
+		messengerService:   messenger,
+		userManagerService: userManager,
 		//services
 	}
 }
@@ -66,6 +72,37 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 	}
 	fmt.Println("register handler ended")
 	return
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+//let socket = new WebSocket("ws://localhost:8080/ws")
+//socket.onmessage = (event) => {console.log("received in incognito : "+event.data)}
+//socket.send("CHAO CUO")
+
+func (handler *HTTPHandler) ServeWS(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("ServeWS function")
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	for {
+		messageType, p, err := conn.ReadMessage()
+		fmt.Println("server read : " + string(p))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		if err := conn.WriteMessage(messageType, p); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+	//defer conn.Close() ?
 }
 
 func (handler *HTTPHandler) TestHandler(w http.ResponseWriter, r *http.Request) {

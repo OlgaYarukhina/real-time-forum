@@ -13,9 +13,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"real-time-forum/internal/adapters/database"
-	"real-time-forum/internal/adapters/handlers"
-	"real-time-forum/internal/core/services"
+	handlers "real-time-forum/internal/adapters/primary/http"
+	"real-time-forum/internal/adapters/secondary/database"
+	"real-time-forum/internal/application/services"
 	"text/template"
 )
 
@@ -26,6 +26,7 @@ var ( //move to pkg config??
 	templateCache    *template.Template
 	messengerService *services.MessengerService
 	authService      *services.AuthService
+	userManager      *services.UserManagerService
 )
 
 func main() {
@@ -39,12 +40,14 @@ func main() {
 
 	messengerService = services.NewMessengerService(store)
 	authService = services.NewAuthService(store)
-	handler := handlers.NewHTTPHandler(*authService, *messengerService)
+	userManager = services.NewUserManagerService(store)
+	handler := handlers.NewHTTPHandler(*authService, *messengerService, *userManager)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/login", handler.LoginHandler)
 	http.HandleFunc("/register", handler.RegisterHandler)
+	http.HandleFunc("/ws", handler.ServeWS)
 
 	log.Println("Starting server on: http://localhost:8080")
 	err = http.ListenAndServe(":8080", nil)

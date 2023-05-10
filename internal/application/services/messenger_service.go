@@ -5,8 +5,8 @@ package services
 
 import (
 	"fmt"
-	"real-time-forum/internal/core/entities"
-	"real-time-forum/internal/interfaces"
+	"real-time-forum/internal/domain/entities"
+	"real-time-forum/internal/domain/interfaces"
 	//"github.com/gofrs/uuid"
 )
 

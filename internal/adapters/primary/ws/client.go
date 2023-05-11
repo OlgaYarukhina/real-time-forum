@@ -34,11 +34,12 @@ var (
 )
 
 // NewClient is used to initialize a new Client with all required values initialized
-func NewClient(conn *websocket.Conn, manager *Manager) *Client {
+func NewClient(conn *websocket.Conn, manager *Manager, str string) *Client {
 	return &Client{
 		connection: conn,
 		manager:    manager,
 		egress:     make(chan Event),
+		chatroom:   str,
 	}
 }
 

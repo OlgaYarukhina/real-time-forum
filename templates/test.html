@@ -187,7 +187,8 @@
         function login() {
             let formData = {
                 "username": document.getElementById("username").value,
-                "password": document.getElementById("password").value
+                "password": document.getElementById("password").value,
+                "chatroom": document.getElementById("chatroom").value
             }
             // Send the request
             fetch("login", {

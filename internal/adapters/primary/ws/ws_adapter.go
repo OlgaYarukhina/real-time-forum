@@ -136,6 +136,10 @@ func (m *Manager) LoginHandler(w http.ResponseWriter, r *http.Request) {
 // serveWS is a HTTP Handler that the has the Manager that allows connections
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 
+	///
+	/// send as a params chat/room/user/ id or value
+	///
+
 	// Grab the OTP in the Get param
 	otp := r.URL.Query().Get("otp")
 	if otp == "" {
@@ -159,7 +163,10 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create New Client
-	client := NewClient(conn, m)
+	///
+	/// send room to obj here
+	///
+	client := NewClient(conn, m, "room1")
 	// Add the newly created client to the manager
 	m.addClient(client)
 

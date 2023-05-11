@@ -14,24 +14,43 @@ loginLink.addEventListener('click', () => {
 const register = async () => {
 
   const formData = {
-    newNickname:   document.getElementById('newNickname').value,
+    nickname:   document.getElementById('newNickname').value,
     age:           document.getElementById('age').value,
     gender:        document.getElementById('gender').value,
-    lastName:      document.getElementById('lastName').value,
-    newEmail:      document.getElementById('newEmail').value,
-    newPassword:   document.getElementById('newPassword').value,
+    first_name:      document.getElementById('firstName').value,
+    last_name:      document.getElementById('lastName').value,
+    email:      document.getElementById('newEmail').value,
+    pass:   document.getElementById('newPassword').value,
   }
 
-  console.log(formData)
+  try {
+    console.log("JSON.stringify(formData)")
+    console.log(JSON.stringify(formData))
+    const response = await fetch('http://localhost:8080/register', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
 
- await fetch('http://localhost:8080/register', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  }).then(response => response.json())
+//   console.log(formData)
+//   console.log("Here2")
 
-  console.log("Here3")
+//  await fetch('http://localhost:8080/register', {
+//     method: 'POST',
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(formData)
+//   }).then(response => response.json())
+
+//   console.log("Here3")
 }

@@ -44,15 +44,14 @@ func (service AuthService) Register(user entities.User) error {
 	checkForms = utils.ValidateFormData(user)
 
 	if len(checkForms) == 0 {
-	//try create new user
-	err := service.repo.CreateUser(user)
-	if err != nil {
+		//try create new user
+		err := service.repo.CreateUser(user)
+		if err != nil {
 
-	}
+		}
 	} else {
-		
+		fmt.Println("errors in user data")
 	}
-
 
 	fmt.Println("auth service register ends job")
 	return nil

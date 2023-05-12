@@ -40,8 +40,6 @@ const register = async () => {
     console.error(err);
   }
 
-//   console.log(formData)
-//   console.log("Here2")
 
 //  await fetch('http://localhost:8080/register', {
 //     method: 'POST',
@@ -52,5 +50,4 @@ const register = async () => {
 //     body: JSON.stringify(formData)
 //   }).then(response => response.json())
 
-//   console.log("Here3")
 }

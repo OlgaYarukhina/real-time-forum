@@ -100,7 +100,7 @@ height: 800px;
     border: none;
     outline: none;
     font-size: 1em;
-    color: rgb(184, 20, 69);
+    color: rgb(156, 149, 156);
     font-weight: 300;
     padding: 0 35px 0 5px;
 }
@@ -157,4 +157,51 @@ height: 800px;
 
 .login-regist p a:hover {
     text-decoration: underline;
+}
+
+
+/*Gender form */
+
+.select {
+    position: relative;
+   
+}
+
+.select.is-active .select_body {
+    display: block;
+}
+
+.select_header {
+    display: flex;
+    cursor: pointer;
+}
+
+.select_current {
+    font-size: 18px;
+    line-height: 24px;
+    padding: 8px;
+}
+
+
+.select_body {
+    display: none;
+    width: 50px;
+    position: absolute;
+    left: 25%;
+    top: -30%;
+    position: absolute;
+    background: rgba(154, 110, 147, 0.7);
+    border-radius: 5px;
+}
+
+.select_item {
+    cursor: pointer;
+    font-size: large;
+    padding: 8px;
+    border-bottom: 1px solid rgb(110, 112, 113);
+}
+
+.select_item:hover {
+    background-color: rgb(129, 18, 95);
+    border-radius: 5px;
 }

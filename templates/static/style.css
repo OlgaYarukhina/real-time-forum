@@ -76,6 +76,17 @@ height: 800px;
     margin: 30px 0;
 }
 
+.input-box.error input {
+    border-bottom: 2px solid rgb(107, 4, 80);
+}
+
+.input-box .error {
+    margin-top: 3px;
+    color: rgb(96, 2, 96);
+    font-size: 9px;
+    height: 13px;
+}
+
 .input-box label {
     position: absolute;
     top: 50%;
@@ -188,7 +199,7 @@ height: 800px;
     width: 50px;
     position: absolute;
     left: 25%;
-    top: -30%;
+    top: -40%;
     position: absolute;
     background: rgba(154, 110, 147, 0.7);
     border-radius: 5px;

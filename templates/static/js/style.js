@@ -1,3 +1,15 @@
+const wrapper = document.querySelector('.wrapper');
+const loginLink = document.querySelector('.login-link');
+const registrLink = document.querySelector('.regist-link');
+
+registrLink.addEventListener('click', () => {
+  wrapper.classList.add('active');
+});
+
+loginLink.addEventListener('click', () => {
+  wrapper.classList.remove('active');
+});
+
 let select = function () {
     let selectHeader = document.querySelectorAll('.select_header');
     let selectItem = document.querySelectorAll('.select_item');
@@ -16,11 +28,9 @@ let select = function () {
 
     function selectChoose(){
         let value = this.innerText,
-            select = this.closest('.select'),
-            currentValue = this.closest('.select').querySelector('.select_current');
-       currentValue.innerText = value;
+            select = this.closest('.select');
+        document.getElementById('gender').value = value;
        select.classList.remove('is-active');
-
     }
 };
 

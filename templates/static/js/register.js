@@ -5,6 +5,12 @@ const lastName = document.getElementById('lastName');
 const newEmail = document.getElementById('newEmail');
 const newPassword = document.getElementById('newPassword');
 
+let  formData = {};
+
+form.addEventListener('input', function(event){
+    formData[event.target.name] = event.target.value;
+})
+
 form.addEventListener('submit', e => {
   e.preventDefault();
 
@@ -46,7 +52,6 @@ const setSuccess = element => {
   inputControl.classList.remove('error');
 }
 
-
 const validateInputs = () => {
   let check = true;
 
@@ -55,7 +60,6 @@ const validateInputs = () => {
   const lastNameValue = lastName.value.trim();
   const emailValue = newEmail.value.trim();
   const passwordValue = newPassword.value.trim();
-
 
   if (!isValidNickname(userNicknameValue)) {
     setError(userNickname, "Nickname must be alphanumeric and between 4-10 characters");
@@ -92,21 +96,9 @@ const validateInputs = () => {
 }
 
 
-
 const register = async () => {
 
-  const formData = {
-    nickname:   document.getElementById('newNickname').value,
-    age:           document.getElementById('age').value,
-    gender:        document.getElementById('gender').value,
-    first_name:      document.getElementById('firstName').value,
-    last_name:      document.getElementById('lastName').value,
-    email:      document.getElementById('newEmail').value,
-    pass:   document.getElementById('newPassword').value,
-  }
-
   try {
-    console.log("JSON.stringify(formData)")
     console.log(JSON.stringify(formData))
     const response = await fetch('http://localhost:8080/register', {
       method: 'POST',
@@ -121,15 +113,25 @@ const register = async () => {
   } catch (err) {
     console.error(err);
   }
-
-
- await fetch('http://localhost:8080/register', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  }).then(response => response.json())
-
 }
+
+
+ //await fetch('http://localhost:8080/register', {
+ //   method: 'POST',
+//    headers: {
+  //    'Accept': 'application/json',
+//      'Content-Type': 'application/json'
+ //   },
+ //   body: JSON.stringify(formData)
+//  }).then(response => response.json())
+
+  // const formData = {
+  //   nickname:   document.getElementById('newNickname').value,
+  //   age:           document.getElementById('age').value,
+  //   gender:        document.getElementById('gender').value,
+  //   first_name:      document.getElementById('firstName').value,
+  //   last_name:      document.getElementById('lastName').value,
+  //   email:      document.getElementById('newEmail').value,
+  //   pass:   document.getElementById('newPassword').value,
+  // }
+

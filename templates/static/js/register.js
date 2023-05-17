@@ -120,6 +120,17 @@ const register = async () => {
   }
 }
 
+const getData = async () => {
+  console.log("hereaaa")
+  const response = await fetch('http://localhost:8080/answ');
+
+  if(!response.ok) {
+    throw new Error(`Error response http://localhost:8080/login, status: ${response}`)
+  }
+  return await response.json();
+
+}
+
 
  //await fetch('http://localhost:8080/register', {
  //   method: 'POST',

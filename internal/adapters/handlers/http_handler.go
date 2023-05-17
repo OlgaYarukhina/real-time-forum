@@ -7,10 +7,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"real-time-forum/internal/core/entities"
 	"real-time-forum/internal/core/services"
-	//"strconv"
+)
+
+const (
+	apiUrl = "http://localhost:8080/answr"
 )
 
 type HTTPHandler struct {
@@ -48,11 +52,10 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 	// 	//add error to json errors
 	// }
 
-	resp, _ := ioutil.ReadAll(r.Body)
-
+	response, _ := ioutil.ReadAll(r.Body)
 
 	var user entities.User
-	err := json.Unmarshal(resp, &user)
+	err := json.Unmarshal(response, &user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		fmt.Println(err)
@@ -60,22 +63,33 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 	}
 	fmt.Printf("New user handled: %+v\n", user)
 
+	resp := make(map[string]string)
 
-	//register should return user id?
 	err = handler.authService.Register(user)
 	if err != nil {
 		switch err.Error() {
 		case "UNIQUE constraint failed: users.email":
-			fmt.Println("Return email already exist")
+
+			resp["message"] = "Email already exist"
+			jsonResp, err := json.Marshal(resp)
+			if err != nil {
+				log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+			}
+			w.Write(jsonResp)
 			return
+
 		case "UNIQUE constraint failed: users.nickname":
-			fmt.Println("Return nickname already exist")
-			return
+			resp["message"] = "Nickname already exist"
+			jsonResp, err := json.Marshal(resp)
+			if err != nil {
+				log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+			}
+			w.Write(jsonResp)
+			return 
+
 		}
 	}
 
-	fmt.Println("register handler ended")
-	return
 }
 
 func (handler *HTTPHandler) TestHandler(w http.ResponseWriter, r *http.Request) {
@@ -98,30 +112,28 @@ func (handler *HTTPHandler) TestMiddleware(next http.HandlerFunc) http.HandlerFu
 // w.Header().Set("Content-Type", "application/json")
 // json.NewEncoder(w).Encode(response)
 
+//two same objects, but different tasks - think about it
+// type User struct {
+// 	Email     string `json:"email"`
+// 	Nickname  string `json:"nickname"`
+// 	Age       string `json:"age"`
+// 	Gender    string `json:"gender"`
+// 	FirstName string `json:"first_name"`
+// 	LastName  string `json:"last_name"`
+// 	Password  string `json:"pass"`
+// }
 
+// age, err := strconv.Atoi(user.Age)
+// if err != nil {
+// 	//add error to json errors
+// }
 
-	//two same objects, but different tasks - think about it
-	// type User struct {
-	// 	Email     string `json:"email"`
-	// 	Nickname  string `json:"nickname"`
-	// 	Age       string `json:"age"`
-	// 	Gender    string `json:"gender"`
-	// 	FirstName string `json:"first_name"`
-	// 	LastName  string `json:"last_name"`
-	// 	Password  string `json:"pass"`
-	// }
-
-		// age, err := strconv.Atoi(user.Age)
-	// if err != nil {
-	// 	//add error to json errors
-	// }
-
-	// newUser := entities.User{
-	// 	Email:        user.Email,
-	// 	Nickname:     user.Nickname,
-	// 	Age:          user.Age,
-	// 	Gender:       user.Gender,
-	// 	FirstName:    user.FirstName,
-	// 	LastName:     user.LastName,
-	// 	PasswordHash: []byte(user.Password),
-	// }
+// newUser := entities.User{
+// 	Email:        user.Email,
+// 	Nickname:     user.Nickname,
+// 	Age:          user.Age,
+// 	Gender:       user.Gender,
+// 	FirstName:    user.FirstName,
+// 	LastName:     user.LastName,
+// 	PasswordHash: []byte(user.Password),
+// }

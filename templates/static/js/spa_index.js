@@ -1,7 +1,12 @@
-import Dashboard from "./views/Dashboard.js";
+//import Dashboard from "./views/Dashboard.js";
 import Posts from "./views/Posts.js";
 import PostView from "./views/PostView.js";
-import Settings from "./views/Settings.js";
+//import Settings from "./views/Settings.js";
+//import Chats from "./views/Chats.js"
+import ChatView from "./views/ChatView.js"
+import Register from "./views/Register.js";
+import Login from "./views/Login.js";
+import NewPost from "./views/NewPost.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -21,10 +26,18 @@ const navigateTo = url => {
 
 const router = async () => {
     const routes = [
-        { path: "/", view: Dashboard },
-        { path: "/posts", view: Posts },
+        //is it good way or /posts cleaner? 
+        { path: "/", view: Posts },
+        //{ path: "/posts", view: Posts },
+        { path: "/post", view: NewPost },
         { path: "/posts/:id", view: PostView },
-        { path: "/settings", view: Settings }
+        //for profile?
+        //{ path: "/settings", view: Settings },
+        //different login in place where ws connection creates
+        //{ path: "/chats", view: Chats },
+        { path: "/chats/:id", view: ChatView },
+        { path: "/login", view: Login },
+        { path: "/register", view: Register }
     ];
 
     // Test each route for potential match
@@ -61,3 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     router();
 });
+
+//connect to ws right here?
+//to be able to receive new msg notifications independently of a page
+//create section as in discord 
+//subscribe on events
+//if new msg and correct chat is open - display msg
+//is not add +1 unread to correct user
+//in both cases reorder chats section 

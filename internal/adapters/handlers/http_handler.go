@@ -6,10 +6,10 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"real-time-forum/internal/core/entities"
 	"real-time-forum/internal/core/services"
-	"strconv"
 	//"strconv"
 )
 
@@ -48,55 +48,31 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 	// 	//add error to json errors
 	// }
 
-	if r.Method == "POST" {
+	resp, _ := ioutil.ReadAll(r.Body)
 
-	}
 
-	//two same objects, but different tasks - think about it
-	type User struct {
-		Nickname  string `json:"nickname"`
-		Age       string `json:"age"`
-		Gender    string `json:"gender"`
-		FirstName string `json:"first_name"`
-		LastName  string `json:"last_name"`
-		Email     string `json:"email"`
-		Password  string `json:"pass"`
-	}
-	var user User
-	err := json.NewDecoder(r.Body).Decode(&user)
+	var user entities.User
+	err := json.Unmarshal(resp, &user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println(err)
 		return
 	}
 	fmt.Printf("New user handled: %+v\n", user)
 
-	age, err := strconv.Atoi(user.Age)
-	if err != nil {
-		//add error to json errors
-	}
-
-	newUser := entities.User{
-		Nickname:     user.Nickname,
-		Age:          age,
-		Gender:       user.Gender,
-		FirstName:    user.FirstName,
-		LastName:     user.LastName,
-		Email:        user.Email,
-		PasswordHash: []byte(user.Password),
-	}
 
 	//register should return user id?
-	err = handler.authService.Register(newUser)
+	err = handler.authService.Register(user)
 	if err != nil {
-		//send response with server error code 5**
+		switch err.Error() {
+		case "UNIQUE constraint failed: users.email":
+			fmt.Println("Return email already exist")
+			return
+		case "UNIQUE constraint failed: users.nickname":
+			fmt.Println("Return nickname already exist")
+			return
+		}
 	}
-
-	type Response struct {
-		UserId int `json:"message"`
-	}
-	response := Response{UserId: 3}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 
 	fmt.Println("register handler ended")
 	return
@@ -114,3 +90,38 @@ func (handler *HTTPHandler) TestMiddleware(next http.HandlerFunc) http.HandlerFu
 		next(w, r)
 	}
 }
+
+// type Response struct {
+// 	UserId int `json:"message"`
+// }
+// response := Response{UserId: 3}
+// w.Header().Set("Content-Type", "application/json")
+// json.NewEncoder(w).Encode(response)
+
+
+
+	//two same objects, but different tasks - think about it
+	// type User struct {
+	// 	Email     string `json:"email"`
+	// 	Nickname  string `json:"nickname"`
+	// 	Age       string `json:"age"`
+	// 	Gender    string `json:"gender"`
+	// 	FirstName string `json:"first_name"`
+	// 	LastName  string `json:"last_name"`
+	// 	Password  string `json:"pass"`
+	// }
+
+		// age, err := strconv.Atoi(user.Age)
+	// if err != nil {
+	// 	//add error to json errors
+	// }
+
+	// newUser := entities.User{
+	// 	Email:        user.Email,
+	// 	Nickname:     user.Nickname,
+	// 	Age:          user.Age,
+	// 	Gender:       user.Gender,
+	// 	FirstName:    user.FirstName,
+	// 	LastName:     user.LastName,
+	// 	PasswordHash: []byte(user.Password),
+	// }

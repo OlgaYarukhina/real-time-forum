@@ -5,18 +5,13 @@ const lastName = document.getElementById('lastName');
 const newEmail = document.getElementById('newEmail');
 const newPassword = document.getElementById('newPassword');
 
-let  formData = {};
-
-form.addEventListener('input', function(event){
-    formData[event.target.name] = event.target.value;
-})
 
 form.addEventListener('submit', e => {
   e.preventDefault();
 
   if (validateInputs()) {
-console.log('Well done')
-register();
+    console.log('Well done')
+    register();
   }
 })
 
@@ -98,6 +93,16 @@ const validateInputs = () => {
 
 const register = async () => {
 
+  let formData = {
+    nickname:        userNickname.value,
+    age:             document.getElementById('age').value,
+    gender:          document.getElementById('gender').value,
+    first_name:      firstName.value,
+    last_name:       lastName.value,
+    email:           newEmail.value,
+    pass:            newPassword.value,
+  }
+
   try {
     console.log(JSON.stringify(formData))
     const response = await fetch('http://localhost:8080/register', {
@@ -125,13 +130,4 @@ const register = async () => {
  //   body: JSON.stringify(formData)
 //  }).then(response => response.json())
 
-  // const formData = {
-  //   nickname:   document.getElementById('newNickname').value,
-  //   age:           document.getElementById('age').value,
-  //   gender:        document.getElementById('gender').value,
-  //   first_name:      document.getElementById('firstName').value,
-  //   last_name:      document.getElementById('lastName').value,
-  //   email:      document.getElementById('newEmail').value,
-  //   pass:   document.getElementById('newPassword').value,
-  // }
 

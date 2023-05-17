@@ -39,12 +39,13 @@ func main() {
 
 	messengerService = services.NewMessengerService(store)
 	authService = services.NewAuthService(store)
-	handler := handlers.NewHTTPHandler(*authService, *messengerService)
+	//handler := handlers.NewHTTPHandler(*authService, *messengerService)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
-	http.HandleFunc("/login", indexHandler)
+
+	http.HandleFunc("/", indexHandler)
 	//http.HandleFunc("/login", handler.LoginHandler)
-	http.HandleFunc("/register", handler.RegisterHandler)
+	//http.HandleFunc("/register", handler.RegisterHandler)
 
 	log.Println("Starting server on: http://localhost:8080/login")
 	err = http.ListenAndServe(":8080", nil)
@@ -57,7 +58,7 @@ func main() {
 	}
 }
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	html, err := ioutil.ReadFile("../../templates/index.html")
+	html, err := ioutil.ReadFile("../../templates/spa_index.html")
 	if err != nil {
 		http.Error(w, "Error reading file", http.StatusInternalServerError)
 		return

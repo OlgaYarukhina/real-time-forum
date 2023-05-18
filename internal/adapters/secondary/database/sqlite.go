@@ -39,7 +39,7 @@ func (d *Database) CreateUser(user entities.User) error {
     VALUES(?, ?, ?, ?, ?, ?, ?, current_date)`
 
 	_, err := d.db.Exec(stmt, user.Email, user.Nickname, user.Age, user.Gender,
-		user.FirstName, user.LastName, user.PasswordHash)
+		user.FirstName, user.LastName, []byte(user.PasswordHash))
 	if err != nil {
 		fmt.Println(err)
 		return err

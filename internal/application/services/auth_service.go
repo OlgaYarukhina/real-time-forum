@@ -8,13 +8,15 @@ import (
 )
 
 type AuthService struct {
-	repo interfaces.Repository
+	repo   interfaces.Repository
+	hasher interfaces.Hasher
 }
 
-func NewAuthService(repo interfaces.Repository) *AuthService {
+func NewAuthService(repo interfaces.Repository, hasher interfaces.Hasher) *AuthService {
 	fmt.Println("AuthService created and ready to use")
 	return &AuthService{
-		repo: repo,
+		repo:   repo,
+		hasher: hasher,
 	}
 }
 
@@ -28,9 +30,13 @@ func (service AuthService) Login(credentials entities.UserCredentials) (string, 
 }
 
 func (service AuthService) Register(user entities.User) error {
-
+	hash, err := service.hasher.HashPassword(user.PasswordHash)
+	if err != nil {
+		return err
+	}
+	user.PasswordHash = hash
 	//try create new user
-	err := service.repo.CreateUser(user)
+	err = service.repo.CreateUser(user)
 	if err != nil {
 		return err
 	}

@@ -19,6 +19,7 @@ import (
 	ws "real-time-forum/internal/adapters/primary/ws"
 	"real-time-forum/internal/adapters/secondary/database"
 	"real-time-forum/internal/application/services"
+	"real-time-forum/pkg/utils"
 	"text/template"
 )
 
@@ -47,11 +48,9 @@ func main() {
 	}
 
 	messengerService = services.NewMessengerService(store)
-	authService = services.NewAuthService(store)
+	authService = services.NewAuthService(store, utils.NewPasswordHasher())
 	userManager = services.NewUserManagerService(store)
 	handler := handlers.NewHTTPHandler(*authService, *messengerService, *userManager)
-
-	//http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
 
 	manager := ws.NewManager(ctx)
 

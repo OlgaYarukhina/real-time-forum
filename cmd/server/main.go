@@ -58,7 +58,9 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/login", manager.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
-	http.HandleFunc("/api/ws", manager.ServeWS)
+	//do not delete! plz
+	//http.HandleFunc("/ws", manager.ServeWS)
+	//http.HandleFunc("/login", manager.LoginHandler)
 
 	http.HandleFunc("/debug", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, len(manager.Clients))
@@ -76,6 +78,8 @@ func main() {
 }
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	html, err := ioutil.ReadFile("../../templates/spa_index.html")
+	//do not delete! plz
+	//html, err := ioutil.ReadFile("../../templates/test.html")
 	if err != nil {
 		http.Error(w, "Error reading file", http.StatusInternalServerError)
 		return

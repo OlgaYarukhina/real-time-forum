@@ -4,14 +4,22 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"real-time-forum/internal/application/services"
 	"real-time-forum/internal/domain/entities"
-	"strconv"
+
+	//"strconv"
+
+	"io/ioutil"
 
 	"github.com/gorilla/websocket"
+)
+
+const (
+	apiUrl = "http://localhost:8080/answr"
 )
 
 type HTTPHandler struct {
@@ -51,26 +59,40 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 	// if err != nil {
 	// 	//add error to json errors
 	// }
-	age, err := strconv.Atoi(r.FormValue("age"))
+
+	response, _ := ioutil.ReadAll(r.Body)
+
+	var user entities.User
+	err := json.Unmarshal(response, &user)
 	if err != nil {
-		//add error to json errors
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("New user handled: %+v\n", user)
+
+	resp := make(map[string]string)
+
+	err = handler.authService.Register(user)
+	if err != nil {
+		switch err.Error() {
+		case "UNIQUE constraint failed: users.email":
+
+			resp["message"] = "Email already exist"
+
+		case "UNIQUE constraint failed: users.nickname":
+			resp["message"] = "Nickname already exist"
+
+		}
+	} else {
+		resp["message"] = "New user was created"
 	}
 
-	newUser := entities.User{
-		Nickname:     r.FormValue("newNickname"),
-		Age:          age,
-		Gender:       r.FormValue("gender"),
-		FirstName:    r.FormValue("firstName"),
-		LastName:     r.FormValue("lastName"),
-		Email:        r.FormValue("newEmail"),
-		PasswordHash: []byte(r.FormValue("newPassword")),
-	}
-
-	err = handler.authService.Register(newUser)
+	jsonResp, err := json.Marshal(resp)
 	if err != nil {
-		//send response with server error code 5**
+		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
 	}
-	fmt.Println("register handler ended")
+	w.Write(jsonResp)
 	return
 }
 
@@ -117,3 +139,36 @@ func (handler *HTTPHandler) TestMiddleware(next http.HandlerFunc) http.HandlerFu
 		next(w, r)
 	}
 }
+
+// type Response struct {
+// 	UserId int `json:"message"`
+// }
+// response := Response{UserId: 3}
+// w.Header().Set("Content-Type", "application/json")
+// json.NewEncoder(w).Encode(response)
+
+//two same objects, but different tasks - think about it
+// type User struct {
+// 	Email     string `json:"email"`
+// 	Nickname  string `json:"nickname"`
+// 	Age       string `json:"age"`
+// 	Gender    string `json:"gender"`
+// 	FirstName string `json:"first_name"`
+// 	LastName  string `json:"last_name"`
+// 	Password  string `json:"pass"`
+// }
+
+// age, err := strconv.Atoi(user.Age)
+// if err != nil {
+// 	//add error to json errors
+// }
+
+// newUser := entities.User{
+// 	Email:        user.Email,
+// 	Nickname:     user.Nickname,
+// 	Age:          user.Age,
+// 	Gender:       user.Gender,
+// 	FirstName:    user.FirstName,
+// 	LastName:     user.LastName,
+// 	PasswordHash: []byte(user.Password),
+// }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
-	"real-time-forum/pkg/utils"
+	//	"real-time-forum/pkg/utils"
 )
 
 type AuthService struct {
@@ -27,31 +27,14 @@ func (service AuthService) Login(credentials entities.UserCredentials) (string, 
 	return "session token?", nil
 }
 
-// check new user
-
 func (service AuthService) Register(user entities.User) error {
-	fmt.Println("auth service register job")
-
-	//verify user data
-	type Errors struct {
-		Error string `json:"errorMessage"`
-	}
-
-	//var checkForms [] Errors
-	checkForms := make(map[string]string)
-
-	//checkForms = helpers.FormsVerification(user)
-	checkForms = utils.ValidateFormData(user)
-
-	if len(checkForms) == 0 {
-
-	}
 
 	//try create new user
 	err := service.repo.CreateUser(user)
 	if err != nil {
-
+		return err
 	}
+
 	fmt.Println("auth service register ends job")
 	return nil
 }

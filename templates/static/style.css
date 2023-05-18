@@ -6,19 +6,41 @@
 }
 
 body {
+    position: relative;
     display: flex;
     justify-content: center;
-    align-items: center;
     min-height: 100vh;
-    background: url(https://cdn.theculturetrip.com/wp-content/uploads/2015/12/supertree-1158602_1920-1024x683.jpg) no-repeat;
+    background: url(https://www.usnews.com/object/image/0000017e-f8c3-da45-a97f-fcd3abb60000/1-intro-stock.jpg) no-repeat;
     background-size: cover;
 }
 
-.wrapper {
+.aler {
     position: relative;
+    width: 100%;
+    height: 80px;
+    background: rgb(86, 96, 161);
+    box-shadow: 0 0 30px rgb(74, 70, 70);
+    vertical-align: middle;
+    align-items: center;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color:  rgb(64, 217, 125);
+    display: none;
+}
+
+.aler.active {
+    display: block;
+}
+
+
+
+.wrapper {
+    position: absolute;
+    margin-top: 15%;
     width: 400px;
     height: 440px;
-    background: rgba(135, 116, 116, 0.7);
+    background: rgba(128, 116, 135, 0.7);
     border: 2px solid rgb(142, 131, 131);
     border-radius: 20px;
     /*backdrop-filter: blur(20px);*/
@@ -31,7 +53,8 @@ body {
 }
 
 .wrapper.active {
-height: 800px;
+    margin-top: 7%;
+    height: 800px;
 }
 
 .wrapper .form-box {
@@ -64,7 +87,7 @@ height: 800px;
 
 .form-box h3 {
     font-family: 2em;
-    color: rgb(131, 7, 98);
+    color: rgb(64, 217, 125);
     text-align: center;
 }
 
@@ -74,6 +97,17 @@ height: 800px;
     height: 50px;
     border-bottom: 2px solid black;
     margin: 30px 0;
+}
+
+.input-box.error input {
+    border-bottom: 2px solid rgb(64, 217, 125);
+}
+
+.input-box .error {
+    margin-top: 3px;
+    color: rgb(64, 217, 125);
+    font-size: 9px;
+    height: 13px;
 }
 
 .input-box label {
@@ -100,7 +134,7 @@ height: 800px;
     border: none;
     outline: none;
     font-size: 1em;
-    color: rgb(184, 20, 69);
+    color: rgb(57, 59, 64);
     font-weight: 300;
     padding: 0 35px 0 5px;
 }
@@ -123,14 +157,14 @@ height: 800px;
 }
 
 .remember lable input {
-    accent-color: rgb(131, 7, 98);
+    accent-color: rgb(144, 181, 21);
     margin-right: 5px;
 }
 
 .btn {
     width: 100%;
     height: 45px;
-    background: rgb(131, 7, 98);
+    background: rgb(86, 96, 161);
     border: none;
     outline: none;
     border-radius: 6px;
@@ -143,18 +177,65 @@ height: 800px;
 
 .login-regist {
     font-size: .9em;
-    color: rgb(131, 7, 98);
+    color: rgb(64, 217, 125);
     text-align: center;
     font-weight: 500;
     margin: 25px 0 10px;
 }
 
 .login-regist p a {
-    color: rgb(131, 7, 98);
+    color: rgb(64, 217, 125);
     text-decoration: none;
     font-weight: 600;
 }
 
 .login-regist p a:hover {
     text-decoration: underline;
+}
+
+
+/*Gender form */
+
+.select {
+    position: relative;
+
+}
+
+.select.is-active .select_body {
+    display: block;
+}
+
+.select_header {
+    display: flex;
+    cursor: pointer;
+}
+
+.select_current {
+    font-size: 18px;
+    line-height: 24px;
+    padding: 8px;
+}
+
+
+.select_body {
+    display: none;
+    width: 50px;
+    position: absolute;
+    left: 25%;
+    top: -40%;
+    position: absolute;
+    background: rgba(154, 110, 147, 0.7);
+    border-radius: 5px;
+}
+
+.select_item {
+    cursor: pointer;
+    font-size: large;
+    padding: 8px;
+    border-bottom: 1px solid rgb(110, 112, 113);
+}
+
+.select_item:hover {
+    background-color: rgb(64, 217, 125);
+    border-radius: 5px;
 }

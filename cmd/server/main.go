@@ -17,6 +17,7 @@ import (
 	"os"
 	handlers "real-time-forum/internal/adapters/primary/http"
 	ws "real-time-forum/internal/adapters/primary/ws"
+	"real-time-forum/internal/adapters/secondary/database"
 	"real-time-forum/internal/application/services"
 	"text/template"
 )
@@ -39,36 +40,33 @@ func main() {
 
 	// templateCache = cacheTemplate("../../templates/")
 
-	// store, err := database.NewDatabase("../../db/database.db")
-	// if err != nil {
-	// 	log.Fatalln("Error with database: ", err)
-	// 	os.Exit(1)
-	// }
+	store, err := database.NewDatabase("../../db/database.db")
+	if err != nil {
+		log.Fatalln("Error with database: ", err)
+		os.Exit(1)
+	}
 
-	// messengerService = services.NewMessengerService(store)
-	// authService = services.NewAuthService(store)
-	// userManager = services.NewUserManagerService(store)
-	// handler := handlers.NewHTTPHandler(*authService, *messengerService, *userManager)
+	messengerService = services.NewMessengerService(store)
+	authService = services.NewAuthService(store)
+	userManager = services.NewUserManagerService(store)
+	handler := handlers.NewHTTPHandler(*authService, *messengerService, *userManager)
 
 	//http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
-	http.HandleFunc("/", indexHandler)
-	// http.HandleFunc("/login", handler.LoginHandler)
-	// http.HandleFunc("/register", handler.RegisterHandler)
-	// http.HandleFunc("/ws", handler.ServeWS)
 
 	manager := ws.NewManager(ctx)
 
-	// Serve the ./frontend directory at Route /
-	//http.Handle("/", http.FileServer(http.Dir("./frontend")))
-	http.HandleFunc("/login", manager.LoginHandler)
-	http.HandleFunc("/ws", manager.ServeWS)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/api/login", manager.LoginHandler)
+	http.HandleFunc("/api/register", handler.RegisterHandler)
+	http.HandleFunc("/api/ws", manager.ServeWS)
 
 	http.HandleFunc("/debug", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, len(manager.Clients))
 	})
 
-	log.Println("Starting server on: http://localhost:8080")
-	err := http.ListenAndServe(":8080", nil)
+	log.Println("Starting server on: http://localhost:8080/login")
+	err = http.ListenAndServe(":8080", nil)
 	if errors.Is(err, http.ErrServerClosed) {
 		log.Fatalln("Server stopped: ", err)
 		os.Exit(1)
@@ -78,8 +76,7 @@ func main() {
 	}
 }
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	//html, err := ioutil.ReadFile("../../templates/index.html")
-	html, err := ioutil.ReadFile("../../templates/test.html")
+	html, err := ioutil.ReadFile("../../templates/spa_index.html")
 	if err != nil {
 		http.Error(w, "Error reading file", http.StatusInternalServerError)
 		return

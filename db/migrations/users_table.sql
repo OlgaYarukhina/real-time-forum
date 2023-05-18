@@ -1,6 +1,6 @@
 CREATE TABLE users (
   user_id       INTEGER     PRIMARY KEY,
-  nickname      TEXT        NOT NULL,
+  nickname      TEXT        NOT NULL UNIQUE,
   age           INTEGER     NOT NULL CHECK (age > 0),
   gender        TEXT        NOT NULL CHECK (gender IN ('M', 'F', 'O')),
   first_name    TEXT        NOT NULL,

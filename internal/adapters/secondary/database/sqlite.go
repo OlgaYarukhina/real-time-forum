@@ -33,13 +33,13 @@ func (d *Database) GetUserCredentials(login string) (entities.UserCredentials, e
 }
 
 func (d *Database) CreateUser(user entities.User) error {
-	fmt.Println("database creating new user ")
+	fmt.Println("database try create new user ")
 
-	stmt := `INSERT INTO users (nickname, age, gender, first_name, last_name, email, password_hash, created_at)
+	stmt := `INSERT INTO users (email, nickname, age, gender, first_name, last_name, password_hash, created_at)
     VALUES(?, ?, ?, ?, ?, ?, ?, current_date)`
 
-	_, err := d.db.Exec(stmt, user.Nickname, user.Age, user.Gender,
-		user.FirstName, user.LastName, user.Email, user.PasswordHash)
+	_, err := d.db.Exec(stmt, user.Email, user.Nickname, user.Age, user.Gender,
+		user.FirstName, user.LastName, user.PasswordHash)
 	if err != nil {
 		fmt.Println(err)
 		return err

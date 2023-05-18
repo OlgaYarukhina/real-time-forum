@@ -5,18 +5,13 @@ const lastName = document.getElementById('lastName');
 const newEmail = document.getElementById('newEmail');
 const newPassword = document.getElementById('newPassword');
 
-let  formData = {};
-
-form.addEventListener('input', function(event){
-    formData[event.target.name] = event.target.value;
-})
 
 form.addEventListener('submit', e => {
   e.preventDefault();
 
   if (validateInputs()) {
-console.log('Well done')
-register();
+    console.log('Well done')
+    register();
   }
 })
 
@@ -98,6 +93,16 @@ const validateInputs = () => {
 
 const register = async () => {
 
+  let formData = {
+    nickname: userNickname.value,
+    age: document.getElementById('age').value,
+    gender: document.getElementById('gender').value,
+    first_name: firstName.value,
+    last_name: lastName.value,
+    email: newEmail.value,
+    pass: newPassword.value,
+  }
+
   try {
     console.log(JSON.stringify(formData))
     const response = await fetch('http://localhost:8080/register', {
@@ -108,30 +113,25 @@ const register = async () => {
       },
       body: JSON.stringify(formData)
     });
-    const data = await response.json();
-    console.log(data);
+    const returnedError = await response.json();
+    console.log(returnedError);
+
+    if (returnedError.message == "Email already exist") {
+      wrapper.classList.remove('active');
+      errorFild.classList.add('active');
+      
+      let mess = `<p style = "position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%);">Email <b>${formData.email}</b> already exist. Please, try to login</p>`;
+      errorFild.innerHTML = mess;
+    }
+
+    if (returnedError.message == "Nickname already exist") {
+      setError(userNickname, "Nickname " + formData.nickname + " already exist");
+      check = false;
+    }
+
   } catch (err) {
     console.error(err);
   }
 }
 
-
- //await fetch('http://localhost:8080/register', {
- //   method: 'POST',
-//    headers: {
-  //    'Accept': 'application/json',
-//      'Content-Type': 'application/json'
- //   },
- //   body: JSON.stringify(formData)
-//  }).then(response => response.json())
-
-  // const formData = {
-  //   nickname:   document.getElementById('newNickname').value,
-  //   age:           document.getElementById('age').value,
-  //   gender:        document.getElementById('gender').value,
-  //   first_name:      document.getElementById('firstName').value,
-  //   last_name:      document.getElementById('lastName').value,
-  //   email:      document.getElementById('newEmail').value,
-  //   pass:   document.getElementById('newPassword').value,
-  // }
 

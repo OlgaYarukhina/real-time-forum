@@ -35,11 +35,11 @@ body {
 
 
 
-.wrapper {
+.wrapper_login {
     position: absolute;
     margin-top: 15%;
     width: 400px;
-    height: 440px;
+    height: 400px;
     background: rgba(128, 116, 135, 0.7);
     border: 2px solid rgb(142, 131, 131);
     border-radius: 20px;
@@ -49,39 +49,28 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    transition: height .2s ease;
+    transform: translate(-50%, 0)
 }
 
-.wrapper.active {
+.wrapper_register{
+    position: absolute;
     margin-top: 7%;
-    height: 800px;
+    width: 400px;
+    height: 740px;
+    background: rgba(128, 116, 135, 0.7);
+    border: 2px solid rgb(142, 131, 131);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgb(74, 70, 70);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transform: translate(-50%, 0)
 }
 
 .wrapper .form-box {
     width: 100%;
     padding: 40px;
-}
-
-.wrapper .form-box.login {
-    transition: transform .18s ease;
-    transform: translateX(0);
-}
-
-.wrapper.active .form-box.login {
-    transition: none;
-    transform: translateX(-400px);
-}
-
-.wrapper .form-box.registration {
-    position: absolute;
-    transition: none;
-    transform: translateX(400px);
-}
-
-
-.wrapper.active .form-box.registration {
-    transition: transform .18s ease;
-    transform: translateX(0);
 }
 
 
@@ -96,7 +85,7 @@ body {
     width: 100%;
     height: 50px;
     border-bottom: 2px solid black;
-    margin: 30px 0;
+    margin: 20px 0;
 }
 
 .input-box.error input {
@@ -198,7 +187,6 @@ body {
 
 .select {
     position: relative;
-
 }
 
 .select.is-active .select_body {

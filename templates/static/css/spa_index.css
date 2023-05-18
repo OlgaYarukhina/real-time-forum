@@ -1,9 +1,3 @@
-body {
-    --nav-width: 200px;
-    margin: 0 0 0 var(--nav-width);
-    font-family: 'Quicksand', sans-serif;
-    font-size: 18px;
-}
 
 .nav {
     position: fixed;
@@ -12,6 +6,7 @@ body {
     width: var(--nav-width);
     height: 100vh;
     background: #222222;
+    display: none;
 }
 
 .nav__link {
@@ -26,12 +21,3 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
-#app {
-    margin: 2em;
-    line-height: 1.5;
-    font-weight: 500;
-}
-
-a {
-    color: #009579;
-}

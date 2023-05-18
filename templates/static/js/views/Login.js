@@ -7,9 +7,8 @@ export default class extends AbstractView {
     }
 
     async getHtml() {
-        console.log("new http get chats request (expect list of users, sorted by last msg sended, who is online, others alphabet)")
         return `
-        <div class="wrapper">
+        <div class="wrapper_login">
             <div class="form-box login">
                 <h3>Login</h3>
                     <div class="input-box">
@@ -26,7 +25,7 @@ export default class extends AbstractView {
                     <button type="submit" class="btn" onclick="login()">Login</button>
 
                     <div class="login-regist">
-                        <p>Don't have an account? <a href="/register" class="regist-link nav__link" data-link>Create account</a>
+                        <p>Don't have an account? <a href="/register" class="regist-link" data-link>Create account</a>
                     </div>
             </div>
         </div>    

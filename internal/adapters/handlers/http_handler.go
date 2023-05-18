@@ -71,25 +71,22 @@ func (handler *HTTPHandler) RegisterHandler(w http.ResponseWriter, r *http.Reque
 		case "UNIQUE constraint failed: users.email":
 
 			resp["message"] = "Email already exist"
-			jsonResp, err := json.Marshal(resp)
+			
+
+		case "UNIQUE constraint failed: users.nickname":
+			resp["message"] = "Nickname already exist"
+			
+		}
+	} else {
+		resp["message"] = "New user was created"
+	}
+
+	jsonResp, err := json.Marshal(resp)
 			if err != nil {
 				log.Fatalf("Error happened in JSON marshal. Err: %s", err)
 			}
 			w.Write(jsonResp)
 			return
-
-		case "UNIQUE constraint failed: users.nickname":
-			resp["message"] = "Nickname already exist"
-			jsonResp, err := json.Marshal(resp)
-			if err != nil {
-				log.Fatalf("Error happened in JSON marshal. Err: %s", err)
-			}
-			w.Write(jsonResp)
-			return 
-
-		}
-	}
-
 }
 
 func (handler *HTTPHandler) TestHandler(w http.ResponseWriter, r *http.Request) {

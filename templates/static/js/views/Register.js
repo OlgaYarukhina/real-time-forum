@@ -9,6 +9,7 @@ export default class extends AbstractView {
     async getHtml() {
         console.log("new http get chats request (expect list of users, sorted by last msg sended, who is online, others alphabet)")
         return `
+        <div class="aler"></div>
             <div class="wrapper_register">
                 <div class="form-box registration">
                     <h3>Create new account</h3>
@@ -66,7 +67,7 @@ export default class extends AbstractView {
                         <button type="submit" class="btn">Create account</button>
 
                         <div class="login-regist">
-                            <p>Already have an account? <a class="login-link">login</a></p>
+                            <p>Already have an account? <a href="/login">login</a></p>
                         </div>
                     </form>
                 </div>

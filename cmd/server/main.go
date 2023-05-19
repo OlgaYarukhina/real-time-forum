@@ -58,7 +58,7 @@ func main() {
 	}
 }
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	html, err := ioutil.ReadFile("../../templates/spa_index.html")
+	html, err := ioutil.ReadFile("../../templates/index.html")
 	if err != nil {
 		http.Error(w, "Error reading file", http.StatusInternalServerError)
 		return

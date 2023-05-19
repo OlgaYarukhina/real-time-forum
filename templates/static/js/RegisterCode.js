@@ -4,6 +4,7 @@ const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 const newEmail = document.getElementById('newEmail');
 const newPassword = document.getElementById('newPassword');
+const errorFild = document.querySelector('.aler');
 
 
 form.addEventListener('submit', e => {
@@ -118,10 +119,8 @@ const register = async () => {
     console.log(returnedError);
 
     if (returnedError.message == "Email already exist") {
-      wrapper.classList.remove('active');
       errorFild.classList.add('active');
-      
-      let mess = `<p style = "position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%);">Email <b>${formData.email}</b> already exist. Please, try to login</p>`;
+      let mess = `<p style = "position: absolute;">Email <b>${formData.email}</b> already exist. Please, try to login</p>`;
       errorFild.innerHTML = mess;
     }
 

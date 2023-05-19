@@ -7,6 +7,7 @@ import ChatView from "./views/ChatView.js"
 import Register from "./views/Register.js";
 import Login from "./views/Login.js";
 import NewPost from "./views/NewPost.js";
+//import "./RegisterCode.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -60,7 +61,14 @@ const router = async () => {
     const view = new match.route.view(getParams(match));
 
     document.querySelector("#app").innerHTML = await view.getHtml();
-};
+    var scripts = await view.getScripts(document);
+    scripts.forEach(function(script) {
+        document.querySelector("#app").appendChild(script);
+    });
+ 
+    
+
+    };
 
 window.addEventListener("popstate", router);
 

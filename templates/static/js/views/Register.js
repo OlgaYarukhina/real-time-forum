@@ -13,7 +13,7 @@ export default class extends AbstractView {
                 <div class="form-box registration">
                     <h3>Create new account</h3>
 
-                    <form action="/login" id ="form">
+                    <form id ="form">
                         <div class="input-box">
                             <span class="icon"><ion-icon name="person-add-outline"></ion-icon></span>
                             <input type="text" id="newNickname" name="newNickname" required>
@@ -71,6 +71,38 @@ export default class extends AbstractView {
                     </form>
                 </div>
             </div>
+
+            
         `;
     }
+
+    //or scripts, in that case - just make for loop in spa_index.js to connect an array of scripts :)
+    async getScripts(document) {
+        var scripts = [];
+      
+        var script1 = document.createElement('script');
+        script1.src = '/static/js/RegisterCode.js';
+        scripts.push(script1);
+      
+        var script2 = document.createElement('script');
+        script2.src = '/static/js/RegisterStyle.js';
+        scripts.push(script2);
+      
+        var script3 = document.createElement('script');
+        script3.type = 'module';
+        script3.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js';
+        scripts.push(script3);
+      
+        var script4 = document.createElement('script');
+        script4.setAttribute('nomodule', '');
+        script4.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js';
+        scripts.push(script4);
+      
+        return scripts;
+    }
+
+    // <script type="module" src="/static/js/RegisterCode.js"></script>
+    // <script type="module" src="/static/js/RegisterStyle.js"></script> 
+    // <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    // <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 }

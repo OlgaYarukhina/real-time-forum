@@ -83,6 +83,7 @@ export default class extends AbstractView {
       
         var script1 = document.createElement('script');
         script1.src = '/static/js/RegisterCode.js';
+        script1.type = 'module';
         scripts.push(script1);
       
         var script2 = document.createElement('script');

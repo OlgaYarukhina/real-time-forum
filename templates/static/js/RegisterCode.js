@@ -1,3 +1,5 @@
+import { navigateTo } from "./index.js";
+
 const form = document.getElementById('form');
 const userNickname = document.getElementById('newNickname');
 const firstName = document.getElementById('firstName');
@@ -117,6 +119,11 @@ const register = async () => {
     });
     const returnedError = await response.json();
     console.log(returnedError);
+
+    if (returnedError.message == "New user was created") {
+      navigateTo('http://localhost:8080/login');
+
+    }
 
     if (returnedError.message == "Email already exist") {
       errorFild.classList.add('active');

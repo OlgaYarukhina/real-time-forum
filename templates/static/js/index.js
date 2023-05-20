@@ -68,7 +68,7 @@ const router = async () => {
  
     
 
-    };
+};
 
 window.addEventListener("popstate", router);
 
@@ -82,6 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     router();
 });
+
+export { navigateTo, router };
 
 //connect to ws right here?
 //to be able to receive new msg notifications independently of a page

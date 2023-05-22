@@ -50,7 +50,7 @@ func main() {
 	}
 
 	//messengerService = services.NewMessengerService(store)
-	authService = services.NewAuthService(store, utils.NewPasswordHasher())
+	authService = services.NewAuthService(store, utils.NewPasswordHasher(), utils.NewUuidSessioner())
 	//userManager = services.NewUserManagerService(store)
 	handler := httpadpt.New(*authService)
 

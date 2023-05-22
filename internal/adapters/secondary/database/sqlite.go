@@ -58,7 +58,7 @@ func (d *Database) GetHashedPassword(email string) (string, error) {
 
 //sessions
 
-func (d *Database) SaveSession() error {
+func (d *Database) SaveSession(token string) error {
 	return nil
 }
 

@@ -9,7 +9,7 @@ type Repository interface {
 	GetHashedPassword(login string) (string, error)
 
 	//session repo
-	SaveSession() error
+	SaveSession(token string) error
 	RemoveSession() error
 	GetSession() error
 

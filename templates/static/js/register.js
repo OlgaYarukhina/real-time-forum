@@ -105,7 +105,7 @@ const register = async () => {
 
   try {
     console.log(JSON.stringify(formData))
-    const response = await fetch('http://localhost:8080/register', {
+    const response = await fetch('http://localhost:8080/api/register', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

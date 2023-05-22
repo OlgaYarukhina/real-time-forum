@@ -1,4 +1,4 @@
-package ws
+package wsadpt
 
 import (
 	"context"
@@ -58,7 +58,7 @@ type Manager struct {
 }
 
 // NewManager is used to initalize all the values inside the manager
-func NewManager(ctx context.Context) *Manager {
+func New(ctx context.Context) *Manager {
 	m := &Manager{
 		Clients:  make(ClientList),
 		handlers: make(map[string]EventHandler),

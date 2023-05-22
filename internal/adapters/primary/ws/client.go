@@ -1,4 +1,4 @@
-package ws
+package wsadpt
 
 import (
 	"encoding/json"

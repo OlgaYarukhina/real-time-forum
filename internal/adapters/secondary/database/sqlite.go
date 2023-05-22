@@ -27,12 +27,7 @@ func NewDatabase(dsn string) (*Database, error) {
 	}, nil
 }
 
-func (d *Database) GetUserCredentials(login string) (entities.UserCredentials, error) {
-	fmt.Println("database getting user credentials")
-	return entities.UserCredentials{}, nil
-}
-
-func (d *Database) CreateUser(user entities.User) error {
+func (d *Database) SaveUser(user entities.User) error {
 	fmt.Println("database try create new user ")
 
 	stmt := `INSERT INTO users (email, nickname, age, gender, first_name, last_name, password_hash, created_at)
@@ -48,12 +43,63 @@ func (d *Database) CreateUser(user entities.User) error {
 	return nil
 }
 
-func (d *Database) SaveMessage(message entities.Message) error {
-	fmt.Println("database saved msg")
-	//https://go.dev/tour/concurrency/9
-	//req := d.db.Create(&message)
-	// if req.RowsAffected == 0 {
-	// 	return errors.New(fmt.Sprintf("messages not saved: %v", req.Error))
-	// }
+func (d *Database) GetUserCredentials(login string) (entities.UserCredentials, error) {
+	fmt.Println("database getting user credentials")
+	return entities.UserCredentials{}, nil
+}
+
+//sessions
+
+func (d *Database) SaveSession() error {
 	return nil
 }
+
+func (d *Database) RemoveSession() error {
+	return nil
+}
+
+func (d *Database) GetSession() error {
+	return nil
+}
+
+// chat
+
+func (d *Database) SaveMsg() error {
+	return nil
+}
+
+func (d *Database) GetPrevMsgs() error {
+	return nil
+}
+
+// posts
+
+func (d *Database) GetPosts() error {
+	return nil
+}
+
+func (d *Database) GetPost() error {
+	return nil
+}
+
+func (d *Database) SavePost() error {
+	return nil
+}
+
+func (d *Database) GetComments() error {
+	return nil
+}
+
+func (d *Database) SaveComment() error {
+	return nil
+}
+
+// func (d *Database) SaveMessage(message entities.Message) error {
+// 	fmt.Println("database saved msg")
+// 	//https://go.dev/tour/concurrency/9
+// 	//req := d.db.Create(&message)
+// 	// if req.RowsAffected == 0 {
+// 	// 	return errors.New(fmt.Sprintf("messages not saved: %v", req.Error))
+// 	// }
+// 	return nil
+// }

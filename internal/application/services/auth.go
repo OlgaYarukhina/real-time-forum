@@ -20,6 +20,23 @@ func NewAuthService(repo interfaces.Repository, hasher interfaces.Hasher) *AuthS
 	}
 }
 
+func (service AuthService) Register(user entities.User) error {
+	hash, err := service.hasher.HashPassword(user.PasswordHash)
+	if err != nil {
+		return err
+	}
+
+	user.PasswordHash = hash
+
+	err = service.repo.SaveUser(user)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("auth service register ends job")
+	return nil
+}
+
 func (service AuthService) Login(credentials entities.UserCredentials) (string, error) {
 	fmt.Println("auth service login job")
 	savedCredentials, _ := service.repo.GetUserCredentials(credentials.Email /*or nickname*/)
@@ -29,22 +46,10 @@ func (service AuthService) Login(credentials entities.UserCredentials) (string, 
 	return "session token?", nil
 }
 
-func (service AuthService) Register(user entities.User) error {
-	hash, err := service.hasher.HashPassword(user.PasswordHash)
-	if err != nil {
-		return err
-	}
-	user.PasswordHash = hash
-	//try create new user
-	err = service.repo.CreateUser(user)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("auth service register ends job")
+func (service AuthService) Logout(token string) error {
 	return nil
 }
 
-func (service AuthService) CheckSession() {
-
+func (service AuthService) IsValidSession(token string) bool {
+	return true
 }

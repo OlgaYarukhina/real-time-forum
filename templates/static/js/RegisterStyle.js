@@ -1,16 +1,5 @@
 const wrapper = document.querySelector('.wrapper');
-const loginLink = document.querySelector('.login-link');
-const registrLink = document.querySelector('.regist-link');
-const errorFild = document.querySelector('.aler');
 
-registrLink.addEventListener('click', () => {
-  wrapper.classList.add('active');
-  errorFild.classList.remove('active');
-});
-
-loginLink.addEventListener('click', () => {
-  wrapper.classList.remove('active');
-});
 
 let select = function () {
     let selectHeader = document.querySelectorAll('.select_header');
@@ -37,3 +26,16 @@ let select = function () {
 };
 
 select();
+
+
+// const loginLink = document.querySelector('.login-link');
+// const registrLink = document.querySelector('.regist-link');
+// registrLink.addEventListener('click', () => {
+//     wrapper.classList.add('active');
+//     errorFild.classList.remove('active');
+//   });
+  
+//   loginLink.addEventListener('click', () => {
+//     wrapper.classList.remove('active');
+//   });
+  

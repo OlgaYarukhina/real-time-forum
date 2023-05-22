@@ -6,7 +6,7 @@ import "real-time-forum/internal/domain/entities"
 type Repository interface {
 	//user repo
 	SaveUser(user entities.User) error
-	GetUserCredentials(login string) (entities.UserCredentials, error)
+	GetHashedPassword(login string) (string, error)
 
 	//session repo
 	SaveSession() error

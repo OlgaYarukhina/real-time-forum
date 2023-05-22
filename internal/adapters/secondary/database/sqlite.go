@@ -43,9 +43,17 @@ func (d *Database) SaveUser(user entities.User) error {
 	return nil
 }
 
-func (d *Database) GetUserCredentials(login string) (entities.UserCredentials, error) {
-	fmt.Println("database getting user credentials")
-	return entities.UserCredentials{}, nil
+func (d *Database) GetHashedPassword(email string) (string, error) {
+	fmt.Println("SQL work")
+	var password string
+
+	err := d.db.QueryRow("SELECT password_hash FROM users WHERE email = ?", email).Scan(&password)
+	if err == sql.ErrNoRows {
+		return password, err
+	}
+
+	fmt.Println("SQL work end")
+	return password, nil
 }
 
 //sessions

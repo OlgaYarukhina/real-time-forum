@@ -1,9 +1,12 @@
+import { navigateTo } from "./index.js";
+
 const form = document.getElementById('form');
 const userNickname = document.getElementById('newNickname');
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 const newEmail = document.getElementById('newEmail');
 const newPassword = document.getElementById('newPassword');
+const errorFild = document.querySelector('.aler');
 
 
 form.addEventListener('submit', e => {
@@ -116,12 +119,19 @@ const register = async () => {
     const returnedError = await response.json();
     console.log(returnedError);
 
+    if (returnedError.message == "New user was created") {
+      navigateTo('http://localhost:8080/login');
+      // errorFild.classList.add('active');
+      // let mess = `<p style = "position: absolute;">Hey <b>${formData.nickname}</b>! Wellcome to our forum. Please, login now</p>`;
+      // errorFild.innerHTML = mess;
+
+    }
+
     if (returnedError.message == "Email already exist") {
-      wrapper.classList.remove('active');
-      errorFild.classList.add('active');
-      
-      let mess = `<p style = "position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%);">Email <b>${formData.email}</b> already exist. Please, try to login</p>`;
-      errorFild.innerHTML = mess;
+      navigateTo('http://localhost:8080/login');
+      // errorFild.classList.add('active');
+      // let mess = `<p style = "position: absolute;">Email <b>${formData.email}</b> already exist. Please, try to login</p>`;
+      // errorFild.innerHTML = mess;
     }
 
     if (returnedError.message == "Nickname already exist") {

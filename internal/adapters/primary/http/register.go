@@ -11,10 +11,6 @@ import (
 
 func (handler *HttpAdapter) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("register handler worked")
-	// hashedPass, err := utils.HashPassword(r.FormValue("newPassword"))
-	// if err != nil {
-	// 	//add error to json errors
-	// }
 
 	response, _ := ioutil.ReadAll(r.Body)
 
@@ -38,7 +34,6 @@ func (handler *HttpAdapter) RegisterHandler(w http.ResponseWriter, r *http.Reque
 
 		case "UNIQUE constraint failed: users.nickname":
 			resp["message"] = "Nickname already exist"
-
 		}
 	} else {
 		resp["message"] = "New user was created"

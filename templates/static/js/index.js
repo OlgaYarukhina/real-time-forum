@@ -7,6 +7,7 @@ import ChatView from "./views/ChatView.js"
 import Register from "./views/Register.js";
 import Login from "./views/Login.js";
 import NewPost from "./views/NewPost.js";
+//import "./RegisterCode.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -59,7 +60,14 @@ const router = async () => {
 
     const view = new match.route.view(getParams(match));
 
+    var scripts = await view.getScripts(document);
+    scripts.forEach(function(script) {
+        document.querySelector("#app").appendChild(script);
+    });
     document.querySelector("#app").innerHTML = await view.getHtml();
+ 
+    
+
 };
 
 window.addEventListener("popstate", router);
@@ -74,6 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     router();
 });
+
+export { navigateTo, router };
 
 //connect to ws right here?
 //to be able to receive new msg notifications independently of a page

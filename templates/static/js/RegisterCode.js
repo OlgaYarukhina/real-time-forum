@@ -10,7 +10,6 @@ const errorFild = document.querySelector('.aler');
 
 
 form.addEventListener('submit', e => {
-  console.log("yo")
   e.preventDefault();
 
   if (validateInputs()) {
@@ -122,13 +121,17 @@ const register = async () => {
 
     if (returnedError.message == "New user was created") {
       navigateTo('http://localhost:8080/login');
+      // errorFild.classList.add('active');
+      // let mess = `<p style = "position: absolute;">Hey <b>${formData.nickname}</b>! Wellcome to our forum. Please, login now</p>`;
+      // errorFild.innerHTML = mess;
 
     }
 
     if (returnedError.message == "Email already exist") {
-      errorFild.classList.add('active');
-      let mess = `<p style = "position: absolute;">Email <b>${formData.email}</b> already exist. Please, try to login</p>`;
-      errorFild.innerHTML = mess;
+      navigateTo('http://localhost:8080/login');
+      // errorFild.classList.add('active');
+      // let mess = `<p style = "position: absolute;">Email <b>${formData.email}</b> already exist. Please, try to login</p>`;
+      // errorFild.innerHTML = mess;
     }
 
     if (returnedError.message == "Nickname already exist") {

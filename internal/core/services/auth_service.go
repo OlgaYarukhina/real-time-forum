@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"real-time-forum/internal/core/entities"
 	"real-time-forum/internal/interfaces"
+
+	"golang.org/x/crypto/bcrypt"
 	//	"real-time-forum/pkg/utils"
 )
 
@@ -18,19 +20,43 @@ func NewAuthService(repo interfaces.Repository) *AuthService {
 	}
 }
 
-func (service AuthService) Login(credentials entities.UserCredentials) (string, error) {
+func (service AuthService) Login(currentUser entities.User) error {
 	fmt.Println("auth service login job")
-	savedCredentials, _ := service.repo.GetUserCredentials(credentials.Email /*or nickname*/)
-	//check for error and equality
-	savedCredentials.Email = ""
+	//fmt.Println(currentUser.PasswordHash)
+
+	password, err := service.repo.GetUserCredentials(currentUser.Email)  // check email and get password
+	fmt.Println(password)
+
+	if err != nil {
+		fmt.Println(err)
+		return err       // wrong email
+	} else {
+		switch CheckPasswordHash(currentUser.PasswordHash, password) {
+		case true:
+			// create token
+			fmt.Println("All good")
+			return nil
+
+		case false: 
+		fmt.Println("Something bad")
+		return err  // wrong password
+		}
+	}
+
 	fmt.Println("auth service login ends job")
-	return "session token?", nil
+	return nil
+}
+
+
+// put it where you want
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 
 func (service AuthService) Register(user entities.User) error {
 
-	//try create new user
 	err := service.repo.CreateUser(user)
 	if err != nil {
 		return err

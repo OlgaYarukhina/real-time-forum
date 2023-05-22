@@ -44,7 +44,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
 
 	http.HandleFunc("/", indexHandler)
-	//http.HandleFunc("/login", handler.LoginHandler)
+	http.HandleFunc("/api/login", handler.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
 
 	log.Println("Starting server on: http://localhost:8080/login")

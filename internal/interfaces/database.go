@@ -3,7 +3,7 @@ package interfaces
 import "real-time-forum/internal/core/entities"
 
 type Repository interface {
-	GetUserCredentials(login string) (entities.UserCredentials, error)
+	GetUserCredentials(email string) (string, error)
 	CreateUser(user entities.User) error
 	//
 	SaveMessage(message entities.Message) error

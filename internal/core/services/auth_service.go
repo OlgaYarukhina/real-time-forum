@@ -10,13 +10,15 @@ import (
 )
 
 type AuthService struct {
-	repo interfaces.Repository
+	repo   interfaces.Repository
+	hasher interfaces.Hasher
 }
 
-func NewAuthService(repo interfaces.Repository) *AuthService {
+func NewAuthService(repo interfaces.Repository, hasher interfaces.Hasher) *AuthService {
 	fmt.Println("AuthService created and ready to use")
 	return &AuthService{
-		repo: repo,
+		repo:   repo,
+		hasher: hasher,
 	}
 }
 
@@ -24,12 +26,12 @@ func (service AuthService) Login(currentUser entities.User) error {
 	fmt.Println("auth service login job")
 	//fmt.Println(currentUser.PasswordHash)
 
-	password, err := service.repo.GetUserCredentials(currentUser.Email)  // check email and get password
+	password, err := service.repo.GetUserCredentials(currentUser.Email) // check email and get password
 	fmt.Println(password)
 
 	if err != nil {
 		fmt.Println(err)
-		return err       // wrong email
+		return err // wrong email
 	} else {
 		switch CheckPasswordHash(currentUser.PasswordHash, password) {
 		case true:
@@ -37,9 +39,9 @@ func (service AuthService) Login(currentUser entities.User) error {
 			fmt.Println("All good")
 			return nil
 
-		case false: 
-		fmt.Println("Something bad")
-		return err  // wrong password
+		case false:
+			fmt.Println("Something bad")
+			return err // wrong password
 		}
 	}
 
@@ -47,17 +49,20 @@ func (service AuthService) Login(currentUser entities.User) error {
 	return nil
 }
 
-
 // put it where you want
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
 
-
 func (service AuthService) Register(user entities.User) error {
+	hash, err := service.hasher.HashPassword(user.PasswordHash)
+	if err != nil {
+		return err
+	}
+	user.PasswordHash = hash
 
-	err := service.repo.CreateUser(user)
+	err = service.repo.CreateUser(user)
 	if err != nil {
 		return err
 	}

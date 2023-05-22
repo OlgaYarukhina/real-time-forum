@@ -31,10 +31,10 @@ func (d *Database) GetUserCredentials(email string) (string, error) {
 	fmt.Println("SQL work")
 	var password string
 
-	err := d.db.QueryRow("SELECT password_hash FROM users WHERE email = ?", email).Scan(&password); 
-		if err == sql.ErrNoRows {
-			return password, err
-		}
+	err := d.db.QueryRow("SELECT password_hash FROM users WHERE email = ?", email).Scan(&password)
+	if err == sql.ErrNoRows {
+		return password, err
+	}
 
 	fmt.Println("SQL work end")
 	return password, nil
@@ -46,7 +46,7 @@ func (d *Database) CreateUser(user entities.User) error {
 	stmt := `INSERT INTO users (email, nickname, age, gender, first_name, last_name, password_hash, created_at)
     VALUES(?, ?, ?, ?, ?, ?, ?, current_date)`
 
-	_, err := d.db.Exec(stmt, user.Email, user.Nickname, user.Age, user.Gender, user.FirstName, user.LastName, user.PasswordHash)
+	_, err := d.db.Exec(stmt, user.Email, user.Nickname, user.Age, user.Gender, user.FirstName, user.LastName, []byte(user.PasswordHash))
 	if err != nil {
 		fmt.Println(err)
 		return err

@@ -16,6 +16,7 @@ import (
 	"real-time-forum/internal/adapters/database"
 	"real-time-forum/internal/adapters/handlers"
 	"real-time-forum/internal/core/services"
+	"real-time-forum/pkg/utils"
 	"text/template"
 )
 
@@ -38,7 +39,7 @@ func main() {
 	}
 
 	messengerService = services.NewMessengerService(store)
-	authService = services.NewAuthService(store)
+	authService = services.NewAuthService(store, utils.NewPasswordHasher())
 	handler := handlers.NewHTTPHandler(*authService, *messengerService)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))

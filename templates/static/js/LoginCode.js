@@ -8,6 +8,13 @@ form.addEventListener('submit', e => {
   login();
 })
 
+const setError = (element, message) => {
+  const inputControl = element.parentElement;
+  const errorDisplay = inputControl.querySelector('.error');
+  errorDisplay.innerText = message;
+  inputControl.classList.add('error');
+}
+
 const login = async () => {
   console.log("Try to loging")
   let formData = {
@@ -28,13 +35,18 @@ const login = async () => {
     const returnedError = await response.json();
     console.log(returnedError);
 
-    if (returnedError.message == "Wrong email") {
+    if (returnedError.message == "Email not found") {
       setError(email, "Sorry, but we can not find email " + formData.email + ". Please try again");
+    } else if (returnedError.message == "Wrong password") {
+      setError(password, "Unfortunately password is wrong");
+    } else if (returnedError.message == "Successfully logined") {
+      navigateTo('http://localhost:8080/');
+    } else {
+      // errorFild.classList.add('active');
+      // let mess = `<p style = "position: absolute;">Internal login error. Please, try again</p>`;
+      // errorFild.innerHTML = mess;
     }
 
-    if (returnedError.message == "Wrong password") {
-      setError(password, "Unfortunately password is wrong");
-    }
 
   } catch (err) {
     console.error(err);

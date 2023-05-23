@@ -30,11 +30,14 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 		case "sql: no rows in result set":
 			resp["message"] = "Email not found"
 
-		case "crypto/bcrypt: hashedSecret too short to be a bcrypted password":
+		case "crypto/bcrypt: hashedPassword is not the hash of the given password":
 			resp["message"] = "Wrong password"
+
+		default: resp["message"] = "Internal login error"
 		}
+	
 	} else {
-		resp["message"] = "All good"
+		resp["message"] = "Successfully logined"
 	}
 
 	jsonResp, err := json.Marshal(resp)

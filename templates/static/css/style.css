@@ -34,7 +34,7 @@ body {
 
 .wrapper_login {
     position: absolute;
-    width: 360px;
+    width: 400px;
     height: 400px;
     background: rgba(128, 116, 135, 0.7);
     border: 2px solid rgb(142, 131, 131);
@@ -50,7 +50,7 @@ body {
 
 .wrapper_register{
     position: absolute;
-    width: 360px;
+    width: 400px;
     height: 780px;
     background: rgba(128, 116, 135, 0.7);
     border: 2px solid rgb(142, 131, 131);

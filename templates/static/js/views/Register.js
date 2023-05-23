@@ -66,7 +66,7 @@ export default class extends AbstractView {
                         <button type="submit" class="btn">Create account</button>
 
                         <div class="login-regist">
-                            <p>Already have an account? <a href="/login">login</a></p>
+                            <p>Already have an account? <a href="/login" data-link>login</a></p>
                         </div>
                     </form>
                 </div>

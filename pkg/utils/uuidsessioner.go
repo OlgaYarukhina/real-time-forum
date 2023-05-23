@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 
 	uuid "github.com/gofrs/uuid"
 )
@@ -15,10 +14,7 @@ func NewUuidSessioner() *UuidSessioner {
 func (us UuidSessioner) NewToken() (string, error) {
 	uuid, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println("Error generating UUID:", err)
 		return "", err
 	}
-
-	fmt.Println("Generated UUID:", uuid.String())
 	return uuid.String(), nil
 }

@@ -7,7 +7,7 @@ sqlite3 db/database.db
 `
 3. Read all files from migration folder, for example:
 `
-.read db/migrations/users_table.sql
+.read db/migrations/users.sql
 `
 4. Run command to view schema
 `

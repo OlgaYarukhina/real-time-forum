@@ -20,6 +20,7 @@ func (ph PasswordHasher) HashPassword(password string) (string, error) {
 func (ph PasswordHasher) CheckPasswordHash(password, hash string) error {
 	fmt.Println("Here")
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	fmt.Println(err)
 	if err != nil {
 		return err 
 	}

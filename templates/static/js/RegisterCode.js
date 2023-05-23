@@ -13,7 +13,6 @@ form.addEventListener('submit', e => {
   e.preventDefault();
 
   if (validateInputs()) {
-    console.log('Well done')
     register();
   }
 })

@@ -6,6 +6,6 @@ CREATE TABLE users (
   gender        TEXT        NOT NULL,
   first_name    TEXT        NOT NULL,
   last_name     TEXT        NOT NULL,
-  password_hash BINARY(60)  NOT NULL,
+  password_hash BINARY(72)  NOT NULL,
   created_at    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

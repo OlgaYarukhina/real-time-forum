@@ -20,7 +20,7 @@ const getParams = match => {
     }));
 };
 
-const navigateTo = url => {
+const navigateTo = (url, msg={}) => {
     history.pushState(null, null, url);
     router();
 };
@@ -61,13 +61,10 @@ const router = async () => {
     const view = new match.route.view(getParams(match));
 
     var scripts = await view.getScripts(document);
+    document.querySelector("#app").innerHTML = await view.getHtml();
     scripts.forEach(function(script) {
         document.querySelector("#app").appendChild(script);
     });
-    document.querySelector("#app").innerHTML = await view.getHtml();
- 
-    
-
 };
 
 window.addEventListener("popstate", router);

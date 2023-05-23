@@ -1,6 +1,10 @@
 package utils
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 type PasswordHasher struct{}
 
@@ -13,7 +17,11 @@ func (ph PasswordHasher) HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func (ph PasswordHasher) CheckPasswordHash(password, hash string) bool {
+func (ph PasswordHasher) CheckPasswordHash(password, hash string) error {
+	fmt.Println("Here")
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+	if err != nil {
+		return err 
+	}
+	return nil
 }

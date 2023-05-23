@@ -30,7 +30,7 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 		case "sql: no rows in result set":
 			resp["message"] = "Email not found"
 
-		case "":
+		case "crypto/bcrypt: hashedSecret too short to be a bcrypted password":
 			resp["message"] = "Wrong password"
 		}
 	} else {

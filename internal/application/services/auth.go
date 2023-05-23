@@ -26,36 +26,31 @@ func NewAuthService(repo interfaces.Repository,
 func (service AuthService) Login(currentUser entities.User) (string, error) {
 	fmt.Println("auth service login job")
 
-	password, err := service.repo.GetHashedPassword(currentUser.Email) // check email and get password
-	fmt.Println(password)
+	password, errEmail := service.repo.GetHashedPassword(currentUser.Email) // check email and get password
 
+	if errEmail != nil {
+		fmt.Println(errEmail)
+		return "", errEmail // wrong email
+	}
+
+	errPass := service.hasher.CheckPasswordHash(currentUser.PasswordHash, password)
+
+	if errPass != nil {
+		return "", errPass // wrong pass
+	}
+
+	fmt.Println("Password correct")
+	token, err := service.sessioner.NewToken()
 	if err != nil {
 		fmt.Println(err)
-		return "", err // wrong email
+		return "", err // cannot create session token
 	}
-
-	switch service.hasher.CheckPasswordHash(currentUser.PasswordHash, password) {
-	case true:
-		fmt.Println("All good")
-		token, err := service.sessioner.NewToken()
-		if err != nil {
-			fmt.Println(err)
-			return "", err // cannot create session token
-		}
-		err = service.repo.SaveSession(token)
-		if err != nil {
-			fmt.Println(err)
-			return "", err // cannot save session token
-		}
-		return token, err
-
-	case false:
-		fmt.Println("Something bad")
-		return "", err // wrong password
+	err = service.repo.SaveSession(token)
+	if err != nil {
+		fmt.Println(err)
+		return "", err // cannot save session token
 	}
-
-	fmt.Println("auth service login ends job")
-	return "", nil
+	return token, nil
 }
 
 func (service AuthService) Logout(token string) error {

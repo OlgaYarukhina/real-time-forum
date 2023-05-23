@@ -9,21 +9,20 @@
 </head>
 <body>
     <div class="aler"></div>
-    <nav class="nav" style="display: none;">
-        <a href="/" class="nav__link" data-link>Dashboard</a>
-        <a href="/posts" class="nav__link" data-link>Posts</a>
-        <a href="/settings" class="nav__link" data-link>Settings</a> 
-        <a href="/" class="nav__link" data-link>Posts</a>
-        <a href="/chats" class="nav__link" data-link>Chats</a>
-        <br/>
-        place for users section (scrollable)
-        <br/>
-        <a href="" class="nav__link" data-link>Logout</a>
-    </nav>
+    <div class="nav">
+        <div class="nav_link"><a href="/" data-link>Posts</a></div>
+            <div class="nav_chats"><a href="/chats"  data-link>Chats</a>
+                <br/>
+                place for users section (scrollable)
+                <br/>
+            </div>
+        <div class="nav_logout">Logout</div>
+   
+    </div>
     <div id="app"></div>
 
     <!-- <script src="/static/js/RegisterStyle.js"></script> 
-        <script src="/static/js/RegisterCode.js"></script>
+        <script src="/static/js/RegisterCode.js">style="display: none;"</script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script> -->
 </body>

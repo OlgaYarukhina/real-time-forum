@@ -50,7 +50,7 @@ export default class extends AbstractView {
                             <div class="error"></div>
                         </div>
                         <div class="input-box">
-                            <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                            <span class="icon"><ion-icon name="at-outline"></ion-icon></span>
                             <input type="email" id="newEmail" name="newEmail" required>
                             <label for="newEmail">Email</label>
                             <div class="error"></div>

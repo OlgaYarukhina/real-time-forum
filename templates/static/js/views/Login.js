@@ -13,7 +13,7 @@ export default class extends AbstractView {
                 <h3>Login</h3>
                 <form id ="form-login">
                     <div class="input-box">
-                        <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                        <span class="icon"><ion-icon name="at-outline"></ion-icon></span>
                         <input type="email" id="email" name="email" required>
                         <label for="email">Email</label>
                         <div class="error"></div>

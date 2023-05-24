@@ -1,0 +1,178 @@
+.wrapper_login {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: rgba(128, 116, 135, 0.7);
+    border: 2px solid rgb(142, 131, 131);
+    border-radius: 20px;
+    /*backdrop-filter: blur(20px);*/
+    box-shadow: 0 0 30px rgb(74, 70, 70);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    left: 50%;
+    transform: translate(-50%, 50%)
+}
+
+.wrapper_register {
+    position: absolute;
+    width: 400px;
+    height: 800px;
+    background: rgba(128, 116, 135, 0.7);
+    border: 2px solid rgb(142, 131, 131);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgb(74, 70, 70);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    left: 50%;
+    transform: translate(-50%, 10%)
+}
+
+.wrapper .form-box {
+    width: 100%;
+    padding: 20px;
+}
+
+
+.form-box h3 {
+    font-family: 2em;
+    color: rgb(64, 217, 125);
+    text-align: center;
+}
+
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid black;
+    margin: 35px 0;
+}
+
+.input-box.error input {
+    border-bottom: 2px solid rgb(64, 217, 125);
+}
+
+.input-box .error {
+    margin-top: 3px;
+    color: rgb(64, 217, 125);
+    font-size: 9px;
+    height: 13px;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: rgb(34, 30, 30);
+    font-weight: 500;
+    pointer-events: none;
+    transition: -5s;
+}
+
+.input-box input:focus~label,
+.input-box input:valid~label {
+    top: -5px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: rgb(57, 59, 64);
+    font-weight: 300;
+    padding: 0 50px 0 5px;
+}
+
+.input-box .icon {
+    position: absolute;
+    right: 8px;
+    font-size: 1.2em;
+    color: black;
+    line-height: 57px;
+}
+
+
+.btn {
+    width: 100%;
+    height: 45px;
+    background: rgb(86, 96, 161);
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: antiquewhite;
+    margin-top: 10px;
+}
+
+.login-regist {
+    font-size: .9em;
+    color: rgb(64, 217, 125);
+    text-align: center;
+    font-weight: 500;
+    margin: 25px 0 10px;
+}
+
+.login-regist p a {
+    color: rgb(64, 217, 125);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-regist p a:hover {
+    text-decoration: underline;
+}
+
+
+/*Gender form */
+
+.select {
+    position: relative;
+}
+
+.select.is-active .select_body {
+    display: block;
+}
+
+.select_header {
+    display: flex;
+    cursor: pointer;
+}
+
+.select_current {
+    font-size: 18px;
+    line-height: 24px;
+    padding: 8px;
+}
+
+
+.select_body {
+    display: none;
+    width: 50px;
+    position: absolute;
+    left: 25%;
+    top: -40%;
+    position: absolute;
+    background: rgba(154, 110, 147, 0.7);
+    border-radius: 5px;
+}
+
+.select_item {
+    cursor: pointer;
+    font-size: large;
+    padding: 8px;
+    border-bottom: 1px solid rgb(110, 112, 113);
+}
+
+.select_item:hover {
+    background-color: rgb(64, 217, 125);
+    border-radius: 5px;
+}

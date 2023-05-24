@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Single Page App</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/styleAuthent.css">
     <script type="module" src="/static/js/index.js" defer></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -17,13 +18,13 @@
         <nav class="nav_posts"><a href="/" data-link>Posts</a>
 
             <ul class="open_categories">
-                <li> <a href="" class="select_category">All posts</li>
+                <li> <a href="/" class="select_category" data-link>All posts</li>
                 <li> <a href="" class="select_category">Cat1</li>
                 <li> <a href="" class="select_category">Cat2</li>
                
                 <ul class="open_my_post">
                 <li> <a href="" class="my_posts">My posts</li>
-                <li> <a href="" class="my_posts">Create posts</li>
+                <li> <a href="/post" class="my_posts" data-link>Create posts</a></li>
 
             </ul>
         </ul>

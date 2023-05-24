@@ -83,10 +83,6 @@ export default class extends AbstractView {
         script1.type = 'module';
         scripts.push(script1);
       
-        var script2 = document.createElement('script');
-        script2.src = '/static/js/RegisterStyle.js';
-        scripts.push(script2);
-      
         var script3 = document.createElement('script');
         script3.type = 'module';
         script3.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js';

@@ -1,29 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Single Page App</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <script type="module" src="/static/js/index.js" defer></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
+
 <body>
     <div class="aler"></div>
     <div class="nav">
-        <div class="nav_link"><a href="/" data-link>Posts</a></div>
-            <div class="nav_chats"><a href="/chats"  data-link>Chats</a>
-                <br/>
-                place for users section (scrollable)
-                <br/>
+        <nav class="nav_posts"><a href="/" data-link>Posts</a>
+
+            <ul class="open_categories">
+                <li> <a href="" class="select_category">All posts</li>
+                <li> <a href="" class="select_category">Cat1</li>
+                <li> <a href="" class="select_category">Cat2</li>
+               
+                <ul class="open_my_post">
+                <li> <a href="" class="my_posts">My posts</li>
+                <li> <a href="" class="my_posts">Create posts</li>
+
+            </ul>
+        </ul>
+        </nav>
+        <div class="nav_chats"><a href="/chats" data-link>Chats</a>
+            <div class="chat_list">
+                <div class="activ_user">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <span>Active user1</span>
+                </div>
+                <div class="activ_user">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <span>Active user2</span>
+                </div>
+                <div class="unactiv_user">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <span>Unactive user1</span>
+                </div>
+                <div class="unactiv_user">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <span>Unactive user2</span>
+                </div>
             </div>
+        </div>
         <div class="nav_logout">Logout</div>
-   
+
     </div>
     <div id="app"></div>
 
     <!-- <script src="/static/js/RegisterStyle.js"></script> 
         <script src="/static/js/RegisterCode.js">style="display: none;"</script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script> -->
+     -->
 </body>
+
 </html>

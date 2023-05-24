@@ -9,8 +9,7 @@ body {
     position: relative;
     display: flex;
     height: 100%;
-    background: url(https://www.usnews.com/object/image/0000017e-f8c3-da45-a97f-fcd3abb60000/1-intro-stock.jpg) no-repeat;
-    background-size: cover;
+    background: url(https://www.usnews.com/object/image/0000017e-f8c3-da45-a97f-fcd3abb60000/1-intro-stock.jpg) center / cover no-repeat fixed;
 }
 
 .aler {
@@ -23,7 +22,7 @@ body {
     border: none;
     outline: none;
     font-size: 1em;
-    color:  rgb(64, 217, 125);
+    color: rgb(64, 217, 125);
     display: none;
 }
 
@@ -45,11 +44,10 @@ body {
     align-items: center;
     overflow: hidden;
     left: 50%;
-    top: 50%;
     transform: translate(-50%, 50%)
 }
 
-.wrapper_register{
+.wrapper_register {
     position: absolute;
     width: 400px;
     height: 800px;
@@ -122,7 +120,7 @@ body {
     font-size: 1em;
     color: rgb(57, 59, 64);
     font-weight: 300;
-    padding: 0 35px 0 5px;
+    padding: 0 50px 0 5px;
 }
 
 .input-box .icon {
@@ -144,7 +142,6 @@ body {
     cursor: pointer;
     font-size: 1em;
     color: antiquewhite;
-    font-size: 500;
     margin-top: 10px;
 }
 
@@ -217,20 +214,32 @@ body {
 .nav {
     display: flex;
     flex-direction: column;
-    width: 15%;
+    width: 300px;
     min-height: 100vh;
     top: 0;
     left: 0;
-    background:  rgb(86, 96, 161);
+    background: rgb(86, 96, 161);
     box-shadow: 0 0 30px rgb(74, 70, 70);
 }
 
-.nav_link {
+.nav a{
+    text-decoration: none;
+}
+
+.nav li {
+    list-style: none;
+}
+
+.nav_posts {
     position: relative;
     padding: 20px 18px;
     text-decoration: none;
     color: #eeeeee;
     font-weight: 800;
+}
+
+.nav_posts:hover .open_categories{
+    display: block;
 }
 
 .nav_chats {
@@ -240,6 +249,7 @@ body {
     text-decoration: none;
     color: #eeeeee;
     font-weight: 800;
+    
 }
 
 .nav_logout {
@@ -252,7 +262,7 @@ body {
     height: 60px;
 }
 
-.nav_link:hover {
+.nav_posts:hover {
     background: rgba(255, 255, 255, 0.05);
 }
 
@@ -265,3 +275,73 @@ body {
     color: rgb(55, 39, 100);
 }
 
+/*Select category */
+
+.open_categories {
+    position: relative;
+    display: none;
+    margin: 10px 0px 0px 10px;
+}
+
+.open_categories li {
+    background-color: rgb(118, 101, 166);
+    padding: 20px;
+    border-bottom: 2px solid rgb(96, 205, 140);
+}
+
+.open_my_post {
+  margin-top: 10px;
+}
+
+.open_my_post li {
+    background-color: rgb(96, 205, 140);
+    padding: 20px;
+    border-bottom: 3px solid rgb(118, 101, 166);
+}
+
+
+.open_categories li:hover{
+    background-color:  rgb(96, 205, 140);
+}
+
+.open_my_post li:hover{
+    background-color:  rgb(118, 101, 166);
+}
+
+
+.select_category {
+    height: 20px;
+    color:  rgb(63, 50, 98);
+    font-weight: 600;
+}
+
+
+
+/*Chat list */
+.activ_user {
+    margin-top: 4px;
+    background: rgb(96, 205, 140);
+    border-radius: 5px;
+    padding: 20px 18px;
+    color: #5f5e5e;
+    font-weight: 600;
+}
+
+.activ_user:hover {
+    background: rgb(64, 217, 125);
+    color: rgb(249, 248, 251);
+}
+
+.unactiv_user {
+    background:rgb(118, 101, 166);
+    border-radius: 5px;
+    margin-top: 4px;
+    padding: 20px 18px;
+    color: #acaaaa;
+    font-weight: 600;
+}
+
+.unactiv_user:hover {
+    background: rgb(118, 101, 166);
+    color: rgb(249, 248, 251);
+}

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"real-time-forum/internal/domain/entities"
+	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -90,7 +91,22 @@ func (d *Database) GetPost() error {
 	return nil
 }
 
-func (d *Database) SavePost() error {
+func (d *Database) SavePost(post entities.Post) error {
+	stmt := `INSERT INTO posts (header, content, user_id, created_at)
+    VALUES(?,?,?, current_date)`
+	result, err := d.db.Exec(stmt, post.Title, post.Content, post.UserID, post.CreatedAt)
+	id, err := result.LastInsertId()
+	for _, category_id := range post.Categories {
+		cat_id, err := strconv.Atoi(category_id)
+		stmt := `INSERT INTO categoryPostRelation (post_id,category_id) VALUES (?,?)`
+		_, err = d.db.Exec(stmt, id, cat_id)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -57,7 +57,6 @@ func (service AuthService) Logout(token string) error {
 	return nil
 }
 
-// put it where you want
 
 func (service AuthService) Register(user entities.User) error {
 	hash, err := service.hasher.HashPassword(user.PasswordHash)

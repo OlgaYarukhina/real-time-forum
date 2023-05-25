@@ -60,6 +60,7 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/login", handler.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
+	http.HandleFunc("/api/create_post", handler.CreatePostHandler)
 	//do not delete! plz
 	http.HandleFunc("/ws", manager.ServeWS)
 	//http.HandleFunc("/login", manager.LoginHandler)

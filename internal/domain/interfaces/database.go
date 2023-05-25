@@ -20,7 +20,7 @@ type Repository interface {
 	//posts repo
 	GetPosts() error
 	GetPost() error
-	SavePost() error
+	SavePost(post entities.Post) error
 	GetComments() error
 	SaveComment() error
 }

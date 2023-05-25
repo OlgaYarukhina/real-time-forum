@@ -1,12 +1,10 @@
-//import Dashboard from "./views/Dashboard.js";
 import Posts from "./views/Posts.js";
 import PostView from "./views/PostView.js";
-//import Settings from "./views/Settings.js";
 //import Chats from "./views/Chats.js"
 import ChatView from "./views/ChatView.js"
 import Register from "./views/Register.js";
 import Login from "./views/Login.js";
-import NewPost from "./views/NewPost.js";
+import CreatePost from "./views/CreatePost.js";
 //import "./RegisterCode.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -30,10 +28,8 @@ const router = async () => {
         //is it good way or /posts cleaner? 
         { path: "/", view: Posts },
         //{ path: "/posts", view: Posts },
-        { path: "/post", view: NewPost },
+        { path: "/post", view: CreatePost },
         { path: "/posts/:id", view: PostView },
-        //for profile?
-        //{ path: "/settings", view: Settings },
         //different login in place where ws connection creates
         //{ path: "/chats", view: Chats },
         { path: "/chats/:id", view: ChatView },

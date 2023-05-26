@@ -21,10 +21,12 @@ func (handler *HttpAdapter) CreatePostHandler(w http.ResponseWriter, r *http.Req
 	}
 	
 
-	// resp := make(map[string]string)
-	// 	err = handler.postService.CreatePost(post)
-	// 	if err != nil {
-	// 	}
+	resp := make(map[string]string)
+		err = handler.postsService.CreatePost(post)
+		if err != nil {
+		}
+
+		fmt.Println(resp)
 		
 
 	return

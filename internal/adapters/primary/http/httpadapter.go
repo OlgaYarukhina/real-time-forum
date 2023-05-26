@@ -9,6 +9,7 @@ import (
 
 type HttpAdapter struct {
 	authService interfaces.Auther
+	postsService interfaces.Poster
 }
 
 func New(authService interfaces.Auther) *HttpAdapter {

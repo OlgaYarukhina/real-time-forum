@@ -31,6 +31,7 @@ var ( //move to pkg config??
 	templateCache *template.Template
 	//messengerService *services.MessengerService
 	authService *services.AuthService
+	postsService *services.PostsService
 	//userManager      *services.UserManagerService
 )
 
@@ -51,6 +52,7 @@ func main() {
 
 	//messengerService = services.NewMessengerService(store)
 	authService = services.NewAuthService(store, utils.NewPasswordHasher(), utils.NewUuidSessioner())
+	postsService = services.NewPostService(store)
 	//userManager = services.NewUserManagerService(store)
 	handler := httpadpt.New(*authService)
 
@@ -63,7 +65,6 @@ func main() {
 	http.HandleFunc("/api/create_post", handler.CreatePostHandler)
 	//do not delete! plz
 	http.HandleFunc("/ws", manager.ServeWS)
-	//http.HandleFunc("/login", manager.LoginHandler)
 
 	http.HandleFunc("/debug", func(w http.ResponseWriter, r *http.Request) {
 		//fmt.Fprint(w, len(manager.Clients))
@@ -81,8 +82,6 @@ func main() {
 }
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	html, err := ioutil.ReadFile("../../templates/index.html")
-	//do not delete! plz
-	//html, err := ioutil.ReadFile("../../templates/test.html")
 
 	if err != nil {
 		http.Error(w, "Error reading file", http.StatusInternalServerError)

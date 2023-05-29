@@ -173,8 +173,8 @@ body {
     position: absolute;
     display: block;
     width: 40%;
-    min-width: 400px;
-    height:  650px;
+    min-width: 450px;
+    height:  750px;
     top: 50%;
     background: rgba(128, 116, 135, 0.7);
     border: 2px solid rgb(142, 131, 131);

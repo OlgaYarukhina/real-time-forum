@@ -98,7 +98,7 @@ func (d *Database) SavePost(post entities.Post) error {
 	id, err := result.LastInsertId()
 	for _, category_id := range post.Categories {
 		cat_id, err := strconv.Atoi(category_id)
-		stmt := `INSERT INTO categoryPostRelation (post_id,category_id) VALUES (?,?)`
+		stmt := `INSERT INTO categoryPostRelation (post_id, category_id) VALUES (?,?)`
 		_, err = d.db.Exec(stmt, id, cat_id)
 		if err != nil {
 			fmt.Println(err)

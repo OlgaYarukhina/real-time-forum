@@ -54,7 +54,7 @@ func main() {
 	authService = services.NewAuthService(store, utils.NewPasswordHasher(), utils.NewUuidSessioner())
 	postsService = services.NewPostService(store)
 	//userManager = services.NewUserManagerService(store)
-	handler := httpadpt.New(*authService)
+	handler := httpadpt.New(*authService, *postsService)
 
 	manager := wsadpt.New(ctx)
 

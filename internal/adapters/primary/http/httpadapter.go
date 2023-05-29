@@ -12,9 +12,10 @@ type HttpAdapter struct {
 	postsService interfaces.Poster
 }
 
-func New(authService interfaces.Auther) *HttpAdapter {
+func New(authService interfaces.Auther, postsService interfaces.Poster) *HttpAdapter {
 	return &HttpAdapter{
 		authService: authService,
+		postsService: postsService,
 		//messengerService:   messenger,
 		//userManagerService: userManager,
 		//services

@@ -83,9 +83,24 @@ func (d *Database) GetPrevMsgs() error {
 
 // posts
 
-func (d *Database) GetPosts() error {
-	return nil
+func (d *Database) GetPosts() ([]entities.Post, error)  {
+	stmt := `SELECT * FROM posts ORDER BY created_at ASC LIMIT 200`
+	rows, err := d.db.Query(stmt)
+	defer rows.Close()
+	var posts []entities.Post
+	for rows.Next() {
+		s := entities.Post{}
+		err = rows.Scan(&s.PostID , &s.Title, &s.Content, &s.UserID, &s.CreatedAt)
+		//s.Category_name, err = d.getCategoryRelation(&s.ID)
+		//s.Like, s.Dislike, err = d.getCountLikesByPostId(&s.ID)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, s)
+	}
+	return posts, nil
 }
+
 
 func (d *Database) GetPost() error {
 	return nil

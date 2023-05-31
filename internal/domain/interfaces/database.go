@@ -18,7 +18,7 @@ type Repository interface {
 	GetPrevMsgs() error
 
 	//posts repo
-	GetPosts() error
+	GetPosts() ([]entities.Post, error) 
 	GetPost() error
 	SavePost(post entities.Post) error
 	GetComments() error

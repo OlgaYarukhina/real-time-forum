@@ -60,6 +60,7 @@ func main() {
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
 	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/api/posts", handler.ViewPostsHandler)
 	http.HandleFunc("/api/login", handler.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
 	http.HandleFunc("/api/create_post", handler.CreatePostHandler)

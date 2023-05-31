@@ -1,6 +1,7 @@
 package services
 
 import (
+	"log"
 	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
 )
@@ -24,4 +25,15 @@ func (service PostsService) CreatePost(post entities.Post) error {
 	}
 
 	return nil
+}
+
+func (service PostsService) LoadPosts() []entities.Post {
+
+	posts, err := service.repo.GetPosts()
+	if err != nil {
+		log.Fatalf("Could not get posts. Err: %s", err)
+		return posts // need correcting
+	}
+
+	return posts
 }

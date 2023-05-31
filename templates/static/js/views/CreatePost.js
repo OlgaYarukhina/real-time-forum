@@ -58,7 +58,6 @@ export default class extends AbstractView {
         script4.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js';
         scripts.push(script4);
       
-      
         return scripts;
 };
 }

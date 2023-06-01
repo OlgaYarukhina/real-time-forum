@@ -10,19 +10,16 @@ export default class extends AbstractView {
 
     async getHtml() {
 
-        let postBlocks = `   
-        `;
+        let postBlocks = ``;
         console.log(returnedPosts)
 
         for (let i=0; i<returnedPosts.length; i++ ){
             postBlocks  += `
             <div class="wrapper_posts">
-                <div class="form-box">
-                <h3 class="post_title">${returnedPosts[i].title}</h3>
-                <div style="font-size: small;">${returnedPosts[i].create_at}</div>
+                <h3>${returnedPosts[i].title}</h3>
+                <div class="created_at">${returnedPosts[i].created_at}</div>
                 <p class="post_content">${returnedPosts[i].content} </p>
-                <a class="post_continue" href="/post?id={{.PostID}}">Continue reading</a>    
-                </div>
+                <a class="post_continue" href="/view_post:${returnedPosts[i].post_id}" data-link>Full post & coments</a>    
            </div>    
             `
         }
@@ -36,7 +33,6 @@ export default class extends AbstractView {
         script1.src = '/static/js/PostsCode.js';
         script1.type = 'module';
         scripts.push(script1);
-      
         return scripts;
 };
  

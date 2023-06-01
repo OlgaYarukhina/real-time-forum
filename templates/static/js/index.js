@@ -28,11 +28,11 @@ const router = async () => {
         //is it good way or /posts cleaner? 
         { path: "/", view: Posts },
         //{ path: "/posts", view: Posts },
-        { path: "/post", view: CreatePost },
-        { path: "/posts/:id", view: PostView },
+        { path: "/new_post", view: CreatePost },
+        { path: "/view_post:id", view: PostView },
         //different login in place where ws connection creates
         //{ path: "/chats", view: Chats },
-        { path: "/chats/:id", view: ChatView },
+        { path: "/chat:id", view: ChatView },
         { path: "/login", view: Login },
         { path: "/register", view: Register }
     ];

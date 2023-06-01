@@ -1,6 +1,7 @@
 import { navigateTo } from "./index.js";
 
 const form = document.getElementById('form-login');
+const nav = document.querySelector('.nav');
 
 form.addEventListener('submit', e => {
   console.log("DA")
@@ -40,6 +41,7 @@ const login = async () => {
     } else if (returnedError.message == "Wrong password") {
       setError(password, "Unfortunately password is wrong");
     } else if (returnedError.message == "Successfully logined") {
+      nav.classList.add('active')
       navigateTo('http://localhost:8080/');
     } else {
       // errorFild.classList.add('active');

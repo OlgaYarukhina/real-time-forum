@@ -19,11 +19,15 @@ const getParams = match => {
 };
 
 const navigateTo = (url, msg={}) => {
+    if(Object.keys(msg).length !== 0){
+        localStorage.setItem('msg', JSON.stringify(msg));
+    }
     history.pushState(null, null, url);
     router();
 };
 
 const router = async () => {
+    console.log("routing to "+location.pathname);
     const routes = [
         //is it good way or /posts cleaner? 
         { path: "/", view: Posts },
@@ -56,11 +60,12 @@ const router = async () => {
 
     const view = new match.route.view(getParams(match));
 
-    var scripts = await view.getScripts(document);
-    document.querySelector("#app").innerHTML = await view.getHtml();
-    scripts.forEach(function(script) {
-        document.querySelector("#app").appendChild(script);
-    });
+    //var scripts = await view.getScripts(document);
+    document.querySelector("#app").innerHTML = "";
+    document.querySelector("#app").appendChild(await view.getHtml()); 
+    // scripts.forEach(function(script) {
+    //     document.querySelector("#app").appendChild(script);
+    // });
 };
 
 window.addEventListener("popstate", router);

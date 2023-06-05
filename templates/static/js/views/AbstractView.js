@@ -11,7 +11,7 @@ export default class {
         return "";
     }
 
-    async getScripts() {
-        return [];
-    }
+    // async getScripts() {
+    //     return [];
+    // }
 }

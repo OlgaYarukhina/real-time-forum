@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import returnedPosts from "../PostsCode.js";
+
 
 export default class extends AbstractView {
     constructor(params) {

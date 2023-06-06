@@ -19,9 +19,9 @@ const getParams = match => {
 };
 
 const navigateTo = (url, msg={}) => {
-    if(Object.keys(msg).length !== 0){
-        localStorage.setItem('msg', JSON.stringify(msg));
-    }
+    // if(Object.keys(msg).length !== 0){
+    //     localStorage.setItem('msg', JSON.stringify(msg));
+    // }
     history.pushState(null, null, url);
     router();
 };

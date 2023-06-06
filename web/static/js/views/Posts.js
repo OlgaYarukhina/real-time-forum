@@ -14,6 +14,7 @@ export default class extends AbstractView {
         console.log(returnedPosts)
 
         const wrapper = document.createElement('div');
+        wrapper.classList.add('wrapper_all_posts');
 
         for (let i = 0; i < returnedPosts.length; i++) {
           const wrapperPosts = document.createElement('div');

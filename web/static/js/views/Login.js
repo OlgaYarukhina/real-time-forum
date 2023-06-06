@@ -8,7 +8,7 @@ export default class extends AbstractView {
         this.setTitle("Log in page");
     }
 
-    //rename to get() ?
+    //rename to get() ? NO :)
     async getHtml() {
         return CreateLoginForm(login);
     }

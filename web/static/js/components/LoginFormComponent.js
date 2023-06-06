@@ -91,7 +91,6 @@ function createInputBox(id, label, iconName) {
   }
 
 form.addEventListener("submit", e => {
-  console.log("DA");
   e.preventDefault();
   callback();
 });

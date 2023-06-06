@@ -1,6 +1,8 @@
 // Package main - the OTP file is used for having a OTP manager
 package wsadpt
 
+// TODO : clean OTP stuff
+
 import (
 	"context"
 	"time"

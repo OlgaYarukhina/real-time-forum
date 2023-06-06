@@ -172,10 +172,14 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 
 	go client.readMessages()
 	go client.writeMessages()
+
+	// TODO : return current active users
 }
 
 // addClient will add clients to our clientList
 func (m *Manager) addClient(client *Client) {
+	// TODO : send msg new user online
+
 	// Lock so we can manipulate
 	m.Lock()
 	defer m.Unlock()
@@ -186,6 +190,8 @@ func (m *Manager) addClient(client *Client) {
 
 // removeClient will remove the client and clean up
 func (m *Manager) removeClient(client *Client) {
+	// TODO : send msg user offline
+
 	m.Lock()
 	defer m.Unlock()
 

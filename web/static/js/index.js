@@ -18,10 +18,10 @@ const getParams = match => {
     }));
 };
 
-const navigateTo = (url, msg={}) => {
-    // if(Object.keys(msg).length !== 0){
-    //     localStorage.setItem('msg', JSON.stringify(msg));
-    // }
+let alerMsg = "";
+
+const navigateTo = (url, msg="") => {
+    alerMsg = msg;
     history.pushState(null, null, url);
     router();
 };
@@ -58,8 +58,24 @@ const router = async () => {
         };
     }
 
+    // TODO : add access to pages though token
+    // if match path is not login or register and no session token in local storage or cookies 
+    // - navigate to login page
+    // else if token exists 
+    // - open requested view
     const view = new match.route.view(getParams(match));
 
+    console.log("aler");
+    console.log(alerMsg);
+    if (alerMsg !== ""){
+        console.log("aler");
+        document.getElementById("aler").innerHTML = alerMsg;
+        alerMsg = "";
+        document.getElementById("aler").classList.add('active')
+    } else {
+        document.getElementById("aler").innerHTML = '';
+        document.getElementById("aler").classList.remove('active')
+    }
     //var scripts = await view.getScripts(document);
     document.querySelector("#app").innerHTML = "";
     document.querySelector("#app").appendChild(await view.getHtml()); 
@@ -82,6 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 export { navigateTo, router };
+
+// TODO : add ws connection for receiving active users and its changes
 
 //connect to ws right here?
 //to be able to receive new msg notifications independently of a page

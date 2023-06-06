@@ -30,7 +30,7 @@ var ( //move to pkg config??
 	httpAdapter   *httpadpt.HttpAdapter
 	templateCache *template.Template
 	//messengerService *services.MessengerService
-	authService *services.AuthService
+	authService  *services.AuthService
 	postsService *services.PostsService
 	//userManager      *services.UserManagerService
 )
@@ -58,7 +58,7 @@ func main() {
 
 	manager := wsadpt.New(ctx)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../templates/static"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../web/static"))))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/posts", handler.ViewPostsHandler)
 	http.HandleFunc("/api/login", handler.LoginHandler)
@@ -82,7 +82,7 @@ func main() {
 	}
 }
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	html, err := ioutil.ReadFile("../../templates/index.html")
+	html, err := ioutil.ReadFile("../../web/index.html")
 
 	if err != nil {
 		http.Error(w, "Error reading file", http.StatusInternalServerError)

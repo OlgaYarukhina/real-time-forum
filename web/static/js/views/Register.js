@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
-import { validateInputs } from "./RegisterUtil.js"
-import { register  } from "./RegisterFormHook.js";
-import { CreateRegisterForm } from "./RegisterFormComponent.js";
+import { validateInputs } from "../utils/RegisterUtil.js"
+import { register  } from "../hooks/RegisterFormHook.js";
+import { CreateRegisterForm } from "../components/RegisterFormComponent.js";
 
 export default class extends AbstractView {
     constructor(params) {

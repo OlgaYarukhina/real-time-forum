@@ -181,8 +181,6 @@ let selectGender = function () {
   
   selectInput.addEventListener('focus', selectGender);
   
-    
-    
     form.addEventListener('submit', e => {
       e.preventDefault();
     

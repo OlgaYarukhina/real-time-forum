@@ -28,6 +28,8 @@ const (
 	EventChangeRoom = "change_room"
 )
 
+// TODO : event online/offline changes + handler
+
 // SendMessageEvent is the payload sent in the
 // send_message event
 type SendMessageEvent struct {

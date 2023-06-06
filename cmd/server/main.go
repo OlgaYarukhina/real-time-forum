@@ -58,6 +58,7 @@ func main() {
 
 	manager := wsadpt.New(ctx)
 
+	// TODO : add middleware
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../web/static"))))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/posts", handler.ViewPostsHandler)

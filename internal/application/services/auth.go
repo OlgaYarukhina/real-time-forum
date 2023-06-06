@@ -45,6 +45,8 @@ func (service AuthService) Login(currentUser entities.User) (string, error) {
 		fmt.Println(err)
 		return "", err // cannot create session token
 	}
+
+	// TODO : add expiration date and time to token and hash token
 	err = service.repo.SaveSession(token)
 	if err != nil {
 		fmt.Println(err)
@@ -54,9 +56,9 @@ func (service AuthService) Login(currentUser entities.User) (string, error) {
 }
 
 func (service AuthService) Logout(token string) error {
+	// TODO : find and delete token from db
 	return nil
 }
-
 
 func (service AuthService) Register(user entities.User) error {
 	hash, err := service.hasher.HashPassword(user.PasswordHash)
@@ -75,5 +77,6 @@ func (service AuthService) Register(user entities.User) error {
 }
 
 func (service AuthService) IsValidSession(token string) bool {
+	// TODO : check session token expire date and time from db
 	return true
 }

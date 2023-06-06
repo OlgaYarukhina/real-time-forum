@@ -33,11 +33,12 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 		case "crypto/bcrypt: hashedPassword is not the hash of the given password":
 			resp["message"] = "Wrong password"
 
-		default: resp["message"] = "Internal login error"
+		default:
+			resp["message"] = "Internal login error"
 		}
-	
+
 	} else {
-		resp["message"] = "Successfully logined"
+		resp["message"] = "Successfully logged in"
 	}
 
 	jsonResp, err := json.Marshal(resp)

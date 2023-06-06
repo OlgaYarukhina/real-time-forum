@@ -28,12 +28,13 @@ const setError = (element, message) => {
       const returnedError = await response.json();
       console.log(returnedError);
   
-      if (returnedError.message == "Email not found") {
+      if (returnedError.message === "Email not found") {
         setError(email, "Sorry, but we cannot find the email " + formData.email + ". Please try again.");
-      } else if (returnedError.message == "Wrong password") {
+      } else if (returnedError.message === "Wrong password") {
         setError(password, "Unfortunately, the password is wrong.");
-      } else if (returnedError.message == "Successfully logged in") {
-        nav.classList.add("active");
+      } else if (returnedError.message === "Successfully logged in") {
+        //nav.classList.add("active");
+        // TODO : save session token from response in local storage (/cookies?) 
         navigateTo("http://localhost:8080/");
       } else {
         // Handle other cases if needed

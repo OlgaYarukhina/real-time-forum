@@ -142,7 +142,7 @@ form.addEventListener('submit', e => {
       console.log(returnedError);
   
       if (returnedError.message == "Post was created") {
-        navigateTo('http://localhost:8080/');
+        navigateTo('http://localhost:8080/', "Post was created");
          // errorFild.classList.add('active');
       // let mess = `<p style = "position: absolute;">Post was created!</p>`;
       // errorFild.innerHTML = mess;

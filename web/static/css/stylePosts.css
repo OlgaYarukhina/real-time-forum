@@ -61,6 +61,11 @@ h3 {
     border-radius: 10px;
     box-shadow: 0 0 30px rgb(74, 70, 70);
     padding: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
 }
 
 
@@ -86,15 +91,16 @@ h3 {
     color: rgb(58, 65, 110);
 }
 
+/*View post */
 
-.wrapper_view_post {
+.wrapper_post_comments {
     width: 100%;
     padding: 20px;
 
 }
 
-.view_post {
-    width: 600px;
+.wrapper_post {
+    width: 800px;
     min-width: 250px;
     margin: auto;
     background: rgba(128, 116, 135, 0.7);
@@ -104,12 +110,12 @@ h3 {
     padding: 20px;
 }
 
-.post_coments {
-    width: 600px;
+.wrapper_comments {
+    width: 800px;
     min-width: 250px;
     margin: auto;
-    background: rgba(128, 116, 135, 0.7);
-    border: 2px solid rgb(142, 131, 131);
+    background: rgba(117, 36, 163, 0.7);
+    border: 2px solid rgb(74, 17, 73);
     border-radius: 10px;
     box-shadow: 0 0 30px rgb(74, 70, 70);
     padding: 20px;

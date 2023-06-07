@@ -14,7 +14,7 @@ func (handler *HttpAdapter) ViewPostsHandler(w http.ResponseWriter, r *http.Requ
 
 	jsonResp, err := json.Marshal(posts)
 	if err != nil {
-		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+		log.Fatalf("Err: %s", err)
 	}
 	w.Write(jsonResp)
 	return
@@ -27,8 +27,7 @@ func (handler *HttpAdapter) ViewPostHandler(w http.ResponseWriter, r *http.Reque
 	var postId entities.Post
 	err := json.Unmarshal(response, &postId)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest) //??
-		log.Fatalf("Error happened in JSON unmarshal. Err: %s", err)
+		log.Fatalf("Err: %s", err)
 		return
 	}
 	

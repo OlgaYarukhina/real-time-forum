@@ -32,19 +32,32 @@ func (service PostsService) LoadPosts() []entities.Post {
 	posts, err := service.repo.GetPosts()
 	if err != nil {
 		log.Fatalf("Could not get posts. Err: %s", err)
-		return posts // need correcting
+		//return posts // need correcting
 	}
 
 	return posts
 }
 
-func (service PostsService) LoadPostWithComments(postId entities.Post) *entities.Post {
+//TODO : what we return if error?
+
+func (service PostsService) LoadPostWithComments(postId entities.Post) map[string]interface{} {
+
+	data := make(map[string]interface{})
 
 	post, err := service.repo.GetPost(postId)
 	if err != nil {
 		log.Fatalf("Could not get post. Err: %s", err)
-		return post // need correcting
+		//return post // need correcting
 	}
 
-	return post
+	comments, err := service.repo.GetComments(postId)
+	if err != nil {
+		log.Fatalf("Could not get post. Err: %s", err)
+		//return comments // need correcting
+	}
+
+	data["post"] = post
+	data["comments"] = comments
+
+	return data
 }

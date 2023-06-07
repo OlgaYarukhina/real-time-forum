@@ -1,10 +1,10 @@
-export async function PostView (callback) {
+export async function PostView (callback, id) {
 
-    let returnedPost = await callback();
+    let returnedPost = await callback(id);
         
     // div for post+comments
     const wrapper = document.createElement('div');
-    wrapper.classList.add('wrapper_post&comments');
+    wrapper.classList.add('wrapper_post_comments');
 
      // div for post
     const wrapperPost = document.createElement('div');
@@ -30,6 +30,33 @@ export async function PostView (callback) {
 
 
      // div for comments
+
+     if (returnedPost.comments != nil) {
+      for (let i = 0; i < returnedPost.comments.length; i++) {
+        const wrapperComment = document.createElement('div');
+        wrapperComment.classList.add('wrapper_comments');
+      
+        const nickname = document.createElement('h3');
+        nickname.textContent = returnedPost.comments[i].nickname;
+      
+        const createdAt = document.createElement('div');
+        createdAt.classList.add('created_at');
+        createdAt.textContent = returnedPost.comments[i].created_at;
+      
+        const comment = document.createElement('p');
+        comment.classList.add('post_content');
+        comment.textContent = returnedPost.comments[i].comment;
+      
+      
+        wrapperComment.appendChild(nickname);
+        wrapperComment.appendChild(createdAt);
+        wrapperComment.appendChild(comment);
+      
+        wrapper.appendChild(wrapperComment);
+      }
+     }
+
+    
 
     return wrapper;
   }

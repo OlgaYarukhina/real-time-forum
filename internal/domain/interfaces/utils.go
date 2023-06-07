@@ -1,8 +1,8 @@
 package interfaces
 
 type Hasher interface {
-	HashPassword(password string) (string, error)
-	CheckPasswordHash(password, hash string) error
+	HashString(password string) (string, error)
+	CheckHash(password, hash string) error
 }
 
 type Sessioner interface {

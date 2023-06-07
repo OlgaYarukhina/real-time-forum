@@ -9,13 +9,14 @@
     <link rel="stylesheet" href="static/css/styleAuthent.css">
     <link rel="stylesheet" href="static/css/stylePosts.css">
     <script type="module" src="static/js/index.js" defer></script>
+    <script type="module" src="static/js/utils/Logout.js" defer></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 
 <body>
     <div id="aler" class="aler"></div>
-    <div class="nav">
+    <div id="nav" class="nav">
         <nav class="nav_posts"><a href="/" data-link>Posts</a>
 
             <ul class="open_categories">
@@ -50,10 +51,11 @@
                 </div>
             </div>
         </div>
-        <div class="nav_logout">Logout</div>
+        <div id="logout" class="nav_logout">Logout</div>
 
     </div>
     <div id="app" class="app"></div>
 </body>
+
 
 </html>

@@ -22,7 +22,9 @@ export const createPost = async () => {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Session-Token' : localStorage.getItem("sessionToken"),
+          'X-Session-Id' : localStorage.getItem("sessionId")
         },
         body: JSON.stringify(formData)
       });

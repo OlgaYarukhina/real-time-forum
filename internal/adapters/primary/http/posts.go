@@ -6,8 +6,7 @@ import (
 	"net/http"
 )
 
-func (handler *HttpAdapter) ViewPostsHandler(w http.ResponseWriter, r *http.Request) {
-
+func (handler *HttpAdapter) ViewPostsHandler(w http.ResponseWriter, r *http.Request, userId int) {
 	posts := handler.postsService.LoadPosts()
 
 	jsonResp, err := json.Marshal(posts)
@@ -17,5 +16,3 @@ func (handler *HttpAdapter) ViewPostsHandler(w http.ResponseWriter, r *http.Requ
 	w.Write(jsonResp)
 	return
 }
-
-

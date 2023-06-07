@@ -14,9 +14,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"real-time-forum/internal/adapters/secondary/database"
 	"real-time-forum/internal/application/services"
+	"real-time-forum/internal/domain/helpers"
 	"real-time-forum/pkg/utils"
 	"text/template"
 
@@ -51,22 +53,27 @@ func main() {
 	}
 
 	//messengerService = services.NewMessengerService(store)
-	authService = services.NewAuthService(store, utils.NewPasswordHasher(), utils.NewUuidSessioner())
+	authService = services.NewAuthService(store, utils.NewHasher(), utils.NewUuidSessioner())
 	postsService = services.NewPostService(store)
 	//userManager = services.NewUserManagerService(store)
 	handler := httpadpt.New(*authService, *postsService)
 
-	manager := wsadpt.New(ctx)
+	// TODO : add ws connection removing
+	sessionCleaner := helpers.NewSessionCleaner(store)
+	sessionCleaner.StartCleaningSessions(5 * time.Minute)
+
+	_ = wsadpt.New(ctx)
 
 	// TODO : add middleware
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../web/static"))))
 	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/api/posts", handler.ViewPostsHandler)
+	http.HandleFunc("/api/posts", handler.SessionCheck(handler.ViewPostsHandler))
 	http.HandleFunc("/api/login", handler.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
-	http.HandleFunc("/api/create_post", handler.CreatePostHandler)
+	http.HandleFunc("/api/create_post", handler.SessionCheck(handler.CreatePostHandler))
 	//do not delete! plz
-	http.HandleFunc("/ws", manager.ServeWS)
+	//http.HandleFunc("/ws", handler.SessionCheck(manager.ServeWS))
+	http.HandleFunc("/api/logout", handler.SessionCheck(handler.LogoutHandler))
 
 	http.HandleFunc("/debug", func(w http.ResponseWriter, r *http.Request) {
 		//fmt.Fprint(w, len(manager.Clients))

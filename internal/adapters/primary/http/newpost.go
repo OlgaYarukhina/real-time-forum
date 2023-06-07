@@ -9,12 +9,13 @@ import (
 	"real-time-forum/internal/domain/entities"
 )
 
-func (handler *HttpAdapter) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+func (handler *HttpAdapter) CreatePostHandler(w http.ResponseWriter, r *http.Request, userId int) {
 
 	response, _ := ioutil.ReadAll(r.Body)
 
 	var post entities.Post
 	err := json.Unmarshal(response, &post)
+	post.UserID = userId
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		fmt.Println(err)
@@ -34,7 +35,6 @@ func (handler *HttpAdapter) CreatePostHandler(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
 	}
-
 
 	w.Write(jsonResp)
 	return

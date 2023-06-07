@@ -5,6 +5,7 @@ import ChatView from "./views/ChatView.js"
 import Register from "./views/Register.js";
 import Login from "./views/Login.js";
 import CreatePost from "./views/CreatePost.js";
+import { register } from "./hooks/RegisterFormHook.js";
 //import "./RegisterCode.js";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -52,36 +53,35 @@ const router = async () => {
     let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
 
     if (!match) {
+        // TODO : add 404 page
         match = {
             route: routes[0],
             result: [location.pathname]
         };
     }
 
-    // TODO : add access to pages though token
-    // if match path is not login or register and no session token in local storage or cookies 
-    // - navigate to login page
-    // else if token exists 
-    // - open requested view
-    const view = new match.route.view(getParams(match));
-
-    console.log("aler");
-    console.log(alerMsg);
-    if (alerMsg !== ""){
-        console.log("aler");
-        document.getElementById("aler").innerHTML = alerMsg;
-        alerMsg = "";
-        document.getElementById("aler").classList.add('active')
+    if (match.route.path === "/login" || match.route.path === "/register"){
+        document.getElementById("nav").style.display = 'none';
     } else {
-        document.getElementById("aler").innerHTML = '';
-        document.getElementById("aler").classList.remove('active')
+        document.getElementById("nav").style.display = 'flex';
     }
-    //var scripts = await view.getScripts(document);
-    document.querySelector("#app").innerHTML = "";
-    document.querySelector("#app").appendChild(await view.getHtml()); 
-    // scripts.forEach(function(script) {
-    //     document.querySelector("#app").appendChild(script);
-    // });
+    if((localStorage.getItem("sessionToken") === null || localStorage.getItem("sessionId") === null) && 
+        !(match.route.path === "/login" || match.route.path === "/register" )){
+        navigateTo("http://localhost:8080/login")
+    } else {
+        if (alerMsg !== ""){
+            console.log("aler");
+            document.getElementById("aler").innerHTML = alerMsg;
+            alerMsg = "";
+            document.getElementById("aler").classList.add('active')
+        } else {
+            document.getElementById("aler").innerHTML = '';
+            document.getElementById("aler").classList.remove('active')
+        }
+        const view = new match.route.view(getParams(match));
+        document.querySelector("#app").innerHTML = "";
+        document.querySelector("#app").appendChild(await view.getHtml()); 
+    }
 };
 
 window.addEventListener("popstate", router);

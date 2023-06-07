@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"real-time-forum/internal/domain/entities"
 	"strconv"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -44,31 +45,79 @@ func (d *Database) SaveUser(user entities.User) error {
 	return nil
 }
 
-func (d *Database) GetHashedPassword(email string) (string, error) {
+func (d *Database) GetHashedPassword(email string) (int, string, error) {
 	fmt.Println("SQL work")
 	var password string
+	var id int
 
-	err := d.db.QueryRow("SELECT password_hash FROM users WHERE email = ?", email).Scan(&password)
+	err := d.db.QueryRow("SELECT user_id, password_hash FROM users WHERE email = ?", email).Scan(&id, &password)
 	if err == sql.ErrNoRows {
-		return password, err
+		return id, password, err
 	}
 
 	fmt.Println("SQL work end")
-	return password, nil
+	return id, password, nil
 }
 
 //sessions
 
-func (d *Database) SaveSession(token string) error {
+func (d *Database) SaveSession(session entities.Session) (int, error) {
+	stmt := `INSERT INTO user_sessions (token, user_id, expire_at)
+    VALUES(?, ?, ?)`
+
+	result, err := d.db.Exec(stmt, session.Token, session.UserID, session.ExpireAt)
+	if err != nil {
+		fmt.Println(err)
+		return -1, err
+	}
+	sessionID, err := result.LastInsertId()
+	if err != nil {
+		fmt.Println(err)
+		return -1, err
+	}
+	return int(sessionID), nil
+}
+
+func (d *Database) RemoveSession(userId int) error {
+	stmt := "DELETE FROM user_sessions WHERE user_id = ?"
+
+	_, err := d.db.Exec(stmt, userId)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
 	return nil
 }
 
-func (d *Database) RemoveSession() error {
+func (repo *Database) RemoveExpiredSessions() error {
+	stmt := "DELETE FROM user_sessions WHERE expire_at < ?"
+
+	expirationTime := time.Now()
+
+	_, err := repo.db.Exec(stmt, expirationTime)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (d *Database) GetSession() error {
-	return nil
+func (d *Database) GetSession(sessionID int) (entities.Session, error) {
+	var session entities.Session
+
+	stmt := `SELECT id, token, user_id, expire_at FROM user_sessions WHERE id = ?`
+
+	err := d.db.QueryRow(stmt, sessionID).Scan(&session.Id, &session.Token, &session.UserID, &session.ExpireAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// Handle case where session is not found
+			return session, fmt.Errorf("session not found")
+		}
+		return session, err
+	}
+
+	return session, nil
 }
 
 // chat
@@ -83,14 +132,14 @@ func (d *Database) GetPrevMsgs() error {
 
 // posts
 
-func (d *Database) GetPosts() ([]entities.Post, error)  {
+func (d *Database) GetPosts() ([]entities.Post, error) {
 	stmt := `SELECT * FROM posts ORDER BY created_at ASC LIMIT 200`
 	rows, err := d.db.Query(stmt)
 	defer rows.Close()
 	var posts []entities.Post
 	for rows.Next() {
 		s := entities.Post{}
-		err = rows.Scan(&s.PostID , &s.Title, &s.Content, &s.UserID, &s.CreatedAt)
+		err = rows.Scan(&s.PostID, &s.Title, &s.Content, &s.UserID, &s.CreatedAt)
 		//s.Category_name, err = d.getCategoryRelation(&s.ID)
 		//s.Like, s.Dislike, err = d.getCountLikesByPostId(&s.ID)
 		if err != nil {
@@ -100,7 +149,6 @@ func (d *Database) GetPosts() ([]entities.Post, error)  {
 	}
 	return posts, nil
 }
-
 
 func (d *Database) GetPost() error {
 	return nil

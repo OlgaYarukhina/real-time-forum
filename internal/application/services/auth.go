@@ -1,10 +1,11 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
-	//	"real-time-forum/pkg/utils"
+	"time"
 )
 
 type AuthService struct {
@@ -13,9 +14,9 @@ type AuthService struct {
 	sessioner interfaces.Sessioner
 }
 
-func NewAuthService(repo interfaces.Repository,
-	hasher interfaces.Hasher, sessioner interfaces.Sessioner) *AuthService {
+func NewAuthService(repo interfaces.Repository, hasher interfaces.Hasher, sessioner interfaces.Sessioner) *AuthService {
 	fmt.Println("AuthService created and ready to use")
+
 	return &AuthService{
 		repo:      repo,
 		hasher:    hasher,
@@ -23,45 +24,52 @@ func NewAuthService(repo interfaces.Repository,
 	}
 }
 
-func (service AuthService) Login(currentUser entities.User) (string, error) {
+func (service AuthService) Login(cred entities.UserCredentials) (int, string, error) {
 	fmt.Println("auth service login job")
 
-	password, errEmail := service.repo.GetHashedPassword(currentUser.Email) // check email and get password
-
-	if errEmail != nil {
-		fmt.Println(errEmail)
-		return "", errEmail // wrong email
+	id, password, err := service.repo.GetHashedPassword(cred.Email) // check email and get password
+	if err != nil {
+		fmt.Println(err)
+		return -1, "", err // wrong email
 	}
 
-	errPass := service.hasher.CheckPasswordHash(currentUser.PasswordHash, password)
-
-	if errPass != nil {
-		return "", errPass // wrong pass
+	err = service.hasher.CheckHash(cred.Pass, password)
+	if err != nil {
+		return -1, "", err // wrong pass
 	}
 
-	fmt.Println("Password correct")
 	token, err := service.sessioner.NewToken()
 	if err != nil {
 		fmt.Println(err)
-		return "", err // cannot create session token
+		return -1, "", err // cannot create session token
 	}
 
-	// TODO : add expiration date and time to token and hash token
-	err = service.repo.SaveSession(token)
+	tokenHash, err := service.hasher.HashString(token)
 	if err != nil {
 		fmt.Println(err)
-		return "", err // cannot save session token
+		return -1, "", err // cannot hash session token
 	}
-	return token, nil
+
+	sessionId, err := service.repo.SaveSession(entities.Session{
+		Token:    tokenHash,
+		UserID:   id,
+		ExpireAt: time.Now().Add(1 * time.Minute),
+	})
+	if err != nil {
+		fmt.Println(err)
+		return -1, "", err // cannot save session token
+	}
+
+	return sessionId, token, nil
 }
 
-func (service AuthService) Logout(token string) error {
-	// TODO : find and delete token from db
-	return nil
+func (service AuthService) Logout(userId int) error {
+	return service.repo.RemoveSession(userId)
 }
 
 func (service AuthService) Register(user entities.User) error {
-	hash, err := service.hasher.HashPassword(user.PasswordHash)
+	// TODO : add server side form validation
+	hash, err := service.hasher.HashString(user.PasswordHash)
 	if err != nil {
 		return err
 	}
@@ -76,7 +84,26 @@ func (service AuthService) Register(user entities.User) error {
 	return nil
 }
 
-func (service AuthService) IsValidSession(token string) bool {
-	// TODO : check session token expire date and time from db
-	return true
+func (service AuthService) IsValidSession(sessionId int, token string) (int, error) {
+	session, err := service.repo.GetSession(sessionId)
+	if err != nil {
+		fmt.Println(err)
+		return -1, err // wrong token
+	}
+
+	if session.ExpireAt.Before(time.Now()) {
+
+		fmt.Println("expired")
+		fmt.Println(err)
+		err = errors.New("Expired token")
+		return -1, err // expired
+	}
+	fmt.Println("non expired")
+
+	err = service.hasher.CheckHash(token, session.Token)
+	if err != nil {
+		return -1, err //not same token
+	}
+
+	return session.UserID, nil
 }

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"real-time-forum/internal/domain/entities"
 )
@@ -14,8 +15,8 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 	fmt.Println("login handler worked")
 	response, _ := ioutil.ReadAll(r.Body)
 
-	var user entities.User
-	err := json.Unmarshal(response, &user)
+	var cr entities.UserCredentials
+	err := json.Unmarshal(response, &cr)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		fmt.Println(err)
@@ -24,7 +25,7 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 
 	resp := make(map[string]string)
 
-	_, err = handler.authService.Login(user)
+	sessionId, token, err := handler.authService.Login(cr)
 	if err != nil {
 		switch err.Error() {
 		case "sql: no rows in result set":
@@ -39,6 +40,8 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 
 	} else {
 		resp["message"] = "Successfully logged in"
+		resp["token"] = token
+		resp["user_id"] = strconv.Itoa(sessionId)
 	}
 
 	jsonResp, err := json.Marshal(resp)

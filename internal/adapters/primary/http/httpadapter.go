@@ -4,7 +4,10 @@
 package httpadpt
 
 import (
+	"fmt"
+	"net/http"
 	"real-time-forum/internal/domain/interfaces"
+	"strconv"
 )
 
 type HttpAdapter struct {
@@ -22,17 +25,20 @@ func New(authService interfaces.Auther, postsService interfaces.Poster) *HttpAda
 	}
 }
 
-// TODO : add 'middleware' function for access management
-
-// func (handler *HTTPHandler) TestHandler(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Println("handler worked")
-// 	handler.messengerService.SendMessage(entities.Message{Body: "my msg"})
-// 	w.Write([]byte("just text"))
-// 	return
-// }
-// func (handler *HTTPHandler) TestMiddleware(next http.HandlerFunc) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		fmt.Println("middleware worked")
-// 		next(w, r)
-// 	}
-// }
+func (handler *HttpAdapter) SessionCheck(next func(http.ResponseWriter, *http.Request, int)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionToken := r.Header.Get("X-Session-Token")
+		sessionId, err := strconv.Atoi(r.Header.Get("X-Session-Id"))
+		if err != nil {
+			w.WriteHeader((http.StatusInternalServerError))
+			return
+		}
+		if userId, err := handler.authService.IsValidSession(sessionId, sessionToken); err == nil {
+			fmt.Println("session is valid")
+			next(w, r, userId)
+		} else {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+	}
+}

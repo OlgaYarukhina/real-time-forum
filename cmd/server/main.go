@@ -68,6 +68,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../web/static"))))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/posts", handler.SessionCheck(handler.ViewPostsHandler))
+	http.HandleFunc("/api/post", handler.ViewPostHandler)
 	http.HandleFunc("/api/login", handler.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
 	http.HandleFunc("/api/create_post", handler.SessionCheck(handler.CreatePostHandler))

@@ -53,7 +53,7 @@ func (service AuthService) Login(cred entities.UserCredentials) (int, string, er
 	sessionId, err := service.repo.SaveSession(entities.Session{
 		Token:    tokenHash,
 		UserID:   id,
-		ExpireAt: time.Now().Add(1 * time.Minute),
+		ExpireAt: time.Now().Add(5 * time.Minute),
 	})
 	if err != nil {
 		fmt.Println(err)

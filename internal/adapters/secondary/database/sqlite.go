@@ -138,20 +138,31 @@ func (d *Database) GetPosts() ([]entities.Post, error) {
 	defer rows.Close()
 	var posts []entities.Post
 	for rows.Next() {
-		s := entities.Post{}
-		err = rows.Scan(&s.PostID, &s.Title, &s.Content, &s.UserID, &s.CreatedAt)
+		post := entities.Post{}
+		err = rows.Scan(&post.PostID, &post.Title, &post.Content, &post.UserID, &post.CreatedAt)
 		//s.Category_name, err = d.getCategoryRelation(&s.ID)
 		//s.Like, s.Dislike, err = d.getCountLikesByPostId(&s.ID)
 		if err != nil {
 			return nil, err
 		}
-		posts = append(posts, s)
+		posts = append(posts, post)
 	}
 	return posts, nil
 }
 
-func (d *Database) GetPost() error {
-	return nil
+func (d *Database) GetPost(postId entities.Post) (*entities.Post, error) {
+	post := &entities.Post{}
+	row := d.db.QueryRow(`SELECT * FROM posts WHERE post_id = ?`, postId.PostID)
+	err := row.Scan(&post.PostID, &post.Title, &post.Content, &post.UserID, &post.CreatedAt)
+	// post.Category_name, err = d.getCategoryRelation(postId.PostID)
+	// post.Like, post.Dislike, err = d.getCountLikesByPostId(postId.PostID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("Post not found")
+		}
+		return nil, err
+	}
+	return post, nil
 }
 
 func (d *Database) SavePost(post entities.Post) error {
@@ -173,8 +184,40 @@ func (d *Database) SavePost(post entities.Post) error {
 	return nil
 }
 
-func (d *Database) GetComments() error {
-	return nil
+func (d *Database) GetComments(postId entities.Post) ([]entities.Comment, error) {
+	stmt := `SELECT * FROM comments WHERE post_id = ? ORDER BY created_at ASC LIMIT 200`
+	rows, err := d.db.Query(stmt, postId.PostID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var comments []entities.Comment
+	for rows.Next() {
+		comment := entities.Comment{}
+		err = rows.Scan(comment.CommentID, comment.Comment, comment.PostID, comment.UserID, comment.CreatedAt)
+		comment.Nickname = d.GetUserById(comment.UserID)
+		// comment.Like, err = d.getLikeCountsByCommentId(comment.CommentID)
+		if err != nil {
+			return nil, err
+		}
+		comments = append(comments, comment)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return comments, nil
+}
+
+func (d *Database) GetUserById(id int) string {
+	var nickname string
+	if err := d.db.QueryRow("SELECT nickname from users where user_id = ?", id).Scan(&nickname); err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println(err)
+		}
+		fmt.Println(err)
+	}
+	return nickname
 }
 
 func (d *Database) SaveComment() error {

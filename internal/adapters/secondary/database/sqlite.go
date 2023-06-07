@@ -102,8 +102,19 @@ func (d *Database) GetPosts() ([]entities.Post, error)  {
 }
 
 
-func (d *Database) GetPost() error {
-	return nil
+func (d *Database) GetPost(postId entities.Post) (*entities.Post, error) {
+	var post *entities.Post
+	row := d.db.QueryRow(`SELECT * FROM post WHERE ID = ?`, postId.PostID)
+	err := row.Scan(&post.PostID, &post.Title, &post.Content, post.UserID, post.CreatedAt)
+	// post.Category_name, err = d.getCategoryRelation(postId.PostID)
+	// post.Like, post.Dislike, err = d.getCountLikesByPostId(postId.PostID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("Post not found")
+		}
+		return nil, err 
+	}
+	return post, nil
 }
 
 func (d *Database) SavePost(post entities.Post) error {

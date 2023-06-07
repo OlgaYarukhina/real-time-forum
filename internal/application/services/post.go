@@ -37,3 +37,14 @@ func (service PostsService) LoadPosts() []entities.Post {
 
 	return posts
 }
+
+func (service PostsService) LoadPostWithComments(postId entities.Post) *entities.Post {
+
+	post, err := service.repo.GetPost(postId)
+	if err != nil {
+		log.Fatalf("Could not get post. Err: %s", err)
+		return post // need correcting
+	}
+
+	return post
+}

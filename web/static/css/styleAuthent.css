@@ -115,6 +115,10 @@
     margin-top: 10px;
 }
 
+.btn-narrow {
+    width: 30%;
+}
+
 .login-regist {
     font-size: .9em;
     color: rgb(64, 217, 125);

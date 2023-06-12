@@ -60,7 +60,7 @@ func main() {
 
 	// TODO : add ws connection removing
 	sessionCleaner := helpers.NewSessionCleaner(store)
-	sessionCleaner.StartCleaningSessions(5 * time.Minute)
+	sessionCleaner.StartCleaningSessions(60 * time.Minute)
 
 	_ = wsadpt.New(ctx)
 
@@ -72,6 +72,7 @@ func main() {
 	http.HandleFunc("/api/login", handler.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
 	http.HandleFunc("/api/create_post", handler.SessionCheck(handler.CreatePostHandler))
+	http.HandleFunc("/api/create_comment", handler.SessionCheck(handler.CreateCommentHandler))
 	//do not delete! plz
 	//http.HandleFunc("/ws", handler.SessionCheck(manager.ServeWS))
 	http.HandleFunc("/api/logout", handler.SessionCheck(handler.LogoutHandler))

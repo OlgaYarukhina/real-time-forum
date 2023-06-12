@@ -2,6 +2,7 @@ package httpadpt
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -29,6 +30,8 @@ func (handler *HttpAdapter) ViewPostHandler(w http.ResponseWriter, r *http.Reque
 		log.Fatalf("Err: %s", err)
 		return
 	}
+
+	fmt.Println(postId)
 	
 	post := handler.postsService.LoadPostWithComments(postId)
 

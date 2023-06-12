@@ -141,7 +141,6 @@ func (d *Database) GetPosts() ([]entities.Post, error) {
 		post := entities.Post{}
 		err = rows.Scan(&post.PostID, &post.Title, &post.Content, &post.UserID, &post.CreatedAt)
 		//s.Category_name, err = d.getCategoryRelation(&s.ID)
-		//s.Like, s.Dislike, err = d.getCountLikesByPostId(&s.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -155,7 +154,6 @@ func (d *Database) GetPost(postId entities.Post) (*entities.Post, error) {
 	row := d.db.QueryRow(`SELECT * FROM posts WHERE post_id = ?`, postId.PostID)
 	err := row.Scan(&post.PostID, &post.Title, &post.Content, &post.UserID, &post.CreatedAt)
 	// post.Category_name, err = d.getCategoryRelation(postId.PostID)
-	// post.Like, post.Dislike, err = d.getCountLikesByPostId(postId.PostID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("Post not found")
@@ -184,26 +182,28 @@ func (d *Database) SavePost(post entities.Post) error {
 	return nil
 }
 
-func (d *Database) GetComments(postId entities.Post) ([]entities.Comment, error) {
+func (d *Database) GetComments(postId entities.Post) ([]*entities.Comment, error) {
 	stmt := `SELECT * FROM comments WHERE post_id = ? ORDER BY created_at ASC LIMIT 200`
 	rows, err := d.db.Query(stmt, postId.PostID)
 	if err != nil {
+		fmt.Println("Here1")
 		return nil, err
 	}
 	defer rows.Close()
 
-	var comments []entities.Comment
+	var comments [] *entities.Comment
 	for rows.Next() {
-		comment := entities.Comment{}
-		err = rows.Scan(comment.CommentID, comment.Comment, comment.PostID, comment.UserID, comment.CreatedAt)
+		comment := &entities.Comment{}
+		err = rows.Scan(&comment.CommentID, &comment.Comment, &comment.PostID, &comment.UserID, &comment.CreatedAt)
 		comment.Nickname = d.GetUserById(comment.UserID)
-		// comment.Like, err = d.getLikeCountsByCommentId(comment.CommentID)
 		if err != nil {
+			fmt.Println("Here2")
 			return nil, err
 		}
 		comments = append(comments, comment)
 	}
 	if err = rows.Err(); err != nil {
+		fmt.Println("Here3")
 		return nil, err
 	}
 	return comments, nil
@@ -220,7 +220,13 @@ func (d *Database) GetUserById(id int) string {
 	return nickname
 }
 
-func (d *Database) SaveComment() error {
+func (d *Database) SaveComment(comment entities.Comment) error {
+	stmt := `INSERT INTO comments (comment, post_id, user_id, created_at)
+    VALUES(?,?,?, current_date)`
+	_, err := d.db.Exec(stmt, comment.Comment, comment.PostID, comment.UserID, comment.CreatedAt)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

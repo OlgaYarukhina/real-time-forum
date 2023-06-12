@@ -85,6 +85,7 @@ errorCheckbox.classList.add('error');
 const submitButton = document.createElement('button');
 submitButton.type = 'submit';
 submitButton.classList.add('btn');
+submitButton.classList.add('btn-narrow');
 submitButton.textContent = 'Create post';
 
 // Append all the elements to their respective parents

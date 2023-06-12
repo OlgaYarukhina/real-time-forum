@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
-import { getPost  } from "../hooks/PostViewHook.js";
+import { getPost } from "../hooks/PostViewHook.js";
+import { addComment } from "../hooks/PostViewHook.js";
 import { PostView } from "../components/PostViewComponent.js";
 
 export default class extends AbstractView {
@@ -10,6 +11,6 @@ export default class extends AbstractView {
     }
 
     async getHtml() {
-        return await PostView(getPost, this.postId);
+        return await PostView(getPost, addComment, this.postId);
       }
 }

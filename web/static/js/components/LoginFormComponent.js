@@ -70,7 +70,6 @@ function createInputBox(id, label, iconName) {
     iconSpan.appendChild(icon);
   
     const input = document.createElement("input");
-    input.type = "email";
     input.id = id;
     input.name = id;
     input.required = true;

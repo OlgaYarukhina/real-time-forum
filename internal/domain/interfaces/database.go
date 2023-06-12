@@ -22,6 +22,6 @@ type Repository interface {
 	GetPosts() ([]entities.Post, error)
 	GetPost(postId entities.Post) (*entities.Post, error)
 	SavePost(post entities.Post) error
-	GetComments(postId entities.Post) ([]entities.Comment, error)
-	SaveComment() error
+	GetComments(postId entities.Post) ([]*entities.Comment, error)
+	SaveComment(comment entities.Comment) error
 }

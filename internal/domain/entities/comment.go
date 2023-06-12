@@ -8,6 +8,6 @@ type Comment struct {
 	CreatedAt    time.Time `json:"created_at"`
 	UserID       int  
 	Nickname     string    `json:"nickname"`
-	PostID       int  
+	PostID       int       `json:"post_id,string"`
 	    
 }

@@ -18,25 +18,30 @@ func NewPostService(repo interfaces.Repository) *PostsService {
 
 
 func (service PostsService) CreatePost(post entities.Post) error {
-
 	err := service.repo.SavePost(post)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
 func (service PostsService) LoadPosts() []entities.Post {
-
 	posts, err := service.repo.GetPosts()
 	if err != nil {
 		log.Fatalf("Could not get posts. Err: %s", err)
 		//return posts // need correcting
 	}
-
 	return posts
 }
+
+func (service PostsService) CreateComment(comment entities.Comment) error {
+	err := service.repo.SaveComment(comment)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 
 //TODO : what we return if error?
 

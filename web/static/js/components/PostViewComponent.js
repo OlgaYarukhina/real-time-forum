@@ -1,4 +1,4 @@
-export async function PostView (callback, id) {
+export async function PostView (callback, callback1, id) {
 
     let returnedPost = await callback(id);
         
@@ -28,6 +28,39 @@ export async function PostView (callback, id) {
   
     wrapper.appendChild(wrapperPost);
 
+    // div add comment
+
+    const wrapperAddComment = document.createElement('div');
+    wrapperAddComment.classList.add('wrapper_add_comment');
+
+    const form = document.createElement('form');
+    form.id = 'add_comment';
+  
+    const textarea = document.createElement('textarea');
+    textarea.classList.add('input-box_textarea');
+    textarea.id = 'addComment';
+    textarea.name = 'addComment';
+    textarea.placeholder = 'Add comment';
+    textarea.rows = '4';
+    textarea.required = true;
+
+    const submitButton = document.createElement('button');
+    submitButton.type = 'submit';
+    submitButton.classList.add('btn');
+    submitButton.classList.add('btn-narrow');
+    submitButton.textContent = 'Comment';
+
+    form.appendChild(textarea);
+    form.appendChild(submitButton);
+      
+    wrapperAddComment.appendChild(form);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+        callback1(id);
+      })
+  
+    wrapper.appendChild(wrapperAddComment);
 
      // div for comments
 
@@ -36,7 +69,7 @@ export async function PostView (callback, id) {
         const wrapperComment = document.createElement('div');
         wrapperComment.classList.add('wrapper_comments');
       
-        const nickname = document.createElement('h3');
+        const nickname = document.createElement('h4');
         nickname.textContent = returnedPost.comments[i].nickname;
       
         const createdAt = document.createElement('div');
@@ -56,7 +89,6 @@ export async function PostView (callback, id) {
       }
      }
 
-    
 
     return wrapper;
   }

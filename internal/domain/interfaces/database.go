@@ -7,7 +7,7 @@ type Repository interface {
 	//user repo
 	SaveUser(user entities.User) error
 	GetHashedPassword(login string) (int, string, error)
-	GetAllUserIds() ([]int, error)
+	GetAllUsers() ([]*entities.User, error)
 
 	//session repo
 	SaveSession(token entities.Session) (int, error)
@@ -18,7 +18,7 @@ type Repository interface {
 	//chat repo
 	SaveMsg() error
 	GetPrevMsgs() error
-	GetUnreadByUserIds(ids []int) ([]entities.UserChatInfo, error)
+	GetUnreadByUserIds(users []entities.User) ([]entities.UserChatInfo, error)
 
 	//posts repo
 	GetPosts() ([]entities.Post, error)

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"real-time-forum/internal/domain/entities"
 	"strconv"
 	"time"
@@ -60,10 +61,27 @@ func (d *Database) GetHashedPassword(email string) (int, string, error) {
 	return id, password, nil
 }
 
-func (d *Database) GetAllUserIds() ([]int, error) {
-	fmt.Println("database get all users ids")
-	return nil, errors.New("")
+func (d *Database) GetAllUsers() ([]*entities.User, error) {
+	stmt := `SELECT user_id, nickname FROM users`
+	rows, err := d.db.Query(stmt)
+	defer rows.Close()
+
+	var users []*entities.User
+	for rows.Next() {
+		user := entities.User{}
+		err = rows.Scan(&user.UserID, &user.Nickname)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, &user)
+	}
+	return users, nil
 }
+
+// comment.Nickname = d.GetUserById(comment.UserID)
+// 		if err != nil {
+// 			return nil, err
+		//}
 
 //sessions
 
@@ -73,12 +91,12 @@ func (d *Database) SaveSession(session entities.Session) (int, error) {
 
 	result, err := d.db.Exec(stmt, session.Token, session.UserID, session.ExpireAt)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		return -1, err
 	}
 	sessionID, err := result.LastInsertId()
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		return -1, err
 	}
 	return int(sessionID), nil
@@ -208,7 +226,6 @@ func (d *Database) GetComments(postId entities.Post) ([]*entities.Comment, error
 		err = rows.Scan(&comment.CommentID, &comment.Comment, &comment.PostID, &comment.UserID, &comment.CreatedAt)
 		comment.Nickname = d.GetUserById(comment.UserID)
 		if err != nil {
-			fmt.Println("Here2")
 			return nil, err
 		}
 		comments = append(comments, comment)

@@ -2,6 +2,7 @@ package wsadpt
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -27,7 +28,7 @@ type Client struct {
 
 var (
 	// pongWait is how long we will await a pong response from client
-	pongWait = 10 * time.Second
+	pongWait = 5 * time.Minute
 	// pingInterval has to be less than pongWait, We cant multiply by 0.9 to get 90% of time
 	// Because that can make decimals, so instead *9 / 10 to get 90%
 	// The reason why it has to be less than PingRequency is becuase otherwise it will send a new Ping before getting response
@@ -112,6 +113,7 @@ func (c *Client) writeMessages() {
 	for {
 		select {
 		case message, ok := <-c.egress:
+			fmt.Println("message new")
 			// Ok will be false Incase the egress channel is closed
 			if !ok {
 				// Manager has closed this connection channel, so communicate that to frontend

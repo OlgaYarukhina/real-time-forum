@@ -2,6 +2,7 @@ package wsadpt
 
 import (
 	//"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -140,25 +141,6 @@ func (m *Manager) routeEvent(event Event, c *Client) error {
 
 // serveWS is a HTTP Handler that the has the Manager that allows connections
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
-
-	///
-	/// send as a params chat/room/user/ id or value
-	///
-
-	// Grab the OTP in the Get param
-	// otp := r.URL.Query().Get("otp")
-	// if otp == "" {
-	// 	// Tell the user its not authorized
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	return
-	// }
-
-	// // Verify OTP is existing
-	// if !m.otps.VerifyOTP(otp) {
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	return
-	// }
-
 	log.Println("New connection start")
 	// Begin by upgrading the HTTP request
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
@@ -166,11 +148,6 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 		log.Println(err)
 		return
 	}
-
-	// Create New Client
-	///
-	/// send room to obj here
-	///
 
 	client := NewClient(conn, m, " ", userId)
 	// Add the newly created client to the manager
@@ -198,6 +175,7 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 
 // addClient will add clients to our clientList
 func (m *Manager) addClient(client *Client) {
+	fmt.Println("add client in process")
 	// TODO : send msg new user online
 
 	// Lock so we can manipulate
@@ -206,6 +184,32 @@ func (m *Manager) addClient(client *Client) {
 
 	// Add Client
 	m.Clients[client] = true
+
+	// TODO : verify that this is first user connection (user have no active clients yet)
+	var outgoingEvent Event
+	payloadData := ClientChangesEvent{
+		Status: "online",
+		UserID: client.userId,
+	}
+	// Convert payloadData to JSON
+	payloadBytes, err := json.Marshal(payloadData)
+	if err != nil {
+		fmt.Println("error with marshal")
+		// Handle error
+		return
+	}
+
+	outgoingEvent.Payload = payloadBytes
+	outgoingEvent.Type = EventClientChanges
+
+	// Broadcast to all other Clients
+	for c := range m.Clients {
+		//fix next line, cuz object comparing
+		if client != c {
+			fmt.Println("sending")
+			c.egress <- outgoingEvent
+		}
+	}
 }
 
 // removeClient will remove the client and clean up

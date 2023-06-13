@@ -26,9 +26,16 @@ const (
 	EventNewMessage = "new_message"
 	// EventChangeRoom is event when switching rooms
 	EventChangeRoom = "change_room"
+	//Event for clients list changes
+	EventClientChanges = "client_changes"
 )
 
 // TODO : event online/offline changes + handler
+
+type ClientChangesEvent struct {
+	Status string `json:"status"`
+	UserID int    `json:"userId"`
+}
 
 // SendMessageEvent is the payload sent in the
 // send_message event

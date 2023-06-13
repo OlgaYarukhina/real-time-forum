@@ -34,7 +34,6 @@ const setError = (element, message) => {
         setError(password, "Unfortunately, the password is wrong.");
       } else if (returnedError.message === "Successfully logged in") {
         //nav.classList.add("active");
-        // TODO : save session token from response in local storage (/cookies?) 
         localStorage.setItem("sessionToken", returnedError.token);
         localStorage.setItem("sessionId", returnedError.user_id);
         navigateTo("http://localhost:8080/");

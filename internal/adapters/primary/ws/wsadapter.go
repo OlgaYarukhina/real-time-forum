@@ -1,13 +1,15 @@
 package wsadpt
 
 import (
-	"context"
-	"encoding/json"
+	//"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
+	"real-time-forum/internal/domain/interfaces"
 	"sync"
-	"time"
+
+	//"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -54,16 +56,19 @@ type Manager struct {
 	// handlers are functions that are used to handle Events
 	handlers map[string]EventHandler
 	// otps is a map of allowed OTP to accept connections from
-	otps RetentionMap
+	// otps RetentionMap
+
+	chatService interfaces.Chater
 }
 
 // NewManager is used to initalize all the values inside the manager
-func New(ctx context.Context) *Manager {
+func New(chater interfaces.Chater) *Manager {
 	m := &Manager{
 		Clients:  make(ClientList),
 		handlers: make(map[string]EventHandler),
 		// Create a new retentionMap that removes Otps older than 5 seconds
-		otps: NewRetentionMap(ctx, 5*time.Second),
+		//otps: NewRetentionMap(ctx, 5*time.Second),
+		chatService: chater,
 	}
 	m.setupEventHandlers()
 	return m
@@ -90,71 +95,71 @@ func (m *Manager) routeEvent(event Event, c *Client) error {
 }
 
 // loginHandler is used to verify an user authentication and return a one time password
-func (m *Manager) LoginHandler(w http.ResponseWriter, r *http.Request) {
+// func (m *Manager) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
-	type userLoginRequest struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
+// 	type userLoginRequest struct {
+// 		Username string `json:"username"`
+// 		Password string `json:"password"`
+// 	}
 
-	var req userLoginRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+// 	var req userLoginRequest
+// 	err := json.NewDecoder(r.Body).Decode(&req)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
 
-	// Authenticate user / Verify Access token, what ever auth method you use
-	if req.Username == "percy" && req.Password == "123" {
-		// format to return otp in to the frontend
-		type response struct {
-			OTP string `json:"otp"`
-		}
+// 	// Authenticate user / Verify Access token, what ever auth method you use
+// 	if req.Username == "percy" && req.Password == "123" {
+// 		// format to return otp in to the frontend
+// 		type response struct {
+// 			OTP string `json:"otp"`
+// 		}
 
-		// add a new OTP
-		otp := m.otps.NewOTP()
+// 		// add a new OTP
+// 		otp := m.otps.NewOTP()
 
-		resp := response{
-			OTP: otp.Key,
-		}
+// 		resp := response{
+// 			OTP: otp.Key,
+// 		}
 
-		data, err := json.Marshal(resp)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		// Return a response to the Authenticated user with the OTP
-		w.WriteHeader(http.StatusOK)
-		w.Write(data)
-		return
-	}
+// 		data, err := json.Marshal(resp)
+// 		if err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
+// 		// Return a response to the Authenticated user with the OTP
+// 		w.WriteHeader(http.StatusOK)
+// 		w.Write(data)
+// 		return
+// 	}
 
-	// Failure to auth
-	w.WriteHeader(http.StatusUnauthorized)
-}
+// 	// Failure to auth
+// 	w.WriteHeader(http.StatusUnauthorized)
+// }
 
 // serveWS is a HTTP Handler that the has the Manager that allows connections
-func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
+func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 
 	///
 	/// send as a params chat/room/user/ id or value
 	///
 
 	// Grab the OTP in the Get param
-	otp := r.URL.Query().Get("otp")
-	if otp == "" {
-		// Tell the user its not authorized
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	// otp := r.URL.Query().Get("otp")
+	// if otp == "" {
+	// 	// Tell the user its not authorized
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	return
+	// }
 
-	// Verify OTP is existing
-	if !m.otps.VerifyOTP(otp) {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	// // Verify OTP is existing
+	// if !m.otps.VerifyOTP(otp) {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	return
+	// }
 
-	log.Println("New connection")
+	log.Println("New connection start")
 	// Begin by upgrading the HTTP request
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -166,7 +171,8 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 	///
 	/// send room to obj here
 	///
-	client := NewClient(conn, m, "room1")
+
+	client := NewClient(conn, m, " ", userId)
 	// Add the newly created client to the manager
 	m.addClient(client)
 
@@ -174,6 +180,20 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 	go client.writeMessages()
 
 	// TODO : return current active users
+}
+
+func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
+	fmt.Println("get users starting")
+	_, err := m.chatService.GetUsers([]int{})
+	if err != nil {
+
+	}
+	//get unique user ids from manager client list
+	//call service
+	//create json response with data from service
+	//handle all errors
+	fmt.Println(len(m.Clients))
+	return
 }
 
 // addClient will add clients to our clientList

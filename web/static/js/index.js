@@ -8,6 +8,8 @@ import CreatePost from "./views/CreatePost.js";
 import { register } from "./hooks/RegisterFormHook.js";
 //import "./RegisterCode.js";
 
+var websocket
+
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
 const getParams = match => {
@@ -60,11 +62,6 @@ const router = async () => {
         };
     }
 
-    if (match.route.path === "/login" || match.route.path === "/register"){
-        document.getElementById("nav").style.display = 'none';
-    } else {
-        document.getElementById("nav").style.display = 'flex';
-    }
     if((localStorage.getItem("sessionToken") === null || localStorage.getItem("sessionId") === null) && 
         !(match.route.path === "/login" || match.route.path === "/register" )){
         navigateTo("http://localhost:8080/login")
@@ -81,6 +78,18 @@ const router = async () => {
         const view = new match.route.view(getParams(match));
         document.querySelector("#app").innerHTML = "";
         document.querySelector("#app").appendChild(await view.getHtml()); 
+    }
+    if (match.route.path === "/login" || match.route.path === "/register"){
+        document.getElementById("nav").style.display = 'none';
+    } else {
+        document.getElementById("nav").style.display = 'flex';
+        if (typeof websocket !== "undefined" && websocket.readyState === WebSocket.OPEN) {
+            console.log("WebSocket connection is open.");
+        } else {
+            console.log("WebSocket connection is not open. Opening ...");
+            websocket = connectWebsocket();
+            //handle if cannot open?
+        }
     }
 };
 
@@ -108,3 +117,55 @@ export { navigateTo, router };
 //if new msg and correct chat is open - display msg
 //is not add +1 unread to correct user
 //in both cases reorder chats section 
+
+function connectWebsocket(otp)  {
+    var conn;
+    // Check if the browser supports WebSocket
+    if (window["WebSocket"]) {
+        console.log("supports websockets");
+        // Connect to websocket using OTP as a GET parameter
+        //conn = new WebSocket("wss://" + document.location.host + "/ws?otp=" + otp);
+        //conn = new WebSocket("ws://" + document.location.host + "/api/ws");
+        // var wsUrl = "ws://" + document.location.host + "/api/ws";
+        // var headers = {
+        //     'X-Session-Token' : localStorage.getItem("sessionToken"),
+        //     'X-Session-Id' : localStorage.getItem("sessionId")
+        // };
+
+        // conn = new WebSocket(wsUrl, headers);
+        var wsUrl = "ws://" + document.location.host + "/api/ws?sessionToken=" + localStorage.getItem("sessionToken") + "&sessionId=" + localStorage.getItem("sessionId");
+        conn = new WebSocket(wsUrl);
+        // Onopen
+        conn.onopen = function (evt) {
+            console.log("conn on open")
+            //document.getElementById("connection-header").innerHTML = "Connected to Websocket: true";
+        }
+
+        conn.onclose = function (evt) {
+            console.log("conn on close")
+            // Set disconnected
+            //document.getElementById("connection-header").innerHTML = "Connected to Websocket: false";
+        }
+
+        // Add a listener to the onmessage event
+        conn.onmessage = function (evt) {
+            
+            console.log("conn on message")
+
+            console.log(evt);
+            // parse websocket message as JSON
+            const eventData = JSON.parse(evt.data);
+            // Assign JSON data to new Event Object
+            const event = Object.assign(new Event, eventData);
+            // Let router manage message
+            routeEvent(event);
+        }
+
+    } else {
+        alert("Not supporting websockets");
+    }
+    return conn
+}
+
+
+websocket = connectWebsocket();

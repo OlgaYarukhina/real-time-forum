@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"real-time-forum/internal/domain/entities"
 	"strconv"
@@ -57,6 +58,11 @@ func (d *Database) GetHashedPassword(email string) (int, string, error) {
 
 	fmt.Println("SQL work end")
 	return id, password, nil
+}
+
+func (d *Database) GetAllUserIds() ([]int, error) {
+	fmt.Println("database get all users ids")
+	return nil, errors.New("")
 }
 
 //sessions
@@ -130,6 +136,11 @@ func (d *Database) GetPrevMsgs() error {
 	return nil
 }
 
+func (d *Database) GetUnreadByUserIds(ids []int) ([]entities.UserChatInfo, error) {
+	fmt.Println("getting user chat info array")
+	return nil, errors.New("")
+}
+
 // posts
 
 func (d *Database) GetPosts() ([]entities.Post, error) {
@@ -191,7 +202,7 @@ func (d *Database) GetComments(postId entities.Post) ([]*entities.Comment, error
 	}
 	defer rows.Close()
 
-	var comments [] *entities.Comment
+	var comments []*entities.Comment
 	for rows.Next() {
 		comment := &entities.Comment{}
 		err = rows.Scan(&comment.CommentID, &comment.Comment, &comment.PostID, &comment.UserID, &comment.CreatedAt)

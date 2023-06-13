@@ -29,6 +29,10 @@ func (handler *HttpAdapter) SessionCheck(next func(http.ResponseWriter, *http.Re
 	return func(w http.ResponseWriter, r *http.Request) {
 		sessionToken := r.Header.Get("X-Session-Token")
 		sessionId, err := strconv.Atoi(r.Header.Get("X-Session-Id"))
+		if sessionToken == "" {
+			sessionToken = r.URL.Query().Get("sessionToken")
+			sessionId, err = strconv.Atoi(r.URL.Query().Get("sessionId"))
+		}
 		if err != nil {
 			w.WriteHeader((http.StatusInternalServerError))
 			return

@@ -1,14 +1,6 @@
-//setup server
-//use settings from pkg/config
-//add handlers from internal/adapters/handlers
-//prepare and connect with database from db with access through interface
-//db interface from internal/interfaces
-//run server
-
 package main
 
 import (
-	"context"
 	"errors"
 	"io/ioutil"
 	"log"
@@ -26,45 +18,36 @@ import (
 	wsadpt "real-time-forum/internal/adapters/primary/ws"
 )
 
-var ( //move to pkg config??
+var (
+	// TODO : move to pkg config??
 	//repo        = flag.String("db", "postgres", "Database for storing messages")
 	//host   = "localhost:6379"
 	httpAdapter   *httpadpt.HttpAdapter
 	templateCache *template.Template
-	//messengerService *services.MessengerService
-	authService  *services.AuthService
-	postsService *services.PostsService
-	//userManager      *services.UserManagerService
+	authService   *services.AuthService
+	postsService  *services.PostsService
+	chatService   *services.ChatService
 )
 
-//keep in main only app create function call?
+// TODO : keep in main only app create function call?
 func main() {
-	rootCtx := context.Background()
-	ctx, cancel := context.WithCancel(rootCtx)
-
-	defer cancel()
-
-	// templateCache = cacheTemplate("../../templates/")
-
 	store, err := database.NewDatabase("../../db/database.db")
 	if err != nil {
 		log.Fatalln("Error with database: ", err)
 		os.Exit(1)
 	}
 
-	//messengerService = services.NewMessengerService(store)
 	authService = services.NewAuthService(store, utils.NewHasher(), utils.NewUuidSessioner())
 	postsService = services.NewPostService(store)
-	//userManager = services.NewUserManagerService(store)
+	chatService = services.NewChatService(store)
+
 	handler := httpadpt.New(*authService, *postsService)
+	manager := wsadpt.New(*chatService)
 
 	// TODO : add ws connection removing
 	sessionCleaner := helpers.NewSessionCleaner(store)
 	sessionCleaner.StartCleaningSessions(60 * time.Minute)
 
-	_ = wsadpt.New(ctx)
-
-	// TODO : add middleware
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../web/static"))))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/posts", handler.SessionCheck(handler.ViewPostsHandler))
@@ -73,13 +56,9 @@ func main() {
 	http.HandleFunc("/api/register", handler.RegisterHandler)
 	http.HandleFunc("/api/create_post", handler.SessionCheck(handler.CreatePostHandler))
 	http.HandleFunc("/api/create_comment", handler.SessionCheck(handler.CreateCommentHandler))
-	//do not delete! plz
-	//http.HandleFunc("/ws", handler.SessionCheck(manager.ServeWS))
+	http.HandleFunc("/api/ws", handler.SessionCheck(manager.ServeWS))
+	http.HandleFunc("/api/get_users", handler.SessionCheck(manager.GetUsers))
 	http.HandleFunc("/api/logout", handler.SessionCheck(handler.LogoutHandler))
-
-	http.HandleFunc("/debug", func(w http.ResponseWriter, r *http.Request) {
-		//fmt.Fprint(w, len(manager.Clients))
-	})
 
 	log.Println("Starting server on: http://localhost:8080/login")
 	err = http.ListenAndServe(":8080", nil)
@@ -91,6 +70,7 @@ func main() {
 		os.Exit(1)
 	}
 }
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	html, err := ioutil.ReadFile("../../web/index.html")
 

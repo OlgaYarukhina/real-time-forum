@@ -22,6 +22,7 @@ type Client struct {
 	egress chan Event
 	// chatroom is used to know what room user is in
 	chatroom string
+	userId   int
 }
 
 var (
@@ -34,12 +35,13 @@ var (
 )
 
 // NewClient is used to initialize a new Client with all required values initialized
-func NewClient(conn *websocket.Conn, manager *Manager, str string) *Client {
+func NewClient(conn *websocket.Conn, manager *Manager, str string, id int) *Client {
 	return &Client{
 		connection: conn,
 		manager:    manager,
 		egress:     make(chan Event),
 		chatroom:   str,
+		userId:     id,
 	}
 }
 

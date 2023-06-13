@@ -1,12 +1,11 @@
 import Posts from "./views/Posts.js";
 import PostView from "./views/PostView.js";
-//import Chats from "./views/Chats.js"
 import ChatView from "./views/ChatView.js"
 import Register from "./views/Register.js";
 import Login from "./views/Login.js";
 import CreatePost from "./views/CreatePost.js";
-import { register } from "./hooks/RegisterFormHook.js";
-//import "./RegisterCode.js";
+import ChatsList from "./views/ChatsList.js";
+//import { register } from "./hooks/RegisterFormHook.js";
 
 var websocket
 
@@ -32,9 +31,7 @@ const navigateTo = (url, msg="") => {
 const router = async () => {
     console.log("routing to "+location.pathname);
     const routes = [
-        //is it good way or /posts cleaner? 
         { path: "/", view: Posts },
-        //{ path: "/posts", view: Posts },
         { path: "/new_post", view: CreatePost },
         { path: "/view_post:id", view: PostView },
         //different login in place where ws connection creates
@@ -118,33 +115,30 @@ export { navigateTo, router };
 //is not add +1 unread to correct user
 //in both cases reorder chats section 
 
-function connectWebsocket(otp)  {
+async function connectWebsocket() {
     var conn;
     // Check if the browser supports WebSocket
     if (window["WebSocket"]) {
         console.log("supports websockets");
-        // Connect to websocket using OTP as a GET parameter
-        //conn = new WebSocket("wss://" + document.location.host + "/ws?otp=" + otp);
-        //conn = new WebSocket("ws://" + document.location.host + "/api/ws");
-        // var wsUrl = "ws://" + document.location.host + "/api/ws";
-        // var headers = {
-        //     'X-Session-Token' : localStorage.getItem("sessionToken"),
-        //     'X-Session-Id' : localStorage.getItem("sessionId")
-        // };
 
-        // conn = new WebSocket(wsUrl, headers);
         var wsUrl = "ws://" + document.location.host + "/api/ws?sessionToken=" + localStorage.getItem("sessionToken") + "&sessionId=" + localStorage.getItem("sessionId");
         conn = new WebSocket(wsUrl);
         // Onopen
-        conn.onopen = function (evt) {
+        conn.onopen = async function (evt) {
             console.log("conn on open")
             //document.getElementById("connection-header").innerHTML = "Connected to Websocket: true";
+            // TODO : get users and add to menu
+            document.querySelector("#nav_chats").innerHTML = "";
+            let view = new ChatsList()
+            document.querySelector("#nav_chats").appendChild(await view.getHtml());
         }
 
         conn.onclose = function (evt) {
             console.log("conn on close")
             // Set disconnected
             //document.getElementById("connection-header").innerHTML = "Connected to Websocket: false";
+            // TODO : clear menu 
+            document.querySelector("#nav_chats").innerHTML = "";
         }
 
         // Add a listener to the onmessage event
@@ -159,6 +153,8 @@ function connectWebsocket(otp)  {
             const event = Object.assign(new Event, eventData);
             // Let router manage message
             routeEvent(event);
+
+            //do stuff ...
         }
 
     } else {

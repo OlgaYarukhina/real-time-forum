@@ -3,7 +3,7 @@ export async function CreateChatsList(callback){
     let returnedUsers = await callback()
 
     const wrapperChatsList = document.createElement("div");
-    wrapperLogin.className = "chats_list";
+    wrapperChatsList.className = "chats_list";
 
     //loops
 
@@ -51,6 +51,9 @@ export async function CreateChatsList(callback){
     wrapperChatsList.appendChild(activeUsersRead);
     wrapperChatsList.appendChild(unactiveUsersUnRead);
     wrapperChatsList.appendChild(unactiveUsersRead);
+
+
+    return wrapperChatsList;
 }
 
 

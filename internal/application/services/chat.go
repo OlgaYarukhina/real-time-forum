@@ -19,14 +19,14 @@ func NewChatService(repo interfaces.Repository) *ChatService {
 	}
 }
 
-func (service ChatService) GetUsers(activeUserIds []int) []entities.UserChatInfo {
+func (service ChatService) GetUsers(activeUserIds []int) ([]entities.UserChatInfo, error) {
 	fmt.Println("chat service works on getting users")
-	allUsers, err:= service.repo.GetAllUsers()
+	allUsers, err := service.repo.GetAllUsers()
 	if err != nil {
 		log.Fatalf("Could not get list of users. Err: %s", err)
 	}
 	service.repo.GetUnreadByUserIds(allUsers)
-	return nil
+	return nil, err
 }
 
 func (service ChatService) SendMsg() error {
@@ -36,5 +36,3 @@ func (service ChatService) SendMsg() error {
 func (service ChatService) LoadChatHistory() error {
 	return nil
 }
-
-

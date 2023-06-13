@@ -40,7 +40,6 @@ func checkOrigin(r *http.Request) bool {
 	switch origin {
 	// Update this to HTTPS
 	case "http://localhost:8080":
-		//case "https://localhost:8080":
 		return true
 	default:
 		return false
@@ -161,10 +160,13 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 
 func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	fmt.Println("get users starting")
+
 	_, err := m.chatService.GetUsers([]int{})
 	if err != nil {
 
 	}
+
+	
 	//get unique user ids from manager client list
 	//call service
 	//create json response with data from service

@@ -18,7 +18,7 @@ type Repository interface {
 	//chat repo
 	SaveMsg() error
 	GetPrevMsgs() error
-	GetUnreadByUserIds(users []entities.User) ([]entities.UserChatInfo, error)
+	GetUnreadByUserIds(users []*entities.User) ([]entities.UserChatInfo, error)
 
 	//posts repo
 	GetPosts() ([]entities.Post, error)

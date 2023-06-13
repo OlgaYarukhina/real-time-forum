@@ -154,7 +154,7 @@ func (d *Database) GetPrevMsgs() error {
 	return nil
 }
 
-func (d *Database) GetUnreadByUserIds(ids []int) ([]entities.UserChatInfo, error) {
+func (d *Database) GetUnreadByUserIds(users []*entities.User) ([]entities.UserChatInfo, error) {
 	fmt.Println("getting user chat info array")
 	return nil, errors.New("")
 }

@@ -16,14 +16,15 @@
 
 <body>
     <div id="aler" class="aler"></div>
-    <div id="nav" class="nav">
-        <nav class="nav_posts"><a href="/" data-link>Posts</a>
 
+    <!--Nav-->
+
+    <div id="nav" class="nav">
+        <nav class="nav_posts">Posts
             <ul class="open_categories">
                 <li> <a href="/" class="select_category" data-link>All posts</li>
                 <li> <a href="" class="select_category">Cat1</li>
                 <li> <a href="" class="select_category">Cat2</li>
-               
                 <ul class="open_my_post">
                 <li> <a href="" class="my_posts">My posts</li>
                 <li> <a href="/new_post" class="my_posts" data-link>Create posts</a></li>
@@ -31,7 +32,8 @@
             </ul>
         </ul>
         </nav>
-        <div class="nav_chats"><a href="/chats" data-link>Chats</a>
+        <div class="nav_chats">Chats
+                <!--JS-->
             <div class="chat_list">
                 <div class="activ_user">
                     <span class="icon"><ion-icon name="mail-unread-outline"></ion-icon></span>
@@ -50,10 +52,13 @@
                     <span>Unactive user2</span>
                 </div>
             </div>
+
+            <!-- end-->
+            
         </div>
         <div id="logout" class="nav_logout">Logout</div>
-
     </div>
+
     <div id="app" class="app"></div>
 </body>
 

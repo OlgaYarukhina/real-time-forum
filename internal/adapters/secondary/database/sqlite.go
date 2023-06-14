@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"real-time-forum/internal/domain/entities"
@@ -61,27 +60,30 @@ func (d *Database) GetHashedPassword(email string) (int, string, error) {
 	return id, password, nil
 }
 
-func (d *Database) GetAllUsers() ([]*entities.User, error) {
+func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, error) {
 	stmt := `SELECT user_id, nickname FROM users`
 	rows, err := d.db.Query(stmt)
 	defer rows.Close()
 
-	var users []*entities.User
+	var users []*entities.UserChatInfo
 	for rows.Next() {
-		user := entities.User{}
+		user := entities.UserChatInfo{}
 		err = rows.Scan(&user.UserID, &user.Nickname)
 		if err != nil {
 			return nil, err
 		}
+		// check if them have unread message
+		user.IsMessage, user.IsUnread = d.CheckIsUnread(currentUserID, user.UserID)
+		if err != nil {
+			return nil, err
+		}
+
 		users = append(users, &user)
 	}
 	return users, nil
 }
 
-// comment.Nickname = d.GetUserById(comment.UserID)
-// 		if err != nil {
-// 			return nil, err
-		//}
+
 
 //sessions
 
@@ -154,9 +156,26 @@ func (d *Database) GetPrevMsgs() error {
 	return nil
 }
 
-func (d *Database) GetUnreadByUserIds(users []*entities.User) ([]entities.UserChatInfo, error) {
-	fmt.Println("getting user chat info array")
-	return nil, errors.New("")
+func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool){
+	fmt.Println("getting if user has unread message")
+
+	isUnreadCheck := 0;
+	isMessage := true
+	var isUnread bool
+	if err := d.db.QueryRow("SELECT is_read FROM messages WHERE receiver_id = ? AND sender_id = ?", currentUser, user).Scan(&isUnreadCheck); err != nil {
+		if err == sql.ErrNoRows {
+			isMessage = false
+		} else {
+           fmt.Println(err)
+		}
+	} else {
+		if isUnreadCheck == 1 {
+			isUnread = true
+		} else {
+			isUnread = false
+		} 
+	}
+	return isMessage, isUnread
 }
 
 // posts

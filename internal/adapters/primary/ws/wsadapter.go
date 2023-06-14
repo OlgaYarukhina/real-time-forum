@@ -161,17 +161,28 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	fmt.Println("get users starting")
 
-	_, err := m.chatService.GetUsers([]int{})
-	if err != nil {
+	//get unique user ids from manager client list
+	//TODO : is here not unique ids?
 
+	isActiveUsersId := []int{}
+
+
+	for isActiveUser, _ := range m.Clients {
+		isActiveUsersId = append(isActiveUsersId, isActiveUser.userId)
 	}
 
-	
-	//get unique user ids from manager client list
-	//call service
-	//create json response with data from service
-	//handle all errors
-	fmt.Println(len(m.Clients))
+	users, err := m.chatService.GetUsers(isActiveUsersId, userId)
+	if err != nil {
+		log.Fatalf("Could not get status of chats users. Err: %s", err)
+	}
+
+	jsonResp, err := json.Marshal(users)
+	if err != nil {
+		log.Fatalf("Error happened in JSON marshal chat list. Err: %s", err)
+	}
+	w.Write(jsonResp)
+
+	//fmt.Println(len(m.Clients))
 	return
 }
 

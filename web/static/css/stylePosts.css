@@ -58,7 +58,6 @@ h4 {
 
 .wrapper_posts {
     width: 400px;
-    min-width: 150px;
     height:  250px;
     margin: 30px;
     background: rgba(128, 116, 135, 0.7);
@@ -88,7 +87,11 @@ h4 {
 
 .posts_content {
     margin: 10px 0px;
+    height:  120px;
     color:rgb(207, 207, 197);
+ 
+}
+.posts_content_cut{
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -106,14 +109,13 @@ h4 {
 .wrapper_post_comments {
     width: 100%;
     padding: 20px;
-
 }
 
 .wrapper_post {
     width: 800px;
     min-width: 250px;
     margin: auto;
-    background: rgba(128, 116, 135, 0.7);
+    background: rgba(128, 116, 135, 0.8);
     border: 2px solid rgb(142, 131, 131);
     border-radius: 10px;
     box-shadow: 0 0 30px rgb(74, 70, 70);
@@ -124,11 +126,15 @@ h4 {
     width: 800px;
     min-width: 250px;
     margin: 20px auto;
-    background: rgb(64, 217, 125, 0.7);
-    border: 2px solid rgb(209, 201, 208);
+    background: rgb(64, 217, 125, 0.8);
+    border: 2px solid rgb(142, 131, 131);
     border-radius: 10px;
     box-shadow: 0 0 30px rgb(74, 70, 70);
     padding: 20px;
+}
+
+.wrapper_comments p {
+color: #333131;
 }
 
 .wrapper_add_comment {

@@ -1,0 +1,64 @@
+/*Chat list */
+.activ_user {
+    margin: 4px 15px;
+    padding: 16px 18px;
+    background: rgb(96, 205, 140);
+    border-radius: 5px;
+    color: #5f5e5e;
+    font-weight: 600;
+}
+
+.activ_user:hover {
+    background: rgb(64, 217, 125);
+    color: rgb(249, 248, 251);
+}
+
+.unactiv_user {
+    background:rgb(118, 101, 166);
+    border-radius: 5px;
+    margin: 4px 15px;
+    padding: 16px 18px;
+    color: #acaaaa;
+    font-weight: 600;
+}
+
+.unactiv_user:hover {
+    background: rgb(85, 67, 134);
+    color: rgb(249, 248, 251);
+}
+
+
+/*Chat */
+
+.wrapper_chat {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    min-width: 400px;
+}
+
+.sender{
+    position: absolute;
+    display: block;
+    width: 600px;
+    min-width: 350px;
+    margin-top: 40px;
+    background: rgb(86, 96, 161, 0.7);
+    border: 2px solid rgb(142, 131, 131);
+    border-radius: 30px;
+    box-shadow: 0 0 30px rgb(74, 70, 70);
+    padding: 20px;
+}
+
+.receiver{
+    position: absolute;
+    display: block;
+    width: 600px;
+    min-width: 350px;
+    margin-top: 40px;
+    background: rgb(64, 217, 125, 0.5);
+    border: 2px solid rgb(142, 131, 131);
+    border-radius: 30px;
+    box-shadow: 0 0 30px rgb(74, 70, 70);
+    padding: 20px;
+}

@@ -2,7 +2,6 @@ package httpadpt
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -31,13 +30,12 @@ func (handler *HttpAdapter) ViewPostHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	fmt.Println(postId)
 	
 	post := handler.postsService.LoadPostWithComments(postId)
 
 	jsonResp, err := json.Marshal(post)
 	if err != nil {
-		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+		log.Fatalf("Err: %s", err)
 	}
 	w.Write(jsonResp)
 	return

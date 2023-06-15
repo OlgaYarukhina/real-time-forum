@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
 	"sync"
 
@@ -185,6 +187,29 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	//fmt.Println(len(m.Clients))
 	return
 }
+
+
+func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request, userId int) {
+	response, _ := ioutil.ReadAll(r.Body)
+
+	var curUserId entities.User
+	err := json.Unmarshal(response, &userId)
+	if err != nil {
+		log.Fatalf("Err: %s", err)
+		return
+	}
+	
+	chatHistory := m.chatService.LoadChatHistory(curUserId.UserID, userId)
+
+	jsonResp, err := json.Marshal(chatHistory)
+	if err != nil {
+		log.Fatalf("Err: %s", err)
+	}
+	w.Write(jsonResp)
+	return
+}
+
+
 
 // addClient will add clients to our clientList
 func (m *Manager) addClient(client *Client) {

@@ -16,8 +16,8 @@ type Repository interface {
 	GetSession(userId int) (entities.Session, error)
 
 	//chat repo
-	SaveMsg() error
-	GetPrevMsgs() error
+	SaveMsg(message entities.Message) error
+	GetPrevMsgs(currentUser, user int) ([]entities.Message, error)
 	CheckIsUnread(currentUser, user int) (bool, bool)
 
 	//posts repo

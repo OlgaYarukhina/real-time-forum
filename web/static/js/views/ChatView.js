@@ -1,16 +1,15 @@
 import AbstractView from "./AbstractView.js";
+import { getChat } from "../hooks/ChatViewHook.js";
+import { CreateChatBlocks } from "../components/ChatViewComponent.js";
 
 export default class extends AbstractView {
     constructor(params) {
         super(params);
-        this.chatId = params.id;
-        this.setTitle("Viewing chat");
+        this.setTitle("Viewing Chat");
+        this.userId = params.id
     }
 
     async getHtml() {
-        return `
-            <h1>Chat</h1>
-            <p>You are viewing chat #${this.chatId}.</p>
-        `;
-    }
+        return await CreateChatBlocks(getChat, this.userId);
+      }
 }

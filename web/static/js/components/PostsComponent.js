@@ -18,7 +18,10 @@ export async function CreatePostsBlocks(callback){
     
       const content = document.createElement('div');
       content.classList.add('posts_content');
-      content.textContent = returnedPosts[i].content;
+      const contentCut = document.createElement('div');
+      contentCut.classList.add('posts_content_cut');
+      contentCut.textContent = returnedPosts[i].content;
+      content.appendChild(contentCut);
     
       const link = document.createElement('a');
       link.classList.add('post_continue');

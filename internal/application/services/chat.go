@@ -28,7 +28,6 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) ([]*en
 	}
 
 	// add isActive status
-
 	for _, user := range allUsers {
 		user.IsActive = false
 		for _, isActiveUserId := range activeUserIds {
@@ -46,6 +45,10 @@ func (service ChatService) SendMsg() error {
 	return nil
 }
 
-func (service ChatService) LoadChatHistory() error {
-	return nil
+func (service ChatService) LoadChatHistory(currentUser, user int) []entities.Message {
+	messages, err := service.repo.GetPrevMsgs(currentUser, user)
+	if err != nil {
+		log.Fatalf("Could not get chat history. Err: %s", err)
+	}
+	return messages
 }

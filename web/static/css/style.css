@@ -51,8 +51,7 @@ body {
     top: 0;
     left: 0;
     background: rgb(86, 96, 161);
-    box-shadow: 0 0 30px rgb(74, 70, 70);
-   
+    box-shadow: 0 0 30px rgb(74, 70, 70);  
 }
 
 .nav.active {
@@ -88,7 +87,6 @@ body {
     position: relative;
     text-align: center;
     height: 90%;
-    margin: 10px;
     text-decoration: none;
     color: rgb(64, 217, 125);
     font-weight: 800;
@@ -98,7 +96,7 @@ body {
 .chats_list{
     font-weight: 800;
     font-size: 15px;
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: left;
 }
 
@@ -165,35 +163,3 @@ body {
     color:  rgb(63, 50, 98);
     font-weight: 600;
 }
-
-
-
-/*Chat list */
-.activ_user {
-    margin-top: 4px;
-    background: rgb(96, 205, 140);
-    border-radius: 5px;
-    padding: 20px 18px;
-    color: #5f5e5e;
-    font-weight: 600;
-}
-
-.activ_user:hover {
-    background: rgb(64, 217, 125);
-    color: rgb(249, 248, 251);
-}
-
-.unactiv_user {
-    background:rgb(118, 101, 166);
-    border-radius: 5px;
-    margin-top: 4px;
-    padding: 20px 18px;
-    color: #acaaaa;
-    font-weight: 600;
-}
-
-.unactiv_user:hover {
-    background: rgb(118, 101, 166);
-    color: rgb(249, 248, 251);
-}
-

@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"real-time-forum/internal/domain/entities"
 	"strconv"
 	"time"
@@ -47,7 +46,6 @@ func (d *Database) SaveUser(user entities.User) error {
 }
 
 func (d *Database) GetHashedPassword(email string) (int, string, error) {
-	fmt.Println("SQL work")
 	var password string
 	var id int
 
@@ -55,8 +53,6 @@ func (d *Database) GetHashedPassword(email string) (int, string, error) {
 	if err == sql.ErrNoRows {
 		return id, password, err
 	}
-
-	fmt.Println("SQL work end")
 	return id, password, nil
 }
 
@@ -88,17 +84,14 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 //sessions
 
 func (d *Database) SaveSession(session entities.Session) (int, error) {
-	stmt := `INSERT INTO user_sessions (token, user_id, expire_at)
-    VALUES(?, ?, ?)`
+	stmt := `INSERT INTO user_sessions (token, user_id, expire_at) VALUES(?, ?, ?)`
 
 	result, err := d.db.Exec(stmt, session.Token, session.UserID, session.ExpireAt)
 	if err != nil {
-		log.Fatal(err)
 		return -1, err
 	}
 	sessionID, err := result.LastInsertId()
 	if err != nil {
-		log.Fatal(err)
 		return -1, err
 	}
 	return int(sessionID), nil
@@ -106,13 +99,10 @@ func (d *Database) SaveSession(session entities.Session) (int, error) {
 
 func (d *Database) RemoveSession(userId int) error {
 	stmt := "DELETE FROM user_sessions WHERE user_id = ?"
-
 	_, err := d.db.Exec(stmt, userId)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
-
 	return nil
 }
 
@@ -120,12 +110,10 @@ func (repo *Database) RemoveExpiredSessions() error {
 	stmt := "DELETE FROM user_sessions WHERE expire_at < ?"
 
 	expirationTime := time.Now()
-
 	_, err := repo.db.Exec(stmt, expirationTime)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -138,7 +126,7 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// Handle case where session is not found
-			return session, fmt.Errorf("session not found")
+			return session, err
 		}
 		return session, err
 	}
@@ -148,12 +136,31 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 
 // chat
 
-func (d *Database) SaveMsg() error {
+func (d *Database) SaveMsg(message entities.Message) error {
+	stmt := `INSERT INTO messages (sender_id, receiver_id, message_text, send_time)
+    VALUES(?,?,?,?, current_date)`
+	_, err := d.db.Exec(stmt, &message.SenderID, &message.ReceiverID, &message.Body, &message.SendTime)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (d *Database) GetPrevMsgs() error {
-	return nil
+func (d *Database) GetPrevMsgs(currentUser, user int) ([]entities.Message, error) {
+	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM message WHERE receiver_id = ? OR sender_id = ? OR receiver_id = ? OR sender_id = ? ORDER BY created_at ASC LIMIT 200`
+	rows, err := d.db.Query(stmt, currentUser, user, user, currentUser)
+	defer rows.Close()
+
+	var messages []entities.Message
+	for rows.Next() {
+		message := entities.Message{}
+		err = rows.Scan(&message.SenderID, &message.ReceiverID, &message.SendTime, &message.Body)
+		if err != nil {
+			return nil, err
+		}
+		messages = append(messages, message)
+	}
+	return messages, nil
 }
 
 func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool){
@@ -221,7 +228,7 @@ func (d *Database) SavePost(post entities.Post) error {
 		stmt := `INSERT INTO categoryPostRelation (post_id, category_id) VALUES (?,?)`
 		_, err = d.db.Exec(stmt, id, cat_id)
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 	}
 	if err != nil {

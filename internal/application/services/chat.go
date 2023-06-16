@@ -41,7 +41,11 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) ([]*en
 	return allUsers, err
 }
 
-func (service ChatService) SendMsg() error {
+func (service ChatService) SaveMsg(newMessage entities.Message) error {
+	err := service.repo.SaveMsg(newMessage)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

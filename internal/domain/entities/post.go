@@ -8,7 +8,5 @@ type Post struct {
 	Content      string    `json:"content"`
 	Categories   []string  `json:"categories"`
 	CreatedAt    time.Time `json:"created_at"`
-	UserID       int   
-	Likes        int
-	Dislikes     int    
+	UserID       int     
 }

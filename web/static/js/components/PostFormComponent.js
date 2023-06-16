@@ -69,7 +69,7 @@ const checkbox = document.createElement('input');
 checkbox.type = 'checkbox';
 checkbox.classList.add('checkbox');
 checkbox.name = `namecheckbox_${i + 1}`;
-checkbox.value = `c${i + 1}`;
+checkbox.value = `${i + 1}`;
 
 checkboxDiv.appendChild(labelCheckbox);
 checkboxDiv.appendChild(checkbox);

@@ -9,8 +9,11 @@ export async function CreatePostsBlocks(callback){
       const wrapperPosts = document.createElement('div');
       wrapperPosts.classList.add('wrapper_posts');
     
+      const divTitle = document.createElement('div');
+      divTitle.classList.add('title');
       const title = document.createElement('h3');
       title.textContent = returnedPosts[i].title;
+      divTitle.appendChild(title);
     
       const createdAt = document.createElement('div');
       createdAt.classList.add('created_at');
@@ -29,7 +32,7 @@ export async function CreatePostsBlocks(callback){
       link.setAttribute('data-link', '');
       link.textContent = 'Full post & comments';
     
-      wrapperPosts.appendChild(title);
+      wrapperPosts.appendChild(divTitle);
       wrapperPosts.appendChild(createdAt);
       wrapperPosts.appendChild(content);
       wrapperPosts.appendChild(link);

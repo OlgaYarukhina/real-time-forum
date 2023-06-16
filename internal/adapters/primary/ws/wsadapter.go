@@ -188,18 +188,45 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	return
 }
 
+func (m *Manager) SendMsg(w http.ResponseWriter, r *http.Request, userId int) {
+	response, _ := ioutil.ReadAll(r.Body)
+
+	var message entities.Message
+	message.SenderID = userId
+	err := json.Unmarshal(response, &message)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println(err)
+		return
+	}
+
+	resp := make(map[string]string)
+	err = m.chatService.SaveMsg(message)
+	if err != nil {
+		resp["message"] = "Please, try again"
+	} 
+
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		log.Fatalf("Err: %s", err)
+	}
+
+	w.Write(jsonResp)
+	return
+}
+
 
 func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request, userId int) {
 	response, _ := ioutil.ReadAll(r.Body)
 
-	var curUserId entities.User
-	err := json.Unmarshal(response, &userId)
+	var chatUserId entities.User
+	err := json.Unmarshal(response, &chatUserId)
 	if err != nil {
 		log.Fatalf("Err: %s", err)
 		return
 	}
 	
-	chatHistory := m.chatService.LoadChatHistory(curUserId.UserID, userId)
+	chatHistory := m.chatService.LoadChatHistory(userId, chatUserId.UserID)
 
 	jsonResp, err := json.Marshal(chatHistory)
 	if err != nil {

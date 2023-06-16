@@ -15,8 +15,6 @@ type Database struct {
 }
 
 func NewDatabase(dsn string) (*Database, error) {
-	fmt.Println(" database connection created and db is ready to use through adapter")
-	//fmt.Println("dsn - " + dsn)
 	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
 		return nil, err
@@ -30,8 +28,6 @@ func NewDatabase(dsn string) (*Database, error) {
 }
 
 func (d *Database) SaveUser(user entities.User) error {
-	fmt.Println("database try create new user ")
-
 	stmt := `INSERT INTO users (email, nickname, age, gender, first_name, last_name, password_hash, created_at)
     VALUES(?, ?, ?, ?, ?, ?, ?, current_date)`
 
@@ -41,7 +37,6 @@ func (d *Database) SaveUser(user entities.User) error {
 		fmt.Println(err)
 		return err
 	}
-
 	return nil
 }
 
@@ -85,7 +80,6 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 
 func (d *Database) SaveSession(session entities.Session) (int, error) {
 	stmt := `INSERT INTO user_sessions (token, user_id, expire_at) VALUES(?, ?, ?)`
-
 	result, err := d.db.Exec(stmt, session.Token, session.UserID, session.ExpireAt)
 	if err != nil {
 		return -1, err
@@ -108,7 +102,6 @@ func (d *Database) RemoveSession(userId int) error {
 
 func (repo *Database) RemoveExpiredSessions() error {
 	stmt := "DELETE FROM user_sessions WHERE expire_at < ?"
-
 	expirationTime := time.Now()
 	_, err := repo.db.Exec(stmt, expirationTime)
 	if err != nil {
@@ -121,7 +114,6 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 	var session entities.Session
 
 	stmt := `SELECT id, token, user_id, expire_at FROM user_sessions WHERE id = ?`
-
 	err := d.db.QueryRow(stmt, sessionID).Scan(&session.Id, &session.Token, &session.UserID, &session.ExpireAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -138,7 +130,7 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 
 func (d *Database) SaveMsg(message entities.Message) error {
 	stmt := `INSERT INTO messages (sender_id, receiver_id, message_text, send_time)
-    VALUES(?,?,?,?, current_date)`
+    VALUES(?,?,?, current_date)`
 	_, err := d.db.Exec(stmt, &message.SenderID, &message.ReceiverID, &message.Body, &message.SendTime)
 	if err != nil {
 		return err
@@ -147,7 +139,7 @@ func (d *Database) SaveMsg(message entities.Message) error {
 }
 
 func (d *Database) GetPrevMsgs(currentUser, user int) ([]entities.Message, error) {
-	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM message WHERE receiver_id = ? OR sender_id = ? OR receiver_id = ? OR sender_id = ? ORDER BY created_at ASC LIMIT 200`
+	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM message WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY created_at ASC LIMIT 200`
 	rows, err := d.db.Query(stmt, currentUser, user, user, currentUser)
 	defer rows.Close()
 
@@ -164,9 +156,8 @@ func (d *Database) GetPrevMsgs(currentUser, user int) ([]entities.Message, error
 }
 
 func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool){
-	fmt.Println("getting if user has unread message")
 
-	isUnreadCheck := 0;
+	isUnreadCheck := 0
 	isMessage := true
 	var isUnread bool
 	if err := d.db.QueryRow("SELECT is_read FROM messages WHERE receiver_id = ? AND sender_id = ?", currentUser, user).Scan(&isUnreadCheck); err != nil {
@@ -195,7 +186,8 @@ func (d *Database) GetPosts() ([]entities.Post, error) {
 	for rows.Next() {
 		post := entities.Post{}
 		err = rows.Scan(&post.PostID, &post.Title, &post.Content, &post.UserID, &post.CreatedAt)
-		//s.Category_name, err = d.getCategoryRelation(&s.ID)
+		catId := &post.PostID
+		post.Categories, err = d.getCategoryRelation(*catId)
 		if err != nil {
 			return nil, err
 		}
@@ -208,7 +200,7 @@ func (d *Database) GetPost(postId entities.Post) (*entities.Post, error) {
 	post := &entities.Post{}
 	row := d.db.QueryRow(`SELECT * FROM posts WHERE post_id = ?`, postId.PostID)
 	err := row.Scan(&post.PostID, &post.Title, &post.Content, &post.UserID, &post.CreatedAt)
-	// post.Category_name, err = d.getCategoryRelation(postId.PostID)
+	post.Categories, err = d.getCategoryRelation(postId.PostID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("Post not found")
@@ -223,8 +215,11 @@ func (d *Database) SavePost(post entities.Post) error {
     VALUES(?,?,?, current_date)`
 	result, err := d.db.Exec(stmt, post.Title, post.Content, post.UserID, post.CreatedAt)
 	id, err := result.LastInsertId()
+
+
 	for _, category_id := range post.Categories {
 		cat_id, err := strconv.Atoi(category_id)
+		fmt.Println(cat_id)
 		stmt := `INSERT INTO categoryPostRelation (post_id, category_id) VALUES (?,?)`
 		_, err = d.db.Exec(stmt, id, cat_id)
 		if err != nil {
@@ -265,7 +260,7 @@ func (d *Database) GetComments(postId entities.Post) ([]*entities.Comment, error
 
 func (d *Database) GetUserById(id int) string {
 	var nickname string
-	if err := d.db.QueryRow("SELECT nickname from users where user_id = ?", id).Scan(&nickname); err != nil {
+	if err := d.db.QueryRow("SELECT nickname from users WHERE user_id = ?", id).Scan(&nickname); err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println(err)
 		}
@@ -284,12 +279,37 @@ func (d *Database) SaveComment(comment entities.Comment) error {
 	return nil
 }
 
-// func (d *Database) SaveMessage(message entities.Message) error {
-// 	fmt.Println("database saved msg")
-// 	//https://go.dev/tour/concurrency/9
-// 	//req := d.db.Create(&message)
-// 	// if req.RowsAffected == 0 {
-// 	// 	return errors.New(fmt.Sprintf("messages not saved: %v", req.Error))
-// 	// }
-// 	return nil
-// }
+func (d *Database) getCategoryRelation(postId int) ([]string, error) {
+	stmt := `SELECT category_id FROM categoryPostRelation WHERE post_id = ?`
+	var categoriesArr []string
+	var categoryId int
+	rows, err := d.db.Query(stmt, postId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&categoryId)
+		name, err := d.getNameOfCategoryById(categoryId)
+		if err != nil {
+			return nil, err
+		}
+		categoriesArr = append(categoriesArr, name)
+	}
+	return categoriesArr, nil
+}
+
+func (d *Database) getNameOfCategoryById(categoryId int) (string, error) {
+	var category string
+	if err :=  d.db.QueryRow("SELECT called FROM categories WHERE category_id = ?", categoryId).Scan(&category); err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("Category was not found")
+		} else {
+			fmt.Println(err)
+		}
+	}
+	return category, nil
+}
+
+
+// 	https://go.dev/tour/concurrency/9

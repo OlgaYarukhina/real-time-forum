@@ -1,70 +1,62 @@
-export async function CreateChatBlocks(callback) {
+export async function CreateChatBlocks(callbackGetMessage, callbackCreatMessage, id) {
 
-    //let returnedSendMessange = await callback(id);
-    //let returnedReceiveMessange = await callback(id);
-
+    let returnedMessages = await callbackGetMessage(id);
 
     const wrapperChat = document.createElement('div');
     wrapperChat.classList.add('wrapper_chat');
 
-    //if (returnedSendMessange != null) {
-    //  for (let i = 0; i < returnedSendMessange.length; i++) {
+    if (returnedMessages != null) {
+        for (let i = 0; i < returnedMessages.length; i++) {
+            const message = document.createElement('div');
+            const body = document.createElement('p');
+            body.classList.add('post_content');
+            body.textContent = returnedMessages[i].body;
+            const createdAt = document.createElement('div');
+            createdAt.classList.add('created_at');
+            createdAt.textContent = returnedMessages[i].created_at;
 
-    const sender = document.createElement('div');
-    sender.classList.add('sender');
+            if (returnedMessages[i].sender_id === id) {
+                message.classList.add('sender');
+            } else {
+                message.classList.add('receiver');
+            }
+            message.appendChild(body);
+            message.appendChild(createdAt);
+            wrapperChat.appendChild(message);
+        }
+    }
 
-    const nicknameS = document.createElement('h4');
-    //nickname.textContent = returnedPost.comments[i].nickname;
-    nicknameS.textContent = "Nick";
+    // div write message
 
-    const createdAtS = document.createElement('div');
-    createdAtS.classList.add('created_at');
-    //createdAt.textContent = returnedPost.comments[i].created_at;
-    createdAtS.textContent = "Time";
+    const wrapperWriteMessage = document.createElement('div');
+    wrapperWriteMessage.classList.add('wrapper_write_message');
 
-    const bodyS = document.createElement('p');
-    bodyS.classList.add('post_content');
-    //bodyS.textContent = returnedPost.comments[i].comment;
-    bodyS.textContent = "Love IT Love IT Love It Love IT";
+    const form = document.createElement('form');
+    form.id = 'write_message';
 
+    const textarea = document.createElement('textarea');
+    textarea.classList.add('input-box_textarea');
+    textarea.id = 'writeMessage';
+    textarea.name = 'writeMessage';
+    textarea.placeholder = 'Add comment';
+    textarea.rows = '2';
+    textarea.required = true;
 
-    sender.appendChild(nicknameS);
-    sender.appendChild(createdAtS);
-    sender.appendChild(bodyS);
+    const sendButton = document.createElement('button');
+    sendButton.type = 'submit';
+    sendButton.classList.add('btn');
+    sendButton.classList.add('btn-narrow');
+    sendButton.textContent = 'Send';
 
-    wrapperChat.appendChild(sender);
-    //  }
-    //  }
+    form.appendChild(textarea);
+    form.appendChild(sendButton);
 
+    wrapperWriteMessage.appendChild(form);
 
-    //if (returnedSendMessange != null) {
-    //  for (let i = 0; i < returnedSendMessange.length; i++) {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        callbackCreatMessage();
+    })
 
-    const receiver = document.createElement('div');
-    receiver.classList.add('receiver');
-
-    const nickname = document.createElement('h4');
-    //nickname.textContent = returnedPost.comments[i].nickname;
-    nickname.textContent = "Nick";
-
-    const createdAt = document.createElement('div');
-    createdAt.classList.add('created_at');
-    //createdAt.textContent = returnedPost.comments[i].created_at;
-    createdAt.textContent = "Time";
-
-    const body = document.createElement('p');
-    body.classList.add('post_content');
-    //comment.textContent = returnedPost.comments[i].comment;
-    body.textContent = "Love IT Love IT Love It Love IT";
-
-
-    receiver.appendChild(nickname);
-    receiver.appendChild(createdAt);
-    receiver.appendChild(body);
-
-    wrapperChat.appendChild(receiver);
-    //  }
-    //  }
-
-
+    wrapperChat.appendChild(wrapperWriteMessage);
 }

@@ -179,6 +179,7 @@ function routeEvent(event) {
             console.log("client changes handled!")
             console.log(clientChangesEvent.userNickname)
             console.log(clientChangesEvent.status)
+            //applyClientCHanges(clientChangesEvent)
             break;
         default:
             alert("unsupported message type");

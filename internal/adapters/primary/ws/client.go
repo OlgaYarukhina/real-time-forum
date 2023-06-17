@@ -9,33 +9,22 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// ClientList is a map used to help manage a map of clients
 type ClientList map[*Client]bool
 
-// Client is a websocket client, basically a frontend visitor
 type Client struct {
-	// the websocket connection
+	manager    *Manager
 	connection *websocket.Conn
 
-	// manager is the manager used to manage the client
-	manager *Manager
-	// egress is used to avoid concurrent writes on the WebSocket
-	egress chan Event
-	// chatroom is used to know what room user is in
+	egress   chan Event
 	chatroom string
 	userId   int
 }
 
 var (
-	// pongWait is how long we will await a pong response from client
-	pongWait = 5 * time.Minute
-	// pingInterval has to be less than pongWait, We cant multiply by 0.9 to get 90% of time
-	// Because that can make decimals, so instead *9 / 10 to get 90%
-	// The reason why it has to be less than PingRequency is becuase otherwise it will send a new Ping before getting response
+	pongWait     = 5 * time.Minute
 	pingInterval = (pongWait * 9) / 10
 )
 
-// NewClient is used to initialize a new Client with all required values initialized
 func NewClient(conn *websocket.Conn, manager *Manager, str string, id int) *Client {
 	return &Client{
 		connection: conn,
@@ -46,19 +35,14 @@ func NewClient(conn *websocket.Conn, manager *Manager, str string, id int) *Clie
 	}
 }
 
-// readMessages will start the client to read messages and handle them
-// appropriatly.
-// This is suppose to be ran as a goroutine
+// readMessages will start the client to read messages and handle them appropriatly.
 func (c *Client) readMessages() {
 	defer func() {
-		// Graceful Close the Connection once this
-		// function is done
 		c.manager.removeClient(c)
 	}()
-	// Set Max Size of Messages in Bytes
+
 	c.connection.SetReadLimit(512)
-	// Configure Wait time for Pong response, use Current time + pongWait
-	// This has to be done here to set the first initial timer.
+
 	if err := c.connection.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		log.Println(err)
 		return
@@ -66,7 +50,6 @@ func (c *Client) readMessages() {
 	// Configure how to handle Pong responses
 	c.connection.SetPongHandler(c.pongHandler)
 
-	// Loop Forever
 	for {
 		// ReadMessage is used to read the next message in queue
 		// in the connection
@@ -93,7 +76,6 @@ func (c *Client) readMessages() {
 	}
 }
 
-// pongHandler is used to handle PongMessages for the Client
 func (c *Client) pongHandler(pongMsg string) error {
 	// Current time + Pong Wait time
 	//log.Println("pong")
@@ -106,7 +88,6 @@ func (c *Client) writeMessages() {
 	ticker := time.NewTicker(pingInterval)
 	defer func() {
 		ticker.Stop()
-		// Graceful close if this triggers a closing
 		c.manager.removeClient(c)
 	}()
 
@@ -121,8 +102,7 @@ func (c *Client) writeMessages() {
 					// Log that the connection is closed and the reason
 					log.Println("connection closed: ", err)
 				}
-				// Return to close the goroutine
-				return
+				return // Return to close the goroutine
 			}
 
 			data, err := json.Marshal(message)
@@ -130,14 +110,13 @@ func (c *Client) writeMessages() {
 				log.Println(err)
 				return // closes the connection, should we really
 			}
-			// Write a Regular text message to the connection
+
 			if err := c.connection.WriteMessage(websocket.TextMessage, data); err != nil {
 				log.Println(err)
 			}
 			log.Println("sent message")
 		case <-ticker.C:
 			//log.Println("ping")
-			// Send the Ping
 			if err := c.connection.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				log.Println("writemsg: ", err)
 				return // return to break this goroutine triggeing cleanup

@@ -1,18 +1,16 @@
 package wsadpt
 
 import (
-	//"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"real-time-forum/internal/domain/entities"
-	"real-time-forum/internal/domain/interfaces"
 	"sync"
 
-	//"time"
+	"real-time-forum/internal/domain/entities"
+	"real-time-forum/internal/domain/interfaces"
 
 	"github.com/gorilla/websocket"
 )
@@ -22,7 +20,6 @@ var (
 	websocketUpgrader is used to upgrade incomming HTTP requests into a persitent websocket connection
 	*/
 	websocketUpgrader = websocket.Upgrader{
-		// Apply the Origin Checker
 		CheckOrigin:     checkOrigin,
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
@@ -48,28 +45,18 @@ func checkOrigin(r *http.Request) bool {
 	}
 }
 
-// Manager is used to hold references to all Clients Registered, and Broadcasting etc
 type Manager struct {
-	Clients ClientList
-
-	// Using a syncMutex here to be able to lcok state before editing clients
-	// Could also use Channels to block
 	sync.RWMutex
-	// handlers are functions that are used to handle Events
-	handlers map[string]EventHandler
-	// otps is a map of allowed OTP to accept connections from
-	// otps RetentionMap
 
+	Clients     ClientList
+	handlers    map[string]EventHandler
 	chatService interfaces.Chater
 }
 
-// NewManager is used to initalize all the values inside the manager
 func New(chater interfaces.Chater) *Manager {
 	m := &Manager{
-		Clients:  make(ClientList),
-		handlers: make(map[string]EventHandler),
-		// Create a new retentionMap that removes Otps older than 5 seconds
-		//otps: NewRetentionMap(ctx, 5*time.Second),
+		Clients:     make(ClientList),
+		handlers:    make(map[string]EventHandler),
 		chatService: chater,
 	}
 	m.setupEventHandlers()
@@ -96,54 +83,9 @@ func (m *Manager) routeEvent(event Event, c *Client) error {
 	}
 }
 
-// loginHandler is used to verify an user authentication and return a one time password
-// func (m *Manager) LoginHandler(w http.ResponseWriter, r *http.Request) {
-
-// 	type userLoginRequest struct {
-// 		Username string `json:"username"`
-// 		Password string `json:"password"`
-// 	}
-
-// 	var req userLoginRequest
-// 	err := json.NewDecoder(r.Body).Decode(&req)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	// Authenticate user / Verify Access token, what ever auth method you use
-// 	if req.Username == "percy" && req.Password == "123" {
-// 		// format to return otp in to the frontend
-// 		type response struct {
-// 			OTP string `json:"otp"`
-// 		}
-
-// 		// add a new OTP
-// 		otp := m.otps.NewOTP()
-
-// 		resp := response{
-// 			OTP: otp.Key,
-// 		}
-
-// 		data, err := json.Marshal(resp)
-// 		if err != nil {
-// 			log.Println(err)
-// 			return
-// 		}
-// 		// Return a response to the Authenticated user with the OTP
-// 		w.WriteHeader(http.StatusOK)
-// 		w.Write(data)
-// 		return
-// 	}
-
-// 	// Failure to auth
-// 	w.WriteHeader(http.StatusUnauthorized)
-// }
-
-// serveWS is a HTTP Handler that the has the Manager that allows connections
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 	log.Println("New connection start")
-	// Begin by upgrading the HTTP request
+
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -151,13 +93,10 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 	}
 
 	client := NewClient(conn, m, " ", userId)
-	// Add the newly created client to the manager
 	m.addClient(client)
 
 	go client.readMessages()
 	go client.writeMessages()
-
-	// TODO : return current active users
 }
 
 func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
@@ -167,7 +106,6 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	//TODO : is here not unique ids?
 
 	isActiveUsersId := []int{}
-
 
 	for isActiveUser, _ := range m.Clients {
 		isActiveUsersId = append(isActiveUsersId, isActiveUser.userId)
@@ -188,6 +126,8 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	return
 }
 
+// TODO :NOTE : send msg will use inside of ws logic,
+// or to be able to use it like API, move to httpadpt
 func (m *Manager) SendMsg(w http.ResponseWriter, r *http.Request, userId int) {
 	response, _ := ioutil.ReadAll(r.Body)
 
@@ -204,7 +144,7 @@ func (m *Manager) SendMsg(w http.ResponseWriter, r *http.Request, userId int) {
 	err = m.chatService.SaveMsg(message)
 	if err != nil {
 		resp["message"] = "Please, try again"
-	} 
+	}
 
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
@@ -215,7 +155,7 @@ func (m *Manager) SendMsg(w http.ResponseWriter, r *http.Request, userId int) {
 	return
 }
 
-
+// TODO: THINK!
 func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request, userId int) {
 	response, _ := ioutil.ReadAll(r.Body)
 
@@ -225,7 +165,7 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 		log.Fatalf("Err: %s", err)
 		return
 	}
-	
+
 	chatHistory := m.chatService.LoadChatHistory(userId, chatUserId.UserID)
 
 	jsonResp, err := json.Marshal(chatHistory)
@@ -236,40 +176,34 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 	return
 }
 
-
-
-// addClient will add clients to our clientList
 func (m *Manager) addClient(client *Client) {
 	fmt.Println("add client in process")
-	// TODO : send msg new user online
 
-	// Lock so we can manipulate
 	m.Lock()
 	defer m.Unlock()
 
-	// Add Client
 	m.Clients[client] = true
 
 	// TODO : verify that this is first user connection (user have no active clients yet)
+	// and send notification for other users only in that case
+
 	var outgoingEvent Event
 	payloadData := ClientChangesEvent{
 		Status: "online",
 		UserID: client.userId,
 	}
-	// Convert payloadData to JSON
+
 	payloadBytes, err := json.Marshal(payloadData)
 	if err != nil {
 		fmt.Println("error with marshal")
-		// Handle error
 		return
 	}
 
 	outgoingEvent.Payload = payloadBytes
 	outgoingEvent.Type = EventClientChanges
 
-	// Broadcast to all other Clients
 	for c := range m.Clients {
-		//fix next line, cuz object comparing
+		//TODO : fix next line, cuz object comparing
 		if client != c {
 			fmt.Println("sending")
 			c.egress <- outgoingEvent

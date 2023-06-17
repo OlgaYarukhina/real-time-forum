@@ -128,34 +128,30 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 
 // TODO :NOTE : send msg will use inside of ws logic,
 // or to be able to use it like API, move to httpadpt
-func (m *Manager) SendMsg(w http.ResponseWriter, r *http.Request, userId int) {
-	response, _ := ioutil.ReadAll(r.Body)
+// func (m *Manager) SendMsg(w http.ResponseWriter, r *http.Request, userId int) {
+// 	response, _ := ioutil.ReadAll(r.Body)
+// 	var message entities.Message
+// 	message.SenderID = userId
+// 	err := json.Unmarshal(response, &message)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		fmt.Println(err)
+// 		return
+// 	}
+// 	resp := make(map[string]string)
+// 	err = m.chatService.SaveMsg(message)
+// 	if err != nil {
+// 		resp["message"] = "Please, try again"
+// 	}
+// 	jsonResp, err := json.Marshal(resp)
+// 	if err != nil {
+// 		log.Fatalf("Err: %s", err)
+// 	}
+// 	w.Write(jsonResp)
+// 	return
+// }
 
-	var message entities.Message
-	message.SenderID = userId
-	err := json.Unmarshal(response, &message)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		fmt.Println(err)
-		return
-	}
-
-	resp := make(map[string]string)
-	err = m.chatService.SaveMsg(message)
-	if err != nil {
-		resp["message"] = "Please, try again"
-	}
-
-	jsonResp, err := json.Marshal(resp)
-	if err != nil {
-		log.Fatalf("Err: %s", err)
-	}
-
-	w.Write(jsonResp)
-	return
-}
-
-// TODO: THINK!
+// TODO: THINK! - move to http handler, cuz it have no any logic correlated with web sockets
 func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request, userId int) {
 	response, _ := ioutil.ReadAll(r.Body)
 
@@ -166,6 +162,7 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
+	// TODO : think, should it return error as well, in case of unsuccessful database request?
 	chatHistory := m.chatService.LoadChatHistory(userId, chatUserId.UserID)
 
 	jsonResp, err := json.Marshal(chatHistory)

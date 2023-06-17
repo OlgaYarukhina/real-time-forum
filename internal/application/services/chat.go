@@ -34,10 +34,10 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) ([]*en
 			if user.UserID == isActiveUserId {
 				user.IsActive = true
 				break
-			} 
+			}
 		}
 	}
-	
+
 	return allUsers, err
 }
 
@@ -50,7 +50,7 @@ func (service ChatService) SaveMsg(newMessage entities.Message) error {
 }
 
 func (service ChatService) LoadChatHistory(currentUser, user int) []entities.Message {
-	messages, err := service.repo.GetPrevMsgs(currentUser, user)
+	messages, err := service.repo.GetHistory(currentUser, user)
 	if err != nil {
 		log.Fatalf("Could not get chat history. Err: %s", err)
 	}

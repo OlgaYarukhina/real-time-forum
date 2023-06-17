@@ -59,7 +59,7 @@ func main() {
 	http.HandleFunc("/api/ws", handler.SessionCheck(manager.ServeWS))
 	http.HandleFunc("/api/get_users", handler.SessionCheck(manager.GetUsers))
 	http.HandleFunc("/api/get_chat", handler.SessionCheck(manager.LoadChatHistoryHandler))
-	http.HandleFunc("/api/create_message", handler.SessionCheck(manager.SendMsg))
+	//http.HandleFunc("/api/create_message", handler.SessionCheck(manager.SendMsg))
 	http.HandleFunc("/api/logout", handler.SessionCheck(handler.LogoutHandler))
 
 	log.Println("Starting server on: http://localhost:8080/login")

@@ -1,6 +1,9 @@
-export async function CreateChatBlocks(callbackGetMessage, callbackCreatMessage, id) {
+export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage, id) {
 
     let returnedMessages = await callbackGetMessage(id);
+
+    console.log("returnedMessages");
+    console.log(returnedMessages);
 
     const wrapperChat = document.createElement('div');
     wrapperChat.classList.add('wrapper_chat');
@@ -55,8 +58,9 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreatMessage,
 
     form.addEventListener('submit', e => {
         e.preventDefault();
-        callbackCreatMessage();
+        callbackCreateMessage();
     })
 
     wrapperChat.appendChild(wrapperWriteMessage);
+    return wrapperChat;
 }

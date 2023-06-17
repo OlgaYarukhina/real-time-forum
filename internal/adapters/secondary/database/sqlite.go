@@ -74,8 +74,6 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 	return users, nil
 }
 
-
-
 //sessions
 
 func (d *Database) SaveSession(session entities.Session) (int, error) {
@@ -138,7 +136,7 @@ func (d *Database) SaveMsg(message entities.Message) error {
 	return nil
 }
 
-func (d *Database) GetPrevMsgs(currentUser, user int) ([]entities.Message, error) {
+func (d *Database) GetHistory(currentUser, user int) ([]entities.Message, error) {
 	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM message WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY created_at ASC LIMIT 200`
 	rows, err := d.db.Query(stmt, currentUser, user, user, currentUser)
 	defer rows.Close()
@@ -155,7 +153,7 @@ func (d *Database) GetPrevMsgs(currentUser, user int) ([]entities.Message, error
 	return messages, nil
 }
 
-func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool){
+func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool) {
 
 	isUnreadCheck := 0
 	isMessage := true
@@ -164,14 +162,14 @@ func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool){
 		if err == sql.ErrNoRows {
 			isMessage = false
 		} else {
-           fmt.Println(err)
+			fmt.Println(err)
 		}
 	} else {
 		if isUnreadCheck == 1 {
 			isUnread = true
 		} else {
 			isUnread = false
-		} 
+		}
 	}
 	return isMessage, isUnread
 }
@@ -215,7 +213,6 @@ func (d *Database) SavePost(post entities.Post) error {
     VALUES(?,?,?, current_date)`
 	result, err := d.db.Exec(stmt, post.Title, post.Content, post.UserID, post.CreatedAt)
 	id, err := result.LastInsertId()
-
 
 	for _, category_id := range post.Categories {
 		cat_id, err := strconv.Atoi(category_id)
@@ -301,7 +298,7 @@ func (d *Database) getCategoryRelation(postId int) ([]string, error) {
 
 func (d *Database) getNameOfCategoryById(categoryId int) (string, error) {
 	var category string
-	if err :=  d.db.QueryRow("SELECT called FROM categories WHERE category_id = ?", categoryId).Scan(&category); err != nil {
+	if err := d.db.QueryRow("SELECT called FROM categories WHERE category_id = ?", categoryId).Scan(&category); err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println("Category was not found")
 		} else {
@@ -310,6 +307,5 @@ func (d *Database) getNameOfCategoryById(categoryId int) (string, error) {
 	}
 	return category, nil
 }
-
 
 // 	https://go.dev/tour/concurrency/9

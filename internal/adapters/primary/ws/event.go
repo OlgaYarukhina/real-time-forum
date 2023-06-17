@@ -3,6 +3,7 @@ package wsadpt
 import (
 	"encoding/json"
 	"fmt"
+	"real-time-forum/internal/domain/entities"
 	"time"
 )
 
@@ -66,6 +67,18 @@ func SendMessageHandler(event Event, c *Client) error {
 			client.egress <- outgoingEvent
 		}
 	}
+
+	err = c.manager.chatService.SaveMsg(entities.Message{
+		// TODO : think tow to get those values and how to change existing events
+		// maybe lets save not user ids, but nicknames? will be less code changes :D
+		// (user names will also related with user as id in case of cascade delete)
+		// to get messages from database we may take nickname from database by user id
+		// and get messages from database with this nickname in fields 'from'&'to'
+	})
+	if err != nil {
+		//log ?
+	}
+
 	return nil
 }
 

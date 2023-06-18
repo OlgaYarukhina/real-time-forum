@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"real-time-forum/internal/domain/entities"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -28,7 +30,7 @@ type ClientChangesEvent struct {
 
 type SendMessageEvent struct {
 	Message string `json:"message"`
-	From    string `json:"from"`
+	From    int    `json:"from"`
 }
 
 type NewMessageEvent struct {
@@ -63,17 +65,27 @@ func SendMessageHandler(event Event, c *Client) error {
 	outgoingEvent.Type = EventNewMessage
 
 	for client := range c.manager.Clients {
-		if client.chatroom == c.chatroom {
+		if client.chatroom == "" {
+			continue
+		}
+		if client.chatroom == c.chatroom ||
+			strings.Split(client.chatroom, "&")[0] == strings.Split(c.chatroom, "&")[1] &&
+				strings.Split(client.chatroom, "&")[1] == strings.Split(c.chatroom, "&")[0] {
 			client.egress <- outgoingEvent
 		}
 	}
+	fmt.Println(c.chatroom)
+	receiverId, err := strconv.Atoi(strings.Split(c.chatroom, "&")[1])
+	if err != nil {
+		//log
+		return nil
+	}
 
 	err = c.manager.chatService.SaveMsg(entities.Message{
-		// TODO : think tow to get those values and how to change existing events
-		// maybe lets save not user ids, but nicknames? will be less code changes :D
-		// (user names will also related with user as id in case of cascade delete)
-		// to get messages from database we may take nickname from database by user id
-		// and get messages from database with this nickname in fields 'from'&'to'
+		SenderID:   receiverId,
+		ReceiverID: broadMessage.From,
+		Body:       broadMessage.Message,
+		SendTime:   broadMessage.Sent,
 	})
 	if err != nil {
 		//log ?

@@ -190,36 +190,31 @@ function routeEvent(event) {
 
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
-    var date = new Date(messageEvent.sent);
-    // format message
-    const formattedMsg = `${date.toLocaleString()}: ${messageEvent.message}`;
-    // Append Message
-    textarea = document.getElementById("chatmessages");
-    textarea.innerHTML = textarea.innerHTML + "\n" + formattedMsg;
-    textarea.scrollTop = textarea.scrollHeight;
+    console.log("appedning msg");
+    console.log(messageEvent.message)
+    let textarea = document.getElementById("wrapperchat");
+    let text = document.createElement("div")
+    text.innerHTML = messageEvent.message;
+    console.log(text);
+    textarea.appendChild(text);
+    //textarea.scrollTop = textarea.scrollHeight;
 }
 
 // TODO : move to "go to chat" component
-function changeChatRoom() {
-    // Change Header to reflect the Changed chatroom
-    var newchat = document.getElementById("chatroom");
-    if (newchat != null && newchat.value != selectedchat) {
-        selectedchat = newchat.value;
-        header = document.getElementById("chat-header").innerHTML = "Currently in chat: " + selectedchat;
-
-        let changeEvent = new ChangeChatRoomEvent(selectedchat);
-        sendEvent("change_room", changeEvent);
-        textarea = document.getElementById("chatmessages");
-        textarea.innerHTML = `You changed room into: ${selectedchat}`;
-    }
+export function changeChatRoom(id) {
+    let changeEvent = new ChangeChatRoomEvent(localStorage.getItem("userId")+"&"+id);
+    sendEvent("change_room", changeEvent);
     return false;
 }
 
 // TODO : move to chat view
-function sendMessage() {
-    var newmessage = document.getElementById("message");
+export function sendMessage(id) {
+    console.log("sending msg through ws connection")
+    var newmessage = document.getElementById('writeMessage');
     if (newmessage != null) {
-        let outgoingEvent = new SendMessageEvent(newmessage.value, "percy");
+        let outgoingEvent = new SendMessageEvent(newmessage.value, parseInt(localStorage.getItem("userId"),10));
+        console.log("sending message")
+        console.log(newmessage.value)
         sendEvent("send_message", outgoingEvent)
     }
     return false;
@@ -229,7 +224,7 @@ function sendEvent(eventName, payload) {
     // Create a event Object with a event named send_message
     const event = new Event(eventName, payload);
     // Format as JSON and send
-    conn.send(JSON.stringify(event));
+    websocket.send(JSON.stringify(event));
 }
 
 //---

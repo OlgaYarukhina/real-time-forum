@@ -20,8 +20,8 @@ const setError = (element, message) => {
       const response = await fetch("http://localhost:8080/api/login", {
         method: "POST",
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          'Accept': "application/json",
+          'Content-Type': "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -35,7 +35,8 @@ const setError = (element, message) => {
       } else if (returnedError.message === "Successfully logged in") {
         //nav.classList.add("active");
         localStorage.setItem("sessionToken", returnedError.token);
-        localStorage.setItem("sessionId", returnedError.user_id);
+        localStorage.setItem("sessionId", returnedError.session_id);
+        localStorage.setItem("userId", returnedError.user_id);
         navigateTo("http://localhost:8080/");
       } else {
         // Handle other cases if needed

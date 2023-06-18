@@ -1,20 +1,25 @@
-import { navigateTo } from "../index.js";
+import { navigateTo, changeChatRoom } from "../index.js";
 
 export const getChat = async (id) => {
+
+  changeChatRoom(id.substr(1))
   let returnedMessage = [];
 
-  let userId = {
-    user_id: id.substr(1)
+  let requestData = {
+    user_id: parseInt(id.substr(1))
   };
 
   try {
     const response = await fetch("http://localhost:8080/api/get_chat", {
       method: "POST",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        'Accept': "application/json",
+        'Content-Type': "application/json",
+        'X-Session-Token' : localStorage.getItem("sessionToken"),
+        'X-Session-Id' : localStorage.getItem("sessionId")
       },
-      body: JSON.stringify(userId),
+      body: JSON.stringify(requestData),
+      //body: JSON.stringify(parseInt(id.substr(1), 10))
     });
 
     returnedMessage = await response.json();
@@ -28,7 +33,8 @@ export const getChat = async (id) => {
 }
 
 export const createMessage = async (id) => {
-
+  console.log("sending message!")
+  console.log(id)
   let formData = {
     body: document.getElementById('writeMessage').value,
     receiver_id: id.substr(1)

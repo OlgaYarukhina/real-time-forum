@@ -56,3 +56,11 @@ func (service ChatService) LoadChatHistory(currentUser, user int) []entities.Mes
 	}
 	return messages
 }
+
+func (service ChatService) GetUserIdByNickname(nick string) (int, error) {
+	id, err := service.repo.GetUserIdByNickname(nick)
+	if err != nil {
+		log.Fatalf("Could not get nickname. Err: %s", err)
+	}
+	return id, nil
+}

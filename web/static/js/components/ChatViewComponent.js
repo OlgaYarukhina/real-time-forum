@@ -6,6 +6,7 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
     console.log(returnedMessages);
 
     const wrapperChat = document.createElement('div');
+    wrapperChat.setAttribute("id", "wrapperchat");
     wrapperChat.classList.add('wrapper_chat');
 
     if (returnedMessages != null) {
@@ -55,12 +56,21 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
     form.appendChild(sendButton);
 
     wrapperWriteMessage.appendChild(form);
+    let wrapped = callbackCreateMessageWrap(id, callbackCreateMessage);
 
     form.addEventListener('submit', e => {
         e.preventDefault();
-        callbackCreateMessage();
+        console.log("click");
+        wrapped()
     })
 
     wrapperChat.appendChild(wrapperWriteMessage);
     return wrapperChat;
+}
+
+function callbackCreateMessageWrap(id, f){
+    return function() {
+        console.log("into");
+        f(id);
+    }
 }

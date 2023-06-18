@@ -8,6 +8,7 @@ type Repository interface {
 	SaveUser(user entities.User) error
 	GetHashedPassword(login string) (int, string, error)
 	GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, error)
+	GetUserIdByNickname(nick string) (int, error)
 
 	//session repo
 	SaveSession(token entities.Session) (int, error)

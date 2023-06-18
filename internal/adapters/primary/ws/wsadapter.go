@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"sync"
 
-	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
 
 	"github.com/gorilla/websocket"
@@ -92,7 +91,7 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 		return
 	}
 
-	client := NewClient(conn, m, " ", userId)
+	client := NewClient(conn, m, "", userId)
 	m.addClient(client)
 
 	go client.readMessages()
@@ -153,18 +152,23 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 
 // TODO: THINK! - move to http handler, cuz it have no any logic correlated with web sockets
 func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request, userId int) {
+
 	response, _ := ioutil.ReadAll(r.Body)
 
-	var chatUserId entities.User
-	err := json.Unmarshal(response, &chatUserId)
+	type ChatUserID struct {
+		UserID int `json:"user_id"`
+	}
+
+	var chatUserID ChatUserID
+	err := json.Unmarshal(response, &chatUserID)
 	if err != nil {
-		log.Fatalf("Err: %s", err)
+		log.Fatalf("Error: %s", err)
 		return
 	}
 
 	// TODO : think, should it return error as well, in case of unsuccessful database request?
-	chatHistory := m.chatService.LoadChatHistory(userId, chatUserId.UserID)
-
+	chatHistory := m.chatService.LoadChatHistory(userId, chatUserID.UserID)
+	fmt.Println(chatHistory)
 	jsonResp, err := json.Marshal(chatHistory)
 	if err != nil {
 		log.Fatalf("Err: %s", err)

@@ -24,30 +24,30 @@ func NewAuthService(repo interfaces.Repository, hasher interfaces.Hasher, sessio
 	}
 }
 
-func (service AuthService) Login(cred entities.UserCredentials) (int, string, error) {
+func (service AuthService) Login(cred entities.UserCredentials) (int, int, string, error) {
 	fmt.Println("auth service login job")
 
 	id, password, err := service.repo.GetHashedPassword(cred.Email) // check email and get password
 	if err != nil {
 		fmt.Println(err)
-		return -1, "", err // wrong email
+		return -1, -1, "", err // wrong email
 	}
 
 	err = service.hasher.CheckHash(cred.Pass, password)
 	if err != nil {
-		return -1, "", err // wrong pass
+		return -1, -1, "", err // wrong pass
 	}
 
 	token, err := service.sessioner.NewToken()
 	if err != nil {
 		fmt.Println(err)
-		return -1, "", err // cannot create session token
+		return -1, -1, "", err // cannot create session token
 	}
 
 	tokenHash, err := service.hasher.HashString(token)
 	if err != nil {
 		fmt.Println(err)
-		return -1, "", err // cannot hash session token
+		return -1, -1, "", err // cannot hash session token
 	}
 
 	sessionId, err := service.repo.SaveSession(entities.Session{
@@ -57,10 +57,10 @@ func (service AuthService) Login(cred entities.UserCredentials) (int, string, er
 	})
 	if err != nil {
 		fmt.Println(err)
-		return -1, "", err // cannot save session token
+		return -1, -1, "", err // cannot save session token
 	}
 
-	return sessionId, token, nil
+	return id, sessionId, token, nil
 }
 
 func (service AuthService) Logout(userId int) error {

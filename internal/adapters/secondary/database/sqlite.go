@@ -54,7 +54,7 @@ func (d *Database) GetHashedPassword(email string) (int, string, error) {
 func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, error) {
 	stmt := `SELECT user_id, nickname FROM users`
 	rows, err := d.db.Query(stmt)
-	defer rows.Close()
+	//defer rows.Close()
 
 	var users []*entities.UserChatInfo
 	for rows.Next() {
@@ -72,6 +72,22 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 		users = append(users, &user)
 	}
 	return users, nil
+}
+
+func (d *Database) GetUserIdByNickname(nick string) (int, error) {
+	var userID int
+
+	stmt := `SELECT user_id FROM users WHERE nickname = ?`
+	err := d.db.QueryRow(stmt, nick).Scan(&userID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// Handle case where user is not found
+			return 0, err
+		}
+		return 0, err
+	}
+
+	return userID, nil
 }
 
 //sessions

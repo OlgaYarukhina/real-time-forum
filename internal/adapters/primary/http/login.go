@@ -25,7 +25,7 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 
 	resp := make(map[string]string)
 
-	sessionId, token, err := handler.authService.Login(cr)
+	userId, sessionId, token, err := handler.authService.Login(cr)
 	if err != nil {
 		switch err.Error() {
 		case "sql: no rows in result set":
@@ -41,7 +41,8 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 	} else {
 		resp["message"] = "Successfully logged in"
 		resp["token"] = token
-		resp["user_id"] = strconv.Itoa(sessionId)
+		resp["session_id"] = strconv.Itoa(sessionId)
+		resp["user_id"] = strconv.Itoa(userId)
 	}
 
 	jsonResp, err := json.Marshal(resp)

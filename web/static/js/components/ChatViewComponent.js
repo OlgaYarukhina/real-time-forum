@@ -39,11 +39,11 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
     form.id = 'write_message';
 
     const textarea = document.createElement('textarea');
-    textarea.classList.add('input-box_textarea');
+    textarea.classList.add('input-box_textarea_chat');
     textarea.id = 'writeMessage';
     textarea.name = 'writeMessage';
     textarea.placeholder = 'Add comment';
-    textarea.rows = '2';
+    textarea.rows = '1';
     textarea.required = true;
 
     const sendButton = document.createElement('button');

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"sync"
 
+	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
 
 	"github.com/gorilla/websocket"
@@ -155,17 +156,20 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 
 	response, _ := ioutil.ReadAll(r.Body)
 
-	type ChatUserID struct {
-		UserID int `json:"user_id"`
-	}
+	// type ChatUserID struct {
+	// 	UserID int `json:"user_id"`
+	// }
 
-	var chatUserID ChatUserID
+	var chatUserID entities.User
+	
 	err := json.Unmarshal(response, &chatUserID)
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 		return
 	}
 
+	fmt.Println("Check user id")
+	fmt.Println(chatUserID)
 	// TODO : think, should it return error as well, in case of unsuccessful database request?
 	chatHistory := m.chatService.LoadChatHistory(userId, chatUserID.UserID)
 	fmt.Println(chatHistory)

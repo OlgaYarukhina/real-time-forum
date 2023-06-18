@@ -49,7 +49,7 @@ func (service ChatService) SaveMsg(newMessage entities.Message) error {
 	return nil
 }
 
-func (service ChatService) LoadChatHistory(currentUser, user int) []entities.Message {
+func (service ChatService) LoadChatHistory(currentUser, user int) []*entities.Message {
 	messages, err := service.repo.GetHistory(currentUser, user)
 	if err != nil {
 		log.Fatalf("Could not get chat history. Err: %s", err)

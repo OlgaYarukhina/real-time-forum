@@ -38,7 +38,6 @@
 }
 
 .sender{
-    position: absolute;
     display: block;
     width: 600px;
     min-width: 350px;
@@ -51,7 +50,6 @@
 }
 
 .receiver{
-    position: absolute;
     display: block;
     width: 600px;
     min-width: 350px;
@@ -64,8 +62,7 @@
 }
 
 .wrapper_write_message {
-    position: absolute;
-    display: block;
+    display:block;
     width: 100%;
     margin: auto;
     background: rgb(86, 96, 161, 0.7);
@@ -73,4 +70,11 @@
     border-radius: 30px;
     box-shadow: 0 0 30px rgb(74, 70, 70);
     padding: 20px;
+}
+
+.input-box_textarea_chat{
+    border: 0px;
+    width:60%;
+    color: antiquewhite;
+    background: none;
 }

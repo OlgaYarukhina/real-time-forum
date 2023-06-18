@@ -152,21 +152,36 @@ func (d *Database) SaveMsg(message entities.Message) error {
 	return nil
 }
 
-func (d *Database) GetHistory(currentUser, user int) ([]entities.Message, error) {
-	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM message WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY created_at ASC LIMIT 200`
+func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error) {
+	fmt.Println("Get history")
+	fmt.Println(currentUser)
+	fmt.Println(user)
+	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM messages WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY send_time ASC LIMIT 200`
 	rows, err := d.db.Query(stmt, currentUser, user, user, currentUser)
+	if err != nil {
+		fmt.Println(err)
+					return nil, err
+				}
 	defer rows.Close()
 
-	var messages []entities.Message
-	for rows.Next() {
-		message := entities.Message{}
-		err = rows.Scan(&message.SenderID, &message.ReceiverID, &message.SendTime, &message.Body)
-		if err != nil {
-			return nil, err
+	fmt.Println(rows)
+
+	var messages []*entities.Message
+
+		
+		for rows.Next() {
+			message := &entities.Message{}
+			err = rows.Scan(&message.SenderID, &message.ReceiverID, &message.SendTime, &message.Body)
+			if err != nil {
+				return nil, err
+			}
+			messages = append(messages, message)
 		}
-		messages = append(messages, message)
-	}
-	return messages, nil
+		fmt.Println("Messages")
+		fmt.Println(messages)
+		
+		
+		return messages, nil
 }
 
 func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool) {

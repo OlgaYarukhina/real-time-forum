@@ -33,6 +33,7 @@
 .wrapper_chat {
     position: relative;
     width: 100%;
+    height: 100%;
     padding: 20px;
     min-width: 400px;
 }
@@ -41,35 +42,43 @@
     display: block;
     width: 600px;
     min-width: 350px;
-    margin-top: 40px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-bottom: auto;
     background: rgb(86, 96, 161, 0.7);
-    border: 2px solid rgb(142, 131, 131);
-    border-radius: 30px;
-    box-shadow: 0 0 30px rgb(74, 70, 70);
-    padding: 20px;
+    border: 1px solid rgb(142, 131, 131);
+    border-radius: 30px;Olga2
+    padding: 10px 20px;
 }
 
 .receiver{
     display: block;
     width: 600px;
     min-width: 350px;
-    margin-top: 40px;
+    margin-top: 20px;
     background: rgb(64, 217, 125, 0.5);
-    border: 2px solid rgb(142, 131, 131);
+    border: 1px solid rgb(142, 131, 131);
     border-radius: 30px;
-    box-shadow: 0 0 30px rgb(74, 70, 70);
-    padding: 20px;
+    padding: 10px 20px;
 }
 
 .wrapper_write_message {
     display:block;
-    width: 100%;
+    width: 90%;
     margin: auto;
-    background: rgb(86, 96, 161, 0.7);
-    border: 2px solid rgb(142, 131, 131);
+    background: rgba(128, 116, 135, 0.7);
+    border: 1px solid rgb(142, 131, 131);
     border-radius: 30px;
     box-shadow: 0 0 30px rgb(74, 70, 70);
-    padding: 20px;
+    padding: 10px 20px;
+    position: absolute;
+    bottom: 15px;
+}
+
+.wrapper_display_messages{
+    overflow: scroll;
+    height: 80%;
+    
 }
 
 .input-box_textarea_chat{

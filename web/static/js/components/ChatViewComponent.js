@@ -9,8 +9,12 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
     wrapperChat.setAttribute("id", "wrapperchat");
     wrapperChat.classList.add('wrapper_chat');
 
+    const wrapperDisplayMessages = document.createElement('div');
+    wrapperDisplayMessages.classList.add('wrapper_display_messages');
+
+
     if (returnedMessages != null) {
-        for (let i = 0; i < returnedMessages.length; i++) {
+        for (let i = returnedMessages.length-1; i >= 0; i--) {
             const message = document.createElement('div');
             const body = document.createElement('p');
             body.classList.add('post_content');
@@ -19,16 +23,18 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
             createdAt.classList.add('created_at');
             createdAt.textContent = returnedMessages[i].created_at;
 
-            if (returnedMessages[i].sender_id === id) {
-                message.classList.add('sender');
-            } else {
+            if (returnedMessages[i].reciver_id === id) {
                 message.classList.add('receiver');
+            } else {
+                message.classList.add('sender');
             }
             message.appendChild(body);
             message.appendChild(createdAt);
-            wrapperChat.appendChild(message);
+            wrapperDisplayMessages.prepend(message);
         }
     }
+
+    wrapperChat.appendChild(wrapperDisplayMessages);
 
     // div write message
 

@@ -5,6 +5,9 @@
     font-family: 'Poppins', sans-serif;
 }
 
+html {
+    height: 100%;
+}
 body {
     position: relative;
     display: flex;
@@ -15,7 +18,7 @@ body {
 .app {
     display: flex;
     width: 100%;
-    height: 900px;
+    min-height: 100vh;
     flex-wrap: wrap;
     justify-content: center;
     overflow: scroll;

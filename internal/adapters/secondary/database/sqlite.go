@@ -54,6 +54,9 @@ func (d *Database) GetHashedPassword(email string) (int, string, error) {
 func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, error) {
 	stmt := `SELECT user_id, nickname FROM users`
 	rows, err := d.db.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
 	//defer rows.Close()
 
 	var users []*entities.UserChatInfo
@@ -63,12 +66,17 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 		if err != nil {
 			return nil, err
 		}
+
 		// check if them have unread message
 		user.IsMessage, user.IsUnread = d.CheckIsUnread(currentUserID, user.UserID)
 		if err != nil {
 			return nil, err
 		}
 
+		// get last message time for sorting chat list
+		if user.IsMessage == true { 
+			user.LastMessage = d.GetLastMessageTime(currentUserID) 
+		}
 		users = append(users, &user)
 	}
 	return users, nil
@@ -81,8 +89,7 @@ func (d *Database) GetUserIdByNickname(nick string) (int, error) {
 	err := d.db.QueryRow(stmt, nick).Scan(&userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			// Handle case where user is not found
-			return 0, err
+			return 0, err // Handle case where user is not found
 		}
 		return 0, err
 	}
@@ -160,28 +167,26 @@ func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error
 	rows, err := d.db.Query(stmt, currentUser, user, user, currentUser)
 	if err != nil {
 		fmt.Println(err)
-					return nil, err
-				}
+		return nil, err
+	}
 	defer rows.Close()
 
 	fmt.Println(rows)
 
 	var messages []*entities.Message
 
-		
-		for rows.Next() {
-			message := &entities.Message{}
-			err = rows.Scan(&message.SenderID, &message.ReceiverID, &message.SendTime, &message.Body)
-			if err != nil {
-				return nil, err
-			}
-			messages = append(messages, message)
+	for rows.Next() {
+		message := &entities.Message{}
+		err = rows.Scan(&message.SenderID, &message.ReceiverID, &message.SendTime, &message.Body)
+		if err != nil {
+			return nil, err
 		}
-		fmt.Println("Messages")
-		fmt.Println(messages)
-		
-		
-		return messages, nil
+		messages = append(messages, message)
+	}
+	fmt.Println("Messages")
+	fmt.Println(messages)
+
+	return messages, nil
 }
 
 func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool) {
@@ -337,6 +342,31 @@ func (d *Database) getNameOfCategoryById(categoryId int) (string, error) {
 		}
 	}
 	return category, nil
+}
+
+func (d *Database) GetLastMessageTime(currentUserID int) time.Time {
+	var lastMessageId int
+	var time time.Time
+
+	stmt := `SELECT id FROM messages WHERE receiver_id = ? OR sender_id = ? ORDER BY id DESC LIMIT 1`
+	if err := d.db.QueryRow(stmt, currentUserID, currentUserID).Scan(&lastMessageId); err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println(err)
+		}
+		fmt.Println(err)
+	}
+
+	stmt = `SELECT send_time FROM messages WHERE id = ?`
+	if err := d.db.QueryRow(stmt, lastMessageId).Scan(&time); err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println(err)
+		}
+		fmt.Println(err)
+	}
+	fmt.Println("Time of last message")
+	fmt.Println(time)
+
+	return time
 }
 
 // 	https://go.dev/tour/concurrency/9

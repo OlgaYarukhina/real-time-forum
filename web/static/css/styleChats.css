@@ -87,3 +87,8 @@
     color: antiquewhite;
     background: none;
 }
+
+.input-box_textarea_chat:focus{
+    border-color: none;
+    outline: none;
+}

@@ -53,6 +53,11 @@
     margin: 35px 0;
 }
 
+.input-box:-webkit-autofill:focus{
+    background-color: none;
+    -webkit-text-fill-color: none;
+}
+
 .input-box.error input {
     border-bottom: 2px solid rgb(64, 217, 125);
 }

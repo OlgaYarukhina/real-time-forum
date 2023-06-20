@@ -5,6 +5,7 @@ import (
 	"log"
 	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
+	"sort"
 )
 
 type ChatService struct {
@@ -19,7 +20,7 @@ func NewChatService(repo interfaces.Repository) *ChatService {
 	}
 }
 
-func (service ChatService) GetUsers(activeUserIds []int, currentUser int) ([]*entities.UserChatInfo, error) {
+func (service ChatService) GetUsers(activeUserIds []int, currentUser int) (map[string]interface{}, error) {
 	fmt.Println("chat service works on getting users")
 
 	allUsers, err := service.repo.GetAllUsers(currentUser) // users with checked message status
@@ -38,8 +39,49 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) ([]*en
 		}
 	}
 
-	return allUsers, err
+
+	// sort users for displaing in chat list in right order
+
+	allUsersSorted := make(map[string]interface{})
+	usersWithMessages := make([]entities.UserChatInfo, 0)
+	usersWithoutMessages := make([]entities.UserChatInfo, 0)
+
+	for _, user := range allUsers {
+		if user.IsMessage == true {
+			usersWithMessages = append(usersWithMessages, *user)
+		} else {
+			usersWithoutMessages = append(usersWithoutMessages, *user)
+		}
+	}
+
+	SortBySendMessageTime(usersWithMessages)
+	sort.Slice(usersWithoutMessages, func(i, j int)(less bool) {
+		return usersWithoutMessages[i].Nickname < usersWithoutMessages[j].Nickname
+	})
+	
+
+	allUsersSorted["withmsg"] = usersWithMessages
+	allUsersSorted["withoutmsg"] = usersWithoutMessages
+
+	return allUsersSorted, err
 }
+
+func SortBySendMessageTime(arr []entities.UserChatInfo) []entities.UserChatInfo {
+// for i := 0; i < len(arr)-1; i++ {
+// 	minIndex := i
+// 	for j := i+1; j < len(arr); j++ {
+// 		if arr[j].LastMessage < arr[minIndex].LastMessage {
+// 			minIndex = j
+// 		}
+// 	}
+// 	arr[i], arr[minIndex] = arr[minIndex], arr[i]
+// }
+	return arr
+}
+
+
+
+
 
 func (service ChatService) SaveMsg(newMessage entities.Message) error {
 	err := service.repo.SaveMsg(newMessage)

@@ -156,10 +156,6 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 
 	response, _ := ioutil.ReadAll(r.Body)
 
-	// type ChatUserID struct {
-	// 	UserID int `json:"user_id"`
-	// }
-
 	var chatUserID entities.User
 	
 	err := json.Unmarshal(response, &chatUserID)
@@ -168,11 +164,9 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	fmt.Println("Check user id")
-	fmt.Println(chatUserID)
 	// TODO : think, should it return error as well, in case of unsuccessful database request?
 	chatHistory := m.chatService.LoadChatHistory(userId, chatUserID.UserID)
-	fmt.Println(chatHistory)
+	
 	jsonResp, err := json.Marshal(chatHistory)
 	if err != nil {
 		log.Fatalf("Err: %s", err)

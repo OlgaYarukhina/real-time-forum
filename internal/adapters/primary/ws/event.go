@@ -35,6 +35,7 @@ type SendMessageEvent struct {
 
 type NewMessageEvent struct {
 	SendMessageEvent
+	To   int       `json:"to"`
 	Sent time.Time `json:"sent"`
 }
 
@@ -48,12 +49,19 @@ func SendMessageHandler(event Event, c *Client) error {
 	if err := json.Unmarshal(event.Payload, &chatevent); err != nil {
 		return fmt.Errorf("bad payload in request: %v", err)
 	}
+	fmt.Println(c.chatroom)
+	receiverId, err := strconv.Atoi(strings.Split(c.chatroom, "&")[1])
+	if err != nil {
+		//log
+		return nil
+	}
 
 	var broadMessage NewMessageEvent
 
 	broadMessage.Sent = time.Now()
 	broadMessage.Message = chatevent.Message
 	broadMessage.From = chatevent.From
+	broadMessage.To = receiverId
 
 	data, err := json.Marshal(broadMessage)
 	if err != nil {
@@ -68,17 +76,15 @@ func SendMessageHandler(event Event, c *Client) error {
 		if client.chatroom == "" {
 			continue
 		}
+		//i, _ := strconv.Atoi(strings.Split(client.chatroom, "&")[1])
 		if client.chatroom == c.chatroom ||
-			strings.Split(client.chatroom, "&")[0] == strings.Split(c.chatroom, "&")[1] &&
-				strings.Split(client.chatroom, "&")[1] == strings.Split(c.chatroom, "&")[0] {
+			client.userId == broadMessage.To { //&&
+			//i == broadMessage.From {
+			//  client.chatroom == c.chatroom ||
+			// 	strings.Split(client.chatroom, "&")[0] == strings.Split(c.chatroom, "&")[1] &&
+			// 		strings.Split(client.chatroom, "&")[1] == strings.Split(c.chatroom, "&")[0] {
 			client.egress <- outgoingEvent
 		}
-	}
-	fmt.Println(c.chatroom)
-	receiverId, err := strconv.Atoi(strings.Split(c.chatroom, "&")[1])
-	if err != nil {
-		//log
-		return nil
 	}
 
 	err = c.manager.chatService.SaveMsg(entities.Message{

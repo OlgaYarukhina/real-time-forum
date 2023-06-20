@@ -144,10 +144,11 @@ class SendMessageEvent {
 }
 
 class NewMessageEvent {
-    constructor(message, from, sent) {
+    constructor(message, from, sent, to) {
         this.message = message;
         this.from = from;
         this.sent = sent;
+        this.to = to;
     }
 }
 
@@ -176,6 +177,7 @@ function routeEvent(event) {
         case "new_message":
             // Format payload
             const messageEvent = Object.assign(new NewMessageEvent, event.payload);
+            console.log(messageEvent)
             appendChatMessage(messageEvent);
             break;
         case "client_changes":
@@ -192,20 +194,25 @@ function routeEvent(event) {
 
 }
 
+var chattingUserId;
+
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
-    console.log("appedning msg");
-    console.log(messageEvent.message)
-    let textarea = document.getElementById("wrapperchat");
-    let text = document.createElement("div")
-    text.innerHTML = messageEvent.message;
-    console.log(text);
-    textarea.appendChild(text);
-    //textarea.scrollTop = textarea.scrollHeight;
+    console.log("TRYING TO APPEND chattingUserId -  "+ chattingUserId)
+    if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to){
+        console.log("appedning msg");
+        console.log(messageEvent.message)
+        let textarea = document.getElementById("wrapperchat");
+        let text = document.createElement("div")
+        text.innerHTML = messageEvent.message;
+        console.log(text);
+        textarea.appendChild(text);
+    } 
 }
 
 // TODO : move to "go to chat" component
 export function changeChatRoom(id) {
+    chattingUserId = id;
     console.log("id for room changing - "+id);
     let changeEvent = new ChangeChatRoomEvent(localStorage.getItem("userId")+"&"+id);
     sendEvent("change_room", changeEvent);

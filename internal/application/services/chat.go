@@ -54,7 +54,11 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) (map[s
 		}
 	}
 
-	SortBySendMessageTime(usersWithMessages)
+	// sort.Slice(usersWithMessages, func(i, j int)(less bool) {
+	// 	return usersWithMessages[i].LastMessage < usersWithMessages[j].LastMessage
+	// })
+	
+
 	sort.Slice(usersWithoutMessages, func(i, j int)(less bool) {
 		return usersWithoutMessages[i].Nickname < usersWithoutMessages[j].Nickname
 	})
@@ -65,22 +69,6 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) (map[s
 
 	return allUsersSorted, err
 }
-
-func SortBySendMessageTime(arr []entities.UserChatInfo) []entities.UserChatInfo {
-// for i := 0; i < len(arr)-1; i++ {
-// 	minIndex := i
-// 	for j := i+1; j < len(arr); j++ {
-// 		if arr[j].LastMessage < arr[minIndex].LastMessage {
-// 			minIndex = j
-// 		}
-// 	}
-// 	arr[i], arr[minIndex] = arr[minIndex], arr[i]
-// }
-	return arr
-}
-
-
-
 
 
 func (service ChatService) SaveMsg(newMessage entities.Message) error {

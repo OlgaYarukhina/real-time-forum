@@ -21,7 +21,7 @@ const getParams = match => {
 
 let alerMsg = "";
 
-const navigateTo = (url, msg="") => {
+const navigateTo =  (url, msg="") => {
     alerMsg = msg;
     history.pushState(null, null, url);
     router();
@@ -67,6 +67,20 @@ const router = async () => {
         !(match.route.path === "/login" || match.route.path === "/register" )){
         navigateTo("http://localhost:8080/login")
     } else {
+
+        if (match.route.path === "/login" || match.route.path === "/register"){
+            //document.getElementById("nav").style.display = 'none';
+        } else {
+            //document.getElementById("nav").style.display = 'flex';
+            if (typeof websocket !== "undefined" && websocket.readyState === WebSocket.OPEN) {
+                console.log("WebSocket connection is open.");
+            } else {
+                console.log("WebSocket connection is not open. Opening ...");
+                websocket = await connectWebsocket();
+                //handle if cannot open?
+            }
+        }
+
         if (alerMsg !== ""){
             console.log("aler");
             document.getElementById("aler").innerHTML = alerMsg;
@@ -76,22 +90,12 @@ const router = async () => {
             document.getElementById("aler").innerHTML = '';
             document.getElementById("aler").classList.remove('active')
         }
+        
         const view = new match.route.view(getParams(match));
         document.querySelector("#app").innerHTML = "";
         document.querySelector("#app").appendChild(await view.getHtml()); 
     }
-    if (match.route.path === "/login" || match.route.path === "/register"){
-        //document.getElementById("nav").style.display = 'none';
-    } else {
-        //document.getElementById("nav").style.display = 'flex';
-        if (typeof websocket !== "undefined" && websocket.readyState === WebSocket.OPEN) {
-            console.log("WebSocket connection is open.");
-        } else {
-            console.log("WebSocket connection is not open. Opening ...");
-            websocket = await connectWebsocket();
-            //handle if cannot open?
-        }
-    }
+    
 };
 
 window.addEventListener("popstate", router);
@@ -202,6 +206,7 @@ function appendChatMessage(messageEvent) {
 
 // TODO : move to "go to chat" component
 export function changeChatRoom(id) {
+    console.log("id for room changing - "+id);
     let changeEvent = new ChangeChatRoomEvent(localStorage.getItem("userId")+"&"+id);
     sendEvent("change_room", changeEvent);
     return false;
@@ -221,11 +226,14 @@ export function sendMessage(id) {
 }
 
 function sendEvent(eventName, payload) {
-    // Create a event Object with a event named send_message
-    const event = new Event(eventName, payload);
-    // Format as JSON and send
-    websocket.send(JSON.stringify(event));
-}
+    if (websocket.readyState === WebSocket.OPEN) {
+        const event = new Event(eventName, payload);
+        websocket.send(JSON.stringify(event));
+    } else {
+        console.log('WebSocket not open yet. Waiting and retrying...');
+        setTimeout(sendEvent, 500, eventName, payload); // Retry after 0.5 seconds
+    }
+  }
 
 //---
 

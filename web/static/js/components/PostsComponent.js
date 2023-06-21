@@ -17,7 +17,7 @@ export async function CreatePostsBlocks(callback){
     
       const createdAt = document.createElement('div');
       createdAt.classList.add('created_at');
-      createdAt.textContent = returnedPosts[i].created_at;
+      createdAt.textContent = returnedPosts[i].created_at.slice(0, 10);
     
       const content = document.createElement('div');
       content.classList.add('posts_content');

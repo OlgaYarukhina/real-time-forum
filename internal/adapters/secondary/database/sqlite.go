@@ -93,6 +93,7 @@ func (d *Database) GetUserIdByNickname(nick string) (int, error) {
 		}
 		return 0, err
 	}
+
 	return userID, nil
 }
 
@@ -149,13 +150,21 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 // chat
 
 func (d *Database) SaveMsg(message entities.Message) error {
+	fmt.Println("Time")
+	fmt.Println(message.SendTime)
+	
 	stmt := `INSERT INTO messages (sender_id, receiver_id, message_text, send_time)
-    VALUES(?,?,?, current_date)`
+    VALUES(?,?,?,?)`
 	_, err := d.db.Exec(stmt, &message.SenderID, &message.ReceiverID, &message.Body, &message.SendTime)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	return nil
+}
+
+func date(time time.Time) {
+	panic("unimplemented")
 }
 
 func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error) {

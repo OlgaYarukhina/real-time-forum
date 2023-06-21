@@ -1,5 +1,6 @@
 import { navigateTo } from "../index.js";
 
+
 export const createPost = async () => {
     let categories =[];
     document.querySelectorAll('[type="checkbox"]').forEach(item => {
@@ -7,14 +8,12 @@ export const createPost = async () => {
         categories.push(item.value)
       }
     });
-    
+
     let formData = {
       title: document.getElementById('postTitle').value,
       content: document.getElementById('postContent').value,
       categories: categories,
     }
-    
-    console.log(formData.categories)
     
     try {
       console.log(JSON.stringify(formData))

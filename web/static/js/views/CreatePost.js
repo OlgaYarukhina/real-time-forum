@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { CreatePostForm } from "../components/PostFormComponent.js";
 import { createPost } from "../hooks/PostFormHook.js";
+import { validateInputs } from "../utils/CreatePostUtil.js"
 
 export default class extends AbstractView {
     constructor(params) {
@@ -9,6 +10,10 @@ export default class extends AbstractView {
     }
 
     async getHtml() {
-      return await CreatePostForm(createPost);
+      return CreatePostForm(()=>{
+        if (validateInputs()) {
+          createPost();
+        }
+      });
     }
 }

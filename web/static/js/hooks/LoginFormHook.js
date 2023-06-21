@@ -9,7 +9,6 @@ const setError = (element, message) => {
   };
   
  export const login = async () => {
-    console.log("Try to log in");
     let formData = {
       email: document.getElementById("email").value,
       pass: document.getElementById("password").value,

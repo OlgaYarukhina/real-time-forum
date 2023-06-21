@@ -6,6 +6,8 @@ import Login from "./views/Login.js";
 import CreatePost from "./views/CreatePost.js";
 import ChatsList from "./views/ChatsList.js";
 
+import { getChat } from "./hooks/ChatViewHook.js";
+
 var websocket;
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
@@ -195,27 +197,58 @@ function routeEvent(event) {
 }
 
 var chattingUserId;
+//var historyPage = 0;
+
+export function loadMoreMsgs(){
+    console.log("chatting user id "+ chattingUserId)
+    console.log("history page "+ historyPage)
+    let loadedMsgs = getChat(chattingUserId, historyPage);
+    console.log(loadedMsgs);
+    historyPage = historyPage + 1;
+}
+
 
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
     console.log("TRYING TO APPEND chattingUserId -  "+ chattingUserId)
     if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to){
-        console.log("appedning msg");
-        console.log(messageEvent.message)
-        let textarea = document.getElementById("wrapperchat");
-        let text = document.createElement("div")
-        text.innerHTML = messageEvent.message;
-        console.log(text);
-        textarea.appendChild(text);
+        // console.log("appedning msg");
+        // console.log(messageEvent.message)
+        // let textarea = document.getElementById("wrapperchat");
+        // let text = document.createElement("div")
+        // text.innerHTML = messageEvent.message;
+        // console.log(text);
+        // textarea.appendChild(text);
+        const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
+
+        const message = document.createElement('div');
+        const body = document.createElement('p');
+        body.classList.add('post_content');
+        body.textContent = messageEvent.message;
+        const createdAt = document.createElement('div');
+        createdAt.classList.add('created_at');
+        createdAt.textContent = messageEvent.sent;
+
+        if (messageEvent.to == chattingUserId) {
+            message.classList.add('sender');
+        } else {
+            message.classList.add('receiver');
+        }
+        message.appendChild(body);
+        message.appendChild(createdAt);
+        wrapperDisplayMessages.appendChild(message);
     } 
 }
 
 // TODO : move to "go to chat" component
 export function changeChatRoom(id) {
-    chattingUserId = id;
-    console.log("id for room changing - "+id);
-    let changeEvent = new ChangeChatRoomEvent(localStorage.getItem("userId")+"&"+id);
-    sendEvent("change_room", changeEvent);
+    if (id !== chattingUserId){
+        //historyPage = 0;
+        chattingUserId = id;
+        console.log("id for room changing - "+id);
+        let changeEvent = new ChangeChatRoomEvent(localStorage.getItem("userId")+"&"+id);
+        sendEvent("change_room", changeEvent);
+    }
     return false;
 }
 
@@ -268,6 +301,7 @@ async function connectWebsocket() {
             //document.getElementById("connection-header").innerHTML = "Connected to Websocket: false";
             // TODO : ask for reconnect
             document.querySelector("#nav_chats").innerHTML = "";
+            navigateTo("/login");
         }
 
         // Add a listener to the onmessage event

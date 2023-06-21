@@ -1,13 +1,18 @@
 import { navigateTo, changeChatRoom } from "../index.js";
 
-export const getChat = async (id) => {
+export const getChat = async (id, firstHistoryMsg = "", historyPage = 0) => {
 
   changeChatRoom(id.substr(1))
   let returnedMessage = [];
 
   let requestData = {
-    user_id: parseInt(id.substr(1))
+    user_id: parseInt(id.substr(1)),
+    history_page: parseInt(historyPage),
+    first_history_msg: firstHistoryMsg
   };
+
+  console.log("request data")
+  console.log(requestData)
 
   try {
     const response = await fetch("http://localhost:8080/api/get_chat", {

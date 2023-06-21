@@ -1,3 +1,6 @@
+import { loadMoreMsgs } from "../index.js";
+
+
 export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage, id) {
 
     let returnedMessages = await callbackGetMessage(id);
@@ -11,6 +14,7 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
 
     const wrapperDisplayMessages = document.createElement('div');
     wrapperDisplayMessages.classList.add('wrapper_display_messages');
+    wrapperDisplayMessages.setAttribute("id", "wrapper_display_messages");
 
 
     if (returnedMessages != null) {
@@ -23,7 +27,7 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
             createdAt.classList.add('created_at');
             createdAt.textContent = returnedMessages[i].created_at;
 
-            if (returnedMessages[i].reciver_id === id) {
+            if (returnedMessages[i].receiver_id === parseInt(id.substr(1), 10)) {
                 message.classList.add('receiver');
             } else {
                 message.classList.add('sender');
@@ -33,6 +37,18 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
             wrapperDisplayMessages.prepend(message);
         }
     }
+
+    let wr = callbackLoadMoreWrap(id, returnedMessages[returnedMessages.length-1], callbackGetMessage)
+
+    wrapperDisplayMessages.addEventListener("scroll", function () {
+        console.log("scrolling")
+        if (wrapperDisplayMessages.scrollTop == 0){
+        console.log("loading more msgs")
+            //loadMoreMessages();
+            //loadMoreMsgs();
+            wr()
+        }
+    });
 
     wrapperChat.appendChild(wrapperDisplayMessages);
 
@@ -78,5 +94,40 @@ function callbackCreateMessageWrap(id, f){
     return function() {
         console.log("into");
         f(id);
+    }
+}
+
+function callbackLoadMoreWrap(id, fhm, f, hp = 1){
+    //first_history_msg
+    let firstHistoryMsg = fhm;
+    let historyPage = hp;
+    return async function loadMoreMsgs(){
+        console.log("chatting user id "+ id)
+        console.log("history page "+ historyPage)
+        console.log("fhm "+ firstHistoryMsg.message)
+        let returnedMessages = await f(id, firstHistoryMsg.body, historyPage);
+        console.log(returnedMessages);
+        if (returnedMessages != null) {
+            const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
+            for (let i = returnedMessages.length-1; i >= 0; i--) {
+                const message = document.createElement('div');
+                const body = document.createElement('p');
+                body.classList.add('post_content');
+                body.textContent = returnedMessages[i].body;
+                const createdAt = document.createElement('div');
+                createdAt.classList.add('created_at');
+                createdAt.textContent = returnedMessages[i].created_at;
+    
+                if (returnedMessages[i].receiver_id === parseInt(id.substr(1), 10)) {
+                    message.classList.add('receiver');
+                } else {
+                    message.classList.add('sender');
+                }
+                message.appendChild(body);
+                message.appendChild(createdAt);
+                wrapperDisplayMessages.prepend(message);
+            }
+        }
+        historyPage = historyPage + 1;
     }
 }

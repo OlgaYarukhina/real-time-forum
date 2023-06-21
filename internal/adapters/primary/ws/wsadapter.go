@@ -152,21 +152,68 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 // }
 
 // TODO: THINK! - move to http handler, cuz it have no any logic correlated with web sockets
+// add chat service to http handler as well?
 func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request, userId int) {
 
 	response, _ := ioutil.ReadAll(r.Body)
 
-	var chatUserID entities.User
-	
-	err := json.Unmarshal(response, &chatUserID)
+	type Data struct {
+		UserID          int    `json:"user_id"`
+		HistoryPage     int    `json:"history_page"`
+		FirstHistoryMsg string `json:"first_history_msg"`
+	}
+
+	var data Data
+
+	err := json.Unmarshal(response, &data)
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 		return
 	}
 
+	fmt.Println("data user id ")
+	fmt.Println(data.UserID)
+	fmt.Println("data history page ")
+	fmt.Println(data.HistoryPage)
+	fmt.Println("first history msg ")
+	fmt.Println(data.FirstHistoryMsg)
+
 	// TODO : think, should it return error as well, in case of unsuccessful database request?
-	chatHistory := m.chatService.LoadChatHistory(userId, chatUserID.UserID)
-	
+	chatHistory := m.chatService.LoadChatHistory(userId, data.UserID)
+	length := len(chatHistory)
+	for i := 0; i < length/2; i++ {
+		// Swap elements from both ends
+		chatHistory[i], chatHistory[length-i-1] = chatHistory[length-i-1], chatHistory[i]
+	}
+	// TODO : receive "start message" and cut history from it,
+	// cuz all after it already displayed in chat
+	index := -1
+	for i, msg := range chatHistory {
+		if msg.Body == data.FirstHistoryMsg {
+			index = i
+			break
+		}
+	}
+	if index >= 0 {
+		chatHistory = chatHistory[index:]
+	}
+
+	totalMessages := len(chatHistory)
+	startIndex := data.HistoryPage * 10
+	endIndex := (data.HistoryPage + 1) * 10
+	if endIndex > totalMessages {
+		endIndex = totalMessages
+	}
+	if startIndex >= totalMessages {
+		chatHistory = []*entities.Message{}
+	}
+	chatHistory = chatHistory[startIndex:endIndex]
+	length = len(chatHistory)
+	for i := 0; i < length/2; i++ {
+		// Swap elements from both ends
+		chatHistory[i], chatHistory[length-i-1] = chatHistory[length-i-1], chatHistory[i]
+	}
+
 	jsonResp, err := json.Marshal(chatHistory)
 	if err != nil {
 		log.Fatalf("Err: %s", err)

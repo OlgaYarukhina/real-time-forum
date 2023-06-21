@@ -13,7 +13,6 @@ export const register = async () => {
     };
   
     try {
-      console.log(JSON.stringify(formData));
       const response = await fetch('http://localhost:8080/api/register', {
         method: 'POST',
         headers: {
@@ -23,17 +22,16 @@ export const register = async () => {
         body: JSON.stringify(formData)
       });
       const returnedError = await response.json();
-      console.log(returnedError);
   
       if (returnedError.message == "New user was created") {
-        navigateTo('http://localhost:8080/login', "New user was created");
+        navigateTo('http://localhost:8080/login', "New user was created. Log in!");
         // errorField.classList.add('active');
         // let mess = `<p style="position: absolute;">Hey <b>${formData.nickname}</b>! Welcome to our forum. Please, login now</p>`;
         // errorField.innerHTML = mess;
       }
   
       if (returnedError.message == "Email already exists") {
-        navigateTo('http://localhost:8080/login', "Email already exists");
+        navigateTo('http://localhost:8080/login', "Email already exists.Try to Log in!");
         // errorField.classList.add('active');
         // let mess = `<p style="position: absolute;">Email <b>${formData.email}</b> already exists. Please, try to login</p>`;
         // errorField.innerHTML = mess;

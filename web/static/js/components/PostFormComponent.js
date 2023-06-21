@@ -35,13 +35,10 @@ const labelTitle = document.createElement('label');
 labelTitle.setAttribute('for', 'postTitle');
 labelTitle.textContent = 'Title';
 
-const errorTitle = document.createElement('div');
-errorTitle.classList.add('error');
-
 inputBox.appendChild(iconSpan);
 inputBox.appendChild(inputTitle);
 inputBox.appendChild(labelTitle);
-inputBox.appendChild(errorTitle);
+
 
 // Create the textarea for the post content
 const textarea = document.createElement('textarea');
@@ -77,9 +74,8 @@ checkboxDiv.appendChild(checkbox);
 blockCheckbox.appendChild(checkboxDiv);
 }
 
-// Create the error element for checkboxes
-const errorCheckbox = document.createElement('div');
-errorCheckbox.classList.add('error');
+const errorDiv = document.createElement("div");
+errorDiv.className = "error";
 
 // Create the submit button
 const submitButton = document.createElement('button');
@@ -93,7 +89,7 @@ form.appendChild(inputBox);
 form.appendChild(textarea);
 form.appendChild(document.createElement('br'));
 form.appendChild(blockCheckbox);
-form.appendChild(errorCheckbox);
+form.appendChild(errorDiv);
 form.appendChild(submitButton);
 
 formBox.appendChild(heading);

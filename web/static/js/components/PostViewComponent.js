@@ -15,7 +15,7 @@ export async function PostView (callback, callback1, id) {
   
     const createdAt = document.createElement('div');
     createdAt.classList.add('created_at');
-    createdAt.textContent = returnedPost.post.created_at;
+    createdAt.textContent = returnedPost.post.created_at.slice(0, 10);
   
     const content = document.createElement('p');
     content.classList.add('post_content');
@@ -74,7 +74,7 @@ export async function PostView (callback, callback1, id) {
       
         const createdAt = document.createElement('div');
         createdAt.classList.add('created_at');
-        createdAt.textContent = returnedPost.comments[i].created_at;
+        createdAt.textContent = returnedPost.comments[i].created_at.slice(0, 10);;
       
         const comment = document.createElement('p');
         comment.classList.add('post_content');

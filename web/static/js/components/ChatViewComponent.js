@@ -21,7 +21,8 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
             body.textContent = returnedMessages[i].body;
             const createdAt = document.createElement('div');
             createdAt.classList.add('created_at');
-            createdAt.textContent = returnedMessages[i].created_at;
+            createdAt.textContent = returnedMessages[i].created_at.slice(11, 16);
+            console.log(returnedMessages[i].created_at)
 
             if (returnedMessages[i].reciver_id === id) {
                 message.classList.add('receiver');

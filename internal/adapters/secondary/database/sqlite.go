@@ -57,7 +57,7 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 	if err != nil {
 		return nil, err
 	}
-	//defer rows.Close()
+	defer rows.Close()
 
 	var users []*entities.UserChatInfo
 	for rows.Next() {
@@ -75,7 +75,7 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 
 		// get last message time for sorting chat list
 		if user.IsMessage == true { 
-			user.LastMessage = d.GetLastMessageTime(currentUserID) 
+			user.LastMessage = d.GetLastMessageTime(currentUserID, user.UserID) 
 		}
 		users = append(users, &user)
 	}
@@ -93,7 +93,6 @@ func (d *Database) GetUserIdByNickname(nick string) (int, error) {
 		}
 		return 0, err
 	}
-
 	return userID, nil
 }
 
@@ -160,9 +159,6 @@ func (d *Database) SaveMsg(message entities.Message) error {
 }
 
 func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error) {
-	fmt.Println("Get history")
-	fmt.Println(currentUser)
-	fmt.Println(user)
 	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM messages WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY send_time ASC LIMIT 200`
 	rows, err := d.db.Query(stmt, currentUser, user, user, currentUser)
 	if err != nil {
@@ -183,8 +179,6 @@ func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error
 		}
 		messages = append(messages, message)
 	}
-	fmt.Println("Messages")
-	fmt.Println(messages)
 
 	return messages, nil
 }
@@ -344,12 +338,12 @@ func (d *Database) getNameOfCategoryById(categoryId int) (string, error) {
 	return category, nil
 }
 
-func (d *Database) GetLastMessageTime(currentUserID int) time.Time {
+func (d *Database) GetLastMessageTime(currentUser, user int) time.Time {
 	var lastMessageId int
 	var time time.Time
 
-	stmt := `SELECT id FROM messages WHERE receiver_id = ? OR sender_id = ? ORDER BY id DESC LIMIT 1`
-	if err := d.db.QueryRow(stmt, currentUserID, currentUserID).Scan(&lastMessageId); err != nil {
+	stmt := `SELECT id FROM messages WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY id DESC LIMIT 1`
+	if err := d.db.QueryRow(stmt, currentUser, user, currentUser, user).Scan(&lastMessageId); err != nil {
 		if err == sql.ErrNoRows {
 			fmt.Println(err)
 		}
@@ -363,8 +357,6 @@ func (d *Database) GetLastMessageTime(currentUserID int) time.Time {
 		}
 		fmt.Println(err)
 	}
-	fmt.Println("Time of last message")
-	fmt.Println(time)
 
 	return time
 }

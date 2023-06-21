@@ -1,29 +1,22 @@
 export async function CreateChatsList(callback) {
 
   let returnedUsers = await callback()
-  console.log("Herereee")
-  console.log(returnedUsers)
-  console.log(returnedUsers.withmsg)
-  console.log(returnedUsers.withoutmsg)
 
   const wrapperChatsList = document.createElement("div");
   wrapperChatsList.className = "chats_list";
-
   const chats = document.createElement("div");
   chats.className = "nav_chats";
   chats.textContent = "Chats"
+  const wrapperChatsWithMessages = document.createElement("div");
+  const wrapperChatsWithoutMessages = document.createElement("div");
+  const onlineUsers = document.createElement("div");
+  onlineUsers.className = "nav_chats";
+  onlineUsers.textContent = "Online"
+  const wrapperOnlineUsers = document.createElement("div");
 
   wrapperChatsList.appendChild(chats);
 
-  // containers for with message and without message 
-  const wrapperChatsWithMessages = document.createElement("div");
-  const wrapperChatsWithoutMessages = document.createElement("div");
-
-
-  //loops
-  // TODO: add icons
-
-
+  // TODO: add icons with envelope
 
   for (let i = 0; i < returnedUsers.withmsg.length; i++) {
     const user = document.createElement("div");
@@ -65,7 +58,6 @@ export async function CreateChatsList(callback) {
       //5. Activ users without chats
       user.className = "activ_user";
       wrapperChatsWithoutMessages.appendChild(user);
-
     } else {
       //6. Unactiv users without chats
       user.className = "unactiv_user";
@@ -73,8 +65,25 @@ export async function CreateChatsList(callback) {
     }
   }
 
+  // TODO: add online users
+
+
+  for (let i = 0; i < onlineUsers.length; i++) {
+    const user = document.createElement("div");
+    user.className = "activ_user";
+    user.setAttribute('data-link', '');
+    const nickname = document.createElement("span");
+    user.href = `/chat:${onlineUsers[i].user_id}`;
+    nickname.textContent = onlineUsers[i].nickname;
+    user.appendChild(nickname);
+    wrapperOnlineUsers.appendChild(user);
+    } 
+  
+
   wrapperChatsList.appendChild(wrapperChatsWithMessages);
   wrapperChatsList.appendChild(wrapperChatsWithoutMessages);
+  wrapperChatsList.appendChild(onlineUsers);
+  wrapperChatsList.appendChild(wrapperOnlineUsers);
 
   return wrapperChatsList;
 }

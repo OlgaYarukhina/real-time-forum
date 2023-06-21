@@ -6,6 +6,7 @@ import (
 	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
 	"sort"
+	"strings"
 )
 
 type ChatService struct {
@@ -54,14 +55,15 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) (map[s
 		}
 	}
 
-	// sort.Slice(usersWithMessages, func(i, j int)(less bool) {
-	// 	return usersWithMessages[i].LastMessage < usersWithMessages[j].LastMessage
-	// })
+
+	sort.Slice(usersWithMessages, func(i, j int)(less bool) {
+		return  usersWithMessages[i].LastMessage.Sub(usersWithMessages[j].LastMessage) > 0
+	})
 	
 
 	sort.Slice(usersWithoutMessages, func(i, j int)(less bool) {
-		return usersWithoutMessages[i].Nickname < usersWithoutMessages[j].Nickname
-	})
+		return strings.ToLower(usersWithoutMessages[i].Nickname)  < strings.ToLower(usersWithoutMessages[j].Nickname)
+		})
 	
 
 	allUsersSorted["withmsg"] = usersWithMessages

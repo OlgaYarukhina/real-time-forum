@@ -40,7 +40,6 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) (map[s
 		}
 	}
 
-
 	// sort users for displaing in chat list in right order
 
 	allUsersSorted := make(map[string]interface{})
@@ -55,23 +54,19 @@ func (service ChatService) GetUsers(activeUserIds []int, currentUser int) (map[s
 		}
 	}
 
-
-	sort.Slice(usersWithMessages, func(i, j int)(less bool) {
-		return  usersWithMessages[i].LastMessage.Sub(usersWithMessages[j].LastMessage) > 0
+	sort.Slice(usersWithMessages, func(i, j int) (less bool) {
+		return usersWithMessages[i].LastMessage.Sub(usersWithMessages[j].LastMessage) > 0
 	})
-	
 
-	sort.Slice(usersWithoutMessages, func(i, j int)(less bool) {
-		return strings.ToLower(usersWithoutMessages[i].Nickname)  < strings.ToLower(usersWithoutMessages[j].Nickname)
-		})
-	
+	sort.Slice(usersWithoutMessages, func(i, j int) (less bool) {
+		return strings.ToLower(usersWithoutMessages[i].Nickname) < strings.ToLower(usersWithoutMessages[j].Nickname)
+	})
 
 	allUsersSorted["withmsg"] = usersWithMessages
 	allUsersSorted["withoutmsg"] = usersWithoutMessages
 
 	return allUsersSorted, err
 }
-
 
 func (service ChatService) SaveMsg(newMessage entities.Message) error {
 	err := service.repo.SaveMsg(newMessage)
@@ -95,4 +90,8 @@ func (service ChatService) GetUserIdByNickname(nick string) (int, error) {
 		log.Fatalf("Could not get nickname. Err: %s", err)
 	}
 	return id, nil
+}
+
+func (service ChatService) GetUserNicknameByID(userID int) (string, error) {
+	return service.repo.GetUserNicknameByID(userID)
 }

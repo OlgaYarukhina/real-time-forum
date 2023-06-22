@@ -9,6 +9,7 @@ type Repository interface {
 	GetHashedPassword(login string) (int, string, error)
 	GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, error)
 	GetUserIdByNickname(nick string) (int, error)
+	GetUserNicknameByID(userID int) (string, error)
 
 	//session repo
 	SaveSession(token entities.Session) (int, error)

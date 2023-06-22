@@ -7,4 +7,5 @@ type Chater interface {
 	LoadChatHistory(currentUser, user int) []*entities.Message
 	GetUsers(activeUserIds []int, currentUser int) (map[string]interface{}, error)
 	GetUserIdByNickname(nick string) (int, error)
+	GetUserNicknameByID(userID int) (string, error)
 }

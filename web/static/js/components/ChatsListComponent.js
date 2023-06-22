@@ -13,6 +13,7 @@ export async function CreateChatsList(callback) {
   onlineUsers.className = "nav_chats";
   onlineUsers.textContent = "Online"
   const wrapperOnlineUsers = document.createElement("div");
+  wrapperOnlineUsers.setAttribute("id", "wrapperOnlineUsers")
 
   wrapperChatsList.appendChild(chats);
 
@@ -67,17 +68,21 @@ export async function CreateChatsList(callback) {
 
   // TODO: add online users
 
+  let joined = [...returnedUsers.withmsg, ...returnedUsers.withoutmsg];
 
-  for (let i = 0; i < onlineUsers.length; i++) {
-    const user = document.createElement("div");
-    user.className = "activ_user";
-    user.setAttribute('data-link', '');
-    const nickname = document.createElement("span");
-    user.href = `/chat:${onlineUsers[i].user_id}`;
-    nickname.textContent = onlineUsers[i].nickname;
-    user.appendChild(nickname);
-    wrapperOnlineUsers.appendChild(user);
-    } 
+  for (let i = 0; i < joined.length; i++) {
+    if(joined[i].isactive){
+      const user = document.createElement("div");
+      user.className = "activ_user";
+      user.setAttribute('data-link', '');
+      user.setAttribute('id', "online_user_"+joined[i].user_id);
+      const nickname = document.createElement("span");
+      user.href = `/chat:${joined[i].user_id}`;
+      nickname.textContent = joined[i].nickname;
+      user.appendChild(nickname);
+      wrapperOnlineUsers.appendChild(user);
+    }
+  } 
   
 
   wrapperChatsList.appendChild(wrapperChatsWithMessages);

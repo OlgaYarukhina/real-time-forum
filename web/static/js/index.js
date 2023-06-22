@@ -161,8 +161,9 @@ class ChangeChatRoomEvent {
 }
 
 class ClientChangesEvent {
-    constructor(userNickname, status) {
+    constructor(userNickname, userId, status) {
         this.userNickname = userNickname;
+        this.userId = userId;
         this.status = status;
     }
 }
@@ -185,15 +186,39 @@ function routeEvent(event) {
         case "client_changes":
             const clientChangesEvent = Object.assign(new ClientChangesEvent, event.payload);
             console.log("client changes handled!")
-            console.log(clientChangesEvent.userNickname)
+            console.log(clientChangesEvent.userId)
             console.log(clientChangesEvent.status)
-            //applyClientChanges(clientChangesEvent)
+            console.log(clientChangesEvent.userNickname)
+            applyClientChanges(clientChangesEvent)
             break;
         default:
             alert("unsupported message type");
             break;
     }
 
+}
+
+function applyClientChanges(clientChangesEvent){
+    if (clientChangesEvent.status === "online"){
+        const usercur = document.getElementById(clientChangesEvent.userId)
+        if (!usercur) {
+            const wrapperOnlineUsers = document.getElementById("wrapperOnlineUsers");
+            const user = document.createElement("div");
+            user.className = "activ_user";
+            user.setAttribute('data-link', '');
+            user.setAttribute('id', "online_user_"+clientChangesEvent.userId);
+            const nickname = document.createElement("span");
+            user.href = `/chat:${clientChangesEvent.userId}`;
+            nickname.textContent = clientChangesEvent.userNickname;
+            user.appendChild(nickname);
+            wrapperOnlineUsers.prepend(user);   
+        }
+    } else {
+        const user = document.getElementById("online_user_"+clientChangesEvent.userId)
+        if (user) {
+            user.parentNode.removeChild(user);
+        }
+    }
 }
 
 var chattingUserId;

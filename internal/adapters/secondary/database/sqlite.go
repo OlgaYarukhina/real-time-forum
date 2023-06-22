@@ -74,8 +74,8 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 		}
 
 		// get last message time for sorting chat list
-		if user.IsMessage == true { 
-			user.LastMessage = d.GetLastMessageTime(currentUserID, user.UserID) 
+		if user.IsMessage == true {
+			user.LastMessage = d.GetLastMessageTime(currentUserID, user.UserID)
 		}
 		users = append(users, &user)
 	}
@@ -95,6 +95,22 @@ func (d *Database) GetUserIdByNickname(nick string) (int, error) {
 	}
 
 	return userID, nil
+}
+
+func (d *Database) GetUserNicknameByID(userID int) (string, error) {
+	var nickname string
+
+	stmt := `SELECT nickname FROM users WHERE user_id = ?`
+	err := d.db.QueryRow(stmt, userID).Scan(&nickname)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// Handle case where user is not found
+			return "", err
+		}
+		return "", err
+	}
+
+	return nickname, nil
 }
 
 //sessions
@@ -152,7 +168,7 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 func (d *Database) SaveMsg(message entities.Message) error {
 	fmt.Println("Time")
 	fmt.Println(message.SendTime)
-	
+
 	stmt := `INSERT INTO messages (sender_id, receiver_id, message_text, send_time)
     VALUES(?,?,?,?)`
 	_, err := d.db.Exec(stmt, &message.SenderID, &message.ReceiverID, &message.Body, &message.SendTime)

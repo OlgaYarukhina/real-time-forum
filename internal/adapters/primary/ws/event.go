@@ -24,8 +24,9 @@ const (
 )
 
 type ClientChangesEvent struct {
-	Status string `json:"status"`
-	UserID int    `json:"userId"`
+	Status   string `json:"status"`
+	UserID   int    `json:"userId"`
+	Nickname string `json:"userNickname"`
 }
 
 type SendMessageEvent struct {

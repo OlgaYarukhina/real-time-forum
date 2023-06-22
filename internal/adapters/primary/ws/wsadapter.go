@@ -233,10 +233,16 @@ func (m *Manager) addClient(client *Client) {
 	// TODO : verify that this is first user connection (user have no active clients yet)
 	// and send notification for other users only in that case
 
+	nick, err := m.chatService.GetUserNicknameByID(client.userId)
+	if err != nil {
+		//log
+	}
+
 	var outgoingEvent Event
 	payloadData := ClientChangesEvent{
-		Status: "online",
-		UserID: client.userId,
+		Status:   "online",
+		UserID:   client.userId,
+		Nickname: nick,
 	}
 
 	payloadBytes, err := json.Marshal(payloadData)
@@ -260,6 +266,28 @@ func (m *Manager) addClient(client *Client) {
 // removeClient will remove the client and clean up
 func (m *Manager) removeClient(client *Client) {
 	// TODO : send msg user offline
+	var outgoingEvent Event
+	payloadData := ClientChangesEvent{
+		Status: "offline",
+		UserID: client.userId,
+	}
+
+	payloadBytes, err := json.Marshal(payloadData)
+	if err != nil {
+		fmt.Println("error with marshal")
+		//return
+	}
+
+	outgoingEvent.Payload = payloadBytes
+	outgoingEvent.Type = EventClientChanges
+
+	for c := range m.Clients {
+		//TODO : fix next line, cuz object comparing?
+		if client != c {
+			fmt.Println("sending")
+			c.egress <- outgoingEvent
+		}
+	}
 
 	m.Lock()
 	defer m.Unlock()

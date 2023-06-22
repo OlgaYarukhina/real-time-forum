@@ -71,9 +71,7 @@ const router = async () => {
     } else {
 
         if (match.route.path === "/login" || match.route.path === "/register"){
-            //document.getElementById("nav").style.display = 'none';
         } else {
-            //document.getElementById("nav").style.display = 'flex';
             if (typeof websocket !== "undefined" && websocket.readyState === WebSocket.OPEN) {
                 console.log("WebSocket connection is open.");
             } else {
@@ -169,8 +167,6 @@ class ClientChangesEvent {
 }
 
 function routeEvent(event) {
-    console.log("event routing starts")
-
     if (event.type === undefined) {
         alert("no 'type' field in event");
     }
@@ -180,15 +176,10 @@ function routeEvent(event) {
         case "new_message":
             // Format payload
             const messageEvent = Object.assign(new NewMessageEvent, event.payload);
-            console.log(messageEvent)
             appendChatMessage(messageEvent);
             break;
         case "client_changes":
-            const clientChangesEvent = Object.assign(new ClientChangesEvent, event.payload);
-            console.log("client changes handled!")
-            console.log(clientChangesEvent.userId)
-            console.log(clientChangesEvent.status)
-            console.log(clientChangesEvent.userNickname)
+          const clientChangesEvent = Object.assign(new ClientChangesEvent, event.payload);
             applyClientChanges(clientChangesEvent)
             break;
         default:
@@ -198,19 +189,19 @@ function routeEvent(event) {
 
 }
 
+
 function applyClientChanges(clientChangesEvent){
     if (clientChangesEvent.status === "online"){
-        const usercur = document.getElementById(clientChangesEvent.userId)
+        const usercur = document.getElementById("online_user_"+clientChangesEvent.userId)
+        
         if (!usercur) {
             const wrapperOnlineUsers = document.getElementById("wrapperOnlineUsers");
             const user = document.createElement("div");
             user.className = "activ_user";
             user.setAttribute('data-link', '');
             user.setAttribute('id', "online_user_"+clientChangesEvent.userId);
-            const nickname = document.createElement("span");
             user.href = `/chat:${clientChangesEvent.userId}`;
-            nickname.textContent = clientChangesEvent.userNickname;
-            user.appendChild(nickname);
+            user.textContent = clientChangesEvent.userNickname;
             wrapperOnlineUsers.prepend(user);   
         }
     } else {
@@ -235,24 +226,16 @@ export function loadMoreMsgs(){
 
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
-    console.log("TRYING TO APPEND chattingUserId -  "+ chattingUserId)
+    
     if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to){
-        // console.log("appedning msg");
-        // console.log(messageEvent.message)
-        // let textarea = document.getElementById("wrapperchat");
-        // let text = document.createElement("div")
-        // text.innerHTML = messageEvent.message;
-        // console.log(text);
-        // textarea.appendChild(text);
         const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
-
         const message = document.createElement('div');
         const body = document.createElement('p');
         body.classList.add('post_content');
         body.textContent = messageEvent.message;
         const createdAt = document.createElement('div');
         createdAt.classList.add('created_at');
-        createdAt.textContent = messageEvent.sent;
+        createdAt.textContent = messageEvent.sent.slice(11, 16);
 
         if (messageEvent.to == chattingUserId) {
             message.classList.add('sender');
@@ -262,8 +245,28 @@ function appendChatMessage(messageEvent) {
         message.appendChild(body);
         message.appendChild(createdAt);
         wrapperDisplayMessages.appendChild(message);
+
+        moveChatList(chattingUserId)
     } 
 }
+
+function moveChatList(chattingUserId){
+   const user = document.getElementById(chattingUserId);
+  
+   var userClassName = user.className;
+   var userNick = user.textContent;
+   user.remove();
+
+    var parent = document.getElementById('users_with_msg');
+    const userMove = document.createElement("div");
+    userMove.id = `${chattingUserId}`;
+    userMove.setAttribute('data-link', '');
+    user.href = `/chat:${chattingUserId}`;
+    userMove.textContent = userNick; 
+    userMove.className = userClassName;
+
+    parent.prepend(userMove);
+};
 
 // TODO : move to "go to chat" component
 export function changeChatRoom(id) {
@@ -279,12 +282,9 @@ export function changeChatRoom(id) {
 
 // TODO : move to chat view
 export function sendMessage(id) {
-    console.log("sending msg through ws connection")
     var newmessage = document.getElementById('writeMessage');
     if (newmessage != null) {
         let outgoingEvent = new SendMessageEvent(newmessage.value, parseInt(localStorage.getItem("userId"),10));
-        console.log("sending message")
-        console.log(newmessage.value)
         sendEvent("send_message", outgoingEvent)
     }
     return false;
@@ -306,8 +306,6 @@ async function connectWebsocket() {
     var conn;
     // Check if the browser supports WebSocket
     if (window["WebSocket"]) {
-        console.log("supports websockets");
-
         var wsUrl = "ws://" + document.location.host + "/api/ws?sessionToken=" + localStorage.getItem("sessionToken") + "&sessionId=" + localStorage.getItem("sessionId");
         conn = new WebSocket(wsUrl);
         // Onopen
@@ -331,10 +329,6 @@ async function connectWebsocket() {
 
         // Add a listener to the onmessage event
         conn.onmessage = function (evt) {
-            
-            console.log("conn on message")
-
-            console.log(evt);
             // parse websocket message as JSON
             const eventData = JSON.parse(evt.data);
             // Assign JSON data to new Event Object

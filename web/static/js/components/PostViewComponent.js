@@ -1,6 +1,7 @@
 export async function PostView (callback, callback1, id) {
 
     let returnedPost = await callback(id);
+    console.log(returnedPost)
         
     // div for post+comments
     const wrapper = document.createElement('div');

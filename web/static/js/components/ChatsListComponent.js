@@ -26,10 +26,8 @@ export async function CreateChatsList(callback) {
     const user = document.createElement("div");
     user.id = `${returnedUsers.withmsg[i].user_id}`;
     user.setAttribute('data-link', '');
-    const nickname = document.createElement("span");
-    user.appendChild(nickname);
     user.href = `/chat:${returnedUsers.withmsg[i].user_id}`;
-    nickname.textContent = returnedUsers.withmsg[i].nickname;
+    user.textContent = returnedUsers.withmsg[i].nickname;
     if (returnedUsers.withmsg[i].isactive === true) {
       user.className = "activ_user";
       //1. users online with unread letter
@@ -56,10 +54,8 @@ export async function CreateChatsList(callback) {
     const user = document.createElement("div");
     user.id = `${returnedUsers.withoutmsg[i].user_id}`;
     user.setAttribute('data-link', '');
-    const nickname = document.createElement("span");
-    user.appendChild(nickname);
     user.href = `/chat:${returnedUsers.withoutmsg[i].user_id}`;
-    nickname.textContent = returnedUsers.withoutmsg[i].nickname;
+    user.textContent = returnedUsers.withoutmsg[i].nickname;
     if (returnedUsers.withoutmsg[i].isactive === true) {
       //5. Activ users without chats
       user.className = "activ_user";
@@ -81,10 +77,8 @@ export async function CreateChatsList(callback) {
       user.className = "activ_user";
       user.setAttribute('data-link', '');
       user.setAttribute('id', "online_user_"+joined[i].user_id);
-      const nickname = document.createElement("span");
       user.href = `/chat:${joined[i].user_id}`;
-      nickname.textContent = joined[i].nickname;
-      user.appendChild(nickname);
+      user.textContent = joined[i].nickname;
       wrapperOnlineUsers.appendChild(user);
     }
   } 

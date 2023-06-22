@@ -19,7 +19,7 @@ func (handler *HttpAdapter) ViewPostsHandler(w http.ResponseWriter, r *http.Requ
 	return
 }
 
-func (handler *HttpAdapter) ViewPostHandler(w http.ResponseWriter, r *http.Request) {
+func (handler *HttpAdapter) ViewPostHandler(w http.ResponseWriter, r *http.Request, userId int) {
 
 	response, _ := ioutil.ReadAll(r.Body)
 

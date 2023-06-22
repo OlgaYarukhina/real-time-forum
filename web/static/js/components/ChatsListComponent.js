@@ -7,11 +7,14 @@ export async function CreateChatsList(callback) {
   const chats = document.createElement("div");
   chats.className = "nav_chats";
   chats.textContent = "Chats"
+
   const wrapperChatsWithMessages = document.createElement("div");
+  wrapperChatsWithMessages.id = "users_with_msg";
   const wrapperChatsWithoutMessages = document.createElement("div");
   const onlineUsers = document.createElement("div");
   onlineUsers.className = "nav_chats";
   onlineUsers.textContent = "Online"
+ 
   const wrapperOnlineUsers = document.createElement("div");
 
   wrapperChatsList.appendChild(chats);
@@ -20,6 +23,7 @@ export async function CreateChatsList(callback) {
 
   for (let i = 0; i < returnedUsers.withmsg.length; i++) {
     const user = document.createElement("div");
+    user.id = `${returnedUsers.withmsg[i].user_id}`;
     user.setAttribute('data-link', '');
     const nickname = document.createElement("span");
     user.appendChild(nickname);
@@ -49,6 +53,7 @@ export async function CreateChatsList(callback) {
 
   for (let i = 0; i < returnedUsers.withoutmsg.length; i++) {
     const user = document.createElement("div");
+    user.id = `${returnedUsers.withoutmsg[i].user_id}`;
     user.setAttribute('data-link', '');
     const nickname = document.createElement("span");
     user.appendChild(nickname);

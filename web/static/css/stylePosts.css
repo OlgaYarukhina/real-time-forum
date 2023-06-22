@@ -42,7 +42,13 @@ h4 {
 
 
 .block_checkbox {
-    margin: 30px 0px 20px 0px;
+    margin: 30px 0px 10px 0px;
+}
+
+.form-box .error {
+    color: rgb(64, 217, 125);
+    font-size: 9px;
+    height: 13px;
 }
 
 /*All posts */

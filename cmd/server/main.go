@@ -51,7 +51,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("../../web/static"))))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/posts", handler.SessionCheck(handler.ViewPostsHandler))
-	http.HandleFunc("/api/post", handler.ViewPostHandler)
+	http.HandleFunc("/api/post", handler.SessionCheck(handler.ViewPostHandler))
 	http.HandleFunc("/api/login", handler.LoginHandler)
 	http.HandleFunc("/api/register", handler.RegisterHandler)
 	http.HandleFunc("/api/create_post", handler.SessionCheck(handler.CreatePostHandler))
@@ -59,7 +59,6 @@ func main() {
 	http.HandleFunc("/api/ws", handler.SessionCheck(manager.ServeWS))
 	http.HandleFunc("/api/get_users", handler.SessionCheck(manager.GetUsers))
 	http.HandleFunc("/api/get_chat", handler.SessionCheck(manager.LoadChatHistoryHandler))
-	//http.HandleFunc("/api/create_message", handler.SessionCheck(manager.SendMsg))
 	http.HandleFunc("/api/logout", handler.SessionCheck(handler.LogoutHandler))
 
 	log.Println("Starting server on: http://localhost:8080/login")

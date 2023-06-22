@@ -14,21 +14,24 @@ const setError = (element, message) => {
   
   
 export const validateInputs = () => {
-    let check = true;
+    let check = false;
+
+    const categories = document.getElementById('create_post');
   
-    let categories =[];
+    let categoriesArr =[];
     document.querySelectorAll('[type="checkbox"]').forEach(item => {
       if(item.checked === true){
-        categories.push(item.value)
+        categoriesArr.push(item.value)
       }
     });
 
-    if (categories.length == 0) {
-      setError(categories, "Choose at list one category");
-      check = false;
+
+    if (categoriesArr.length === 0) {
+      setError(categories, "Choose at least one category");
     } else {
       setSuccess(categories);
+      check = true;
     }
-    
+    console.log(check)
     return check;
   };

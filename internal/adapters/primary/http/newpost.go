@@ -2,7 +2,6 @@ package httpadpt
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,7 +17,7 @@ func (handler *HttpAdapter) CreatePostHandler(w http.ResponseWriter, r *http.Req
 	post.UserID = userId
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		fmt.Println(err)
+		log.Fatalf("Err: %s", err)
 		return
 	}
 

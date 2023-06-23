@@ -24,17 +24,11 @@ export const register = async () => {
       const returnedError = await response.json();
   
       if (returnedError.message == "New user was created") {
-        navigateTo('http://localhost:8080/login', "New user was created. Log in!");
-        // errorField.classList.add('active');
-        // let mess = `<p style="position: absolute;">Hey <b>${formData.nickname}</b>! Welcome to our forum. Please, login now</p>`;
-        // errorField.innerHTML = mess;
+        navigateTo('http://localhost:8080/login', "New user was created. Log in!")
       }
   
       if (returnedError.message == "Email already exists") {
         navigateTo('http://localhost:8080/login', "Email already exists.Try to Log in!");
-        // errorField.classList.add('active');
-        // let mess = `<p style="position: absolute;">Email <b>${formData.email}</b> already exists. Please, try to login</p>`;
-        // errorField.innerHTML = mess;
       }
   
       if (returnedError.message == "Nickname already exists") {

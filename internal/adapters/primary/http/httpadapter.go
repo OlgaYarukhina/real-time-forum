@@ -19,9 +19,6 @@ func New(authService interfaces.Auther, postsService interfaces.Poster) *HttpAda
 	return &HttpAdapter{
 		authService:  authService,
 		postsService: postsService,
-		//messengerService:   messenger,
-		//userManagerService: userManager,
-		//services
 	}
 }
 

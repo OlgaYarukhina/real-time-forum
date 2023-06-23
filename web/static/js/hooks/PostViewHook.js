@@ -28,12 +28,10 @@ export const getPost = async (id) => {
     console.error(err);
   }
   
-  console.log(returnedPost)
   return returnedPost;
 }
 
 export const addComment = async (id) => {
-
   let formData = {
     comment: document.getElementById('addComment').value,
     post_id: id.substr(1)
@@ -57,6 +55,7 @@ export const addComment = async (id) => {
       }
 
     if (returnedError.message == "Comment was created") {
+      navigateTo('http://localhost:8080/login', "Email already exists.Try to Log in!");
     } else {
 
     }

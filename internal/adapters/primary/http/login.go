@@ -2,7 +2,6 @@ package httpadpt
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,14 +11,13 @@ import (
 )
 
 func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("login handler worked")
 	response, _ := ioutil.ReadAll(r.Body)
 
 	var cr entities.UserCredentials
 	err := json.Unmarshal(response, &cr)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		fmt.Println(err)
+		log.Fatalf(" Err: %s", err)
 		return
 	}
 
@@ -50,6 +48,5 @@ func (handler *HttpAdapter) LoginHandler(w http.ResponseWriter, r *http.Request)
 		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
 	}
 	w.Write(jsonResp)
-	fmt.Println("login handler ends")
 	return
 }

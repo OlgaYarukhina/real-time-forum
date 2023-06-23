@@ -2,7 +2,6 @@ package httpadpt
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,18 +9,15 @@ import (
 )
 
 func (handler *HttpAdapter) RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("register handler worked")
-
 	response, _ := ioutil.ReadAll(r.Body)
 
 	var user entities.User
 	err := json.Unmarshal(response, &user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		fmt.Println(err)
+		log.Fatalf("Err: %s", err)
 		return
 	}
-	fmt.Printf("New user handled: %+v\n", user)
 
 	resp := make(map[string]string)
 
@@ -29,7 +25,6 @@ func (handler *HttpAdapter) RegisterHandler(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		switch err.Error() {
 		case "UNIQUE constraint failed: users.email":
-
 			resp["message"] = "Email already exist"
 
 		case "UNIQUE constraint failed: users.nickname":

@@ -41,25 +41,20 @@ export async function PostView (callback, callback1, id) {
     textarea.classList.add('input-box_textarea');
     textarea.id = 'addComment';
     textarea.name = 'addComment';
-    textarea.placeholder = 'Add comment';
-    textarea.rows = '4';
+    textarea.placeholder = 'Add comment and press Enter';
+    textarea.rows = '3';
     textarea.required = true;
-
-    const submitButton = document.createElement('button');
-    submitButton.type = 'submit';
-    submitButton.classList.add('btn');
-    submitButton.classList.add('btn-narrow');
-    submitButton.textContent = 'Comment';
-
     form.appendChild(textarea);
-    form.appendChild(submitButton);
-      
     wrapperAddComment.appendChild(form);
 
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-        callback1(id);
-      })
+
+      form.addEventListener('keypress', e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            callback1(id);
+            textarea.value = ""
+        }
+    })
   
     wrapper.appendChild(wrapperAddComment);
 

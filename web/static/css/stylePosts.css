@@ -8,6 +8,14 @@ h4 {
     color: rgb(63, 50, 98);
 }
 
+.btn-narrow {
+    position: absolute;
+    left: 50%;
+    bottom: 30px;
+    margin-left: -130px;
+    width: 260px; 
+}
+
 /*New post */
 .wrapper_new_post {
     position: absolute;

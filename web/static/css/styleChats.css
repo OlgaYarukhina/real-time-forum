@@ -40,7 +40,7 @@
 
 .sender{
     display: block;
-    width: 600px;
+    width: 540px;
     min-width: 350px;
     margin-top: 20px;
     margin-left: auto;
@@ -53,7 +53,7 @@
 
 .receiver{
     display: block;
-    width: 600px;
+    width: 540px;
     min-width: 350px;
     margin-top: 20px;
     background: rgb(64, 217, 125, 0.5);
@@ -63,29 +63,29 @@
 }
 
 .wrapper_write_message {
+    position: absolute;
     display:block;
     width: 90%;
-    margin: auto;
     background: rgba(128, 116, 135, 0.7);
     border: 1px solid rgb(142, 131, 131);
     border-radius: 30px;
     box-shadow: 0 0 30px rgb(74, 70, 70);
+    margin: 0px 60px;
     padding: 10px 20px;
-    position: absolute;
     bottom: 15px;
 }
 
 .wrapper_display_messages{
     overflow: scroll;
     height: 80%;
-    
 }
 
 .input-box_textarea_chat{
     border: 0px;
-    width:60%;
+    width: 100%;
     color: antiquewhite;
     background: none;
+    padding: 0px 20px;
 }
 
 .input-box_textarea_chat:focus{

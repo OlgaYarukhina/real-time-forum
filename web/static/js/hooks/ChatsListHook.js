@@ -15,7 +15,7 @@ export const getAllUsers = async () => {
           'X-Session-Id': localStorage.getItem("sessionId")
         },
       });
-  
+
       if (response.status === 401) {
         navigateTo("http://localhost:8080/login");
         return [];

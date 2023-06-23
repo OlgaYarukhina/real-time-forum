@@ -11,8 +11,6 @@ export const getChat = async (id, firstHistoryMsg = "", historyPage = 0) => {
     first_history_msg: firstHistoryMsg
   };
 
-  console.log("request data")
-  console.log(requestData)
 
   try {
     const response = await fetch("http://localhost:8080/api/get_chat", {
@@ -27,19 +25,21 @@ export const getChat = async (id, firstHistoryMsg = "", historyPage = 0) => {
       //body: JSON.stringify(parseInt(id.substr(1), 10))
     });
 
+    if (response.status === 401) {
+      navigateTo("http://localhost:8080/login");
+      return [];
+    }
+
     returnedMessage = await response.json();
 
   } catch (err) {
     console.error(err);
   }
   
-  console.log(returnedMessage)
   return returnedMessage;
 }
 
 export const createMessage = async (id) => {
-  console.log("sending message!")
-  console.log(id)
   let formData = {
     body: document.getElementById('writeMessage').value,
     receiver_id: id.substr(1)
@@ -58,17 +58,12 @@ export const createMessage = async (id) => {
       body: JSON.stringify(formData)
     });
     const returnedError = await response.json();
-    console.log(returnedError);
 
-    if (returnedError.message == "Post was created") {
-      //navigateTo('http://localhost:8080/');
-      console.log("Comment was created")
-
-    } else {
-
+    if (response.status === 401) {
+      navigateTo("http://localhost:8080/login");
     }
-
-
+  
+ 
   } catch (err) {
     console.error(err);
   }

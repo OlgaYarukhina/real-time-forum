@@ -16,7 +16,6 @@ export const createPost = async () => {
     }
     
     try {
-      console.log(JSON.stringify(formData))
       const response = await fetch('http://localhost:8080/api/create_post', {
         method: 'POST',
         headers: {
@@ -28,17 +27,15 @@ export const createPost = async () => {
         body: JSON.stringify(formData)
       });
       const returnedError = await response.json();
-      console.log(returnedError);
+
+      if (response.status === 401) {
+        navigateTo("http://localhost:8080/login");
+      }
     
       if (returnedError.message == "Post was created") {
-        navigateTo('http://localhost:8080/');
-         // errorFild.classList.add('active');
-      // let mess = `<p style = "position: absolute;">Post was created!</p>`;
-      // errorFild.innerHTML = mess;
+        navigateTo('http://localhost:8080/', 'Post was created');
       } else {
-        // errorFild.classList.add('active');
-      // let mess = `<p style = "position: absolute;">Sorry :(. Post was not created. Please, try later </p>`;
-      // errorFild.innerHTML = mess;
+        navigateTo('http://localhost:8080/', 'Something wrong. Post was not created. Ask developers :)');
       }
     
     

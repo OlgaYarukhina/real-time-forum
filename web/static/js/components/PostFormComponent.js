@@ -46,7 +46,7 @@ textarea.classList.add('input-box_textarea');
 textarea.id = 'postContent';
 textarea.name = 'postContent';
 textarea.placeholder = 'Add content';
-textarea.rows = '20';
+textarea.rows = '18';
 textarea.required = true;
 
 // Create the block_checkbox element

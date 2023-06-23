@@ -5,14 +5,13 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
 
     let returnedMessages = await callbackGetMessage(id);
 
-    console.log("returnedMessages");
-    console.log(returnedMessages);
 
     const wrapperChat = document.createElement('div');
     wrapperChat.setAttribute("id", "wrapperchat");
     wrapperChat.classList.add('wrapper_chat');
 
     const wrapperDisplayMessages = document.createElement('div');
+
     wrapperDisplayMessages.classList.add('wrapper_display_messages');
     wrapperDisplayMessages.setAttribute("id", "wrapper_display_messages");
 
@@ -60,30 +59,27 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
 
     const form = document.createElement('form');
     form.id = 'write_message';
-
     const textarea = document.createElement('textarea');
     textarea.classList.add('input-box_textarea_chat');
     textarea.id = 'writeMessage';
     textarea.name = 'writeMessage';
-    textarea.placeholder = 'Add comment';
+    textarea.placeholder = 'Write message and press Enter';
     textarea.rows = '1';
     textarea.required = true;
-
-    const sendButton = document.createElement('button');
-    sendButton.type = 'submit';
-    sendButton.classList.add('btn');
-    sendButton.classList.add('btn-narrow');
-    sendButton.textContent = 'Send';
-
     form.appendChild(textarea);
-    form.appendChild(sendButton);
+
 
     wrapperWriteMessage.appendChild(form);
+
+
     let wrapped = callbackCreateMessageWrap(id, callbackCreateMessage);
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        wrapped()
+    form.addEventListener('keypress', e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            wrapped()
+            textarea.value = ""
+        }
     })
 
     wrapperChat.appendChild(wrapperWriteMessage);

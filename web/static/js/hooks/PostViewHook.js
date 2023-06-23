@@ -17,6 +17,11 @@ export const getPost = async (id) => {
       body: JSON.stringify(postId),
     });
 
+    if (response.status === 401) {
+      navigateTo("http://localhost:8080/login");
+      return [];
+    }
+
     returnedPost = await response.json();
 
   } catch (err) {
@@ -33,9 +38,7 @@ export const addComment = async (id) => {
     comment: document.getElementById('addComment').value,
     post_id: id.substr(1)
   }
-
-  try {
-    console.log(JSON.stringify(formData))
+    
     const response = await fetch('http://localhost:8080/api/create_comment', {
       method: 'POST',
       headers: {
@@ -47,17 +50,16 @@ export const addComment = async (id) => {
       body: JSON.stringify(formData)
     });
     const returnedError = await response.json();
-    console.log(returnedError);
 
-    if (returnedError.message == "Post was created") {
-      //navigateTo('http://localhost:8080/');
-      console.log("Comment was created")
+    try {
+      if (response.status === 401) {
+        navigateTo("http://localhost:8080/login");
+      }
 
+    if (returnedError.message == "Comment was created") {
     } else {
 
     }
-
-
   } catch (err) {
     console.error(err);
   }

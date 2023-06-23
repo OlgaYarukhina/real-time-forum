@@ -78,6 +78,8 @@
 .wrapper_display_messages{
     overflow: scroll;
     height: 80%;
+    /* display: flex; Add this line */
+    /* flex-direction: column-reverse; Add this line */
 }
 
 .input-box_textarea_chat{

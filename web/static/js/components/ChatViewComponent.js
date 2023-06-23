@@ -42,7 +42,7 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
 
     wrapperDisplayMessages.addEventListener("scroll", function () {
         console.log("scrolling")
-        if (wrapperDisplayMessages.scrollTop == 0){
+        if (wrapperDisplayMessages.scrollTop === 0){
         console.log("loading more msgs")
             //loadMoreMessages();
             //loadMoreMsgs();
@@ -95,39 +95,37 @@ function callbackCreateMessageWrap(id, f){
 }
 
 function callbackLoadMoreWrap(id, fhm, f, hp = 1){
-    //first_history_msg
-
-    console.log("Hetfwyu")
-
-   // let firstHistoryMsg = fhm;
+    let firstHistoryMsg = fhm;
     let historyPage = hp;
     return async function loadMoreMsgs(){
 
-       // let returnedMessages = await f(id, firstHistoryMsg.body, historyPage);
-        // if (returnedMessages != null) {
-        //     const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
-        //     for (let i = returnedMessages.length-1; i >= 0; i--) {
-        //         const message = document.createElement('div');
-        //         const body = document.createElement('p');
-        //         body.classList.add('post_content');
-        //         body.textContent = returnedMessages[i].body;
-        //        // const createdAt = document.createElement('div');
-        //       //  createdAt.classList.add('created_at');
-        //       //createdAt.textContent = returnedMessages[i].created_at;
-
-        //         console.log("typeof(returnedMessages[i].created_at)")
-        //         console.log(typeof(returnedMessages[i].created_at))
+       let returnedMessages = await f(id, firstHistoryMsg.body, historyPage);
+        if (returnedMessages != null) {
+            const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
+            //let tempScroll = wrapperDisplayMessages.scrollTop;
+            
+            for (let i = returnedMessages.length-1; i >= 0; i--) {
+                const message = document.createElement('div');
+                const body = document.createElement('p');
+                body.classList.add('post_content');
+                body.textContent = returnedMessages[i].body;
+                const createdAt = document.createElement('div');
+                createdAt.classList.add('created_at');
+                createdAt.textContent = returnedMessages[i].created_at;
     
-        //         if (returnedMessages[i].receiver_id === parseInt(id.substr(1), 10)) {
-        //             message.classList.add('receiver');
-        //         } else {
-        //             message.classList.add('sender');
-        //         }
-        //         message.appendChild(body);
-        //         message.appendChild(createdAt);
-        //         wrapperDisplayMessages.prepend(message);
-        //     }
-        // }
+                if (returnedMessages[i].receiver_id === parseInt(id.substr(1), 10)) {
+                    message.classList.add('receiver');
+                } else {
+                    message.classList.add('sender');
+                }
+                message.appendChild(body);
+                message.appendChild(createdAt);
+                //wrapperDisplayMessages.prepend(message);
+                wrapperDisplayMessages.prepend(message); // Use appendChild instead of prepend
+            }
+            wrapperDisplayMessages.scrollTop = (wrapperDisplayMessages.scrollHeigh / historyPage+1) * (historyPage);
+            // Add this line
+        }
         historyPage = historyPage + 1;
     }
 }

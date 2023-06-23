@@ -245,8 +245,8 @@ function appendChatMessage(messageEvent) {
         message.appendChild(body);
         message.appendChild(createdAt);
         wrapperDisplayMessages.appendChild(message);
-
-        moveChatList(chattingUserId)
+        wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
+        //moveChatList(chattingUserId)
     } 
 }
 

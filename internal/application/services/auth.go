@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
 	"time"
@@ -15,8 +14,6 @@ type AuthService struct {
 }
 
 func NewAuthService(repo interfaces.Repository, hasher interfaces.Hasher, sessioner interfaces.Sessioner) *AuthService {
-	fmt.Println("AuthService created and ready to use")
-
 	return &AuthService{
 		repo:      repo,
 		hasher:    hasher,
@@ -25,11 +22,9 @@ func NewAuthService(repo interfaces.Repository, hasher interfaces.Hasher, sessio
 }
 
 func (service AuthService) Login(cred entities.UserCredentials) (int, int, string, error) {
-	fmt.Println("auth service login job")
 
 	id, password, err := service.repo.GetHashedPassword(cred.Email) // check email and get password
 	if err != nil {
-		fmt.Println(err)
 		return -1, -1, "", err // wrong email
 	}
 
@@ -40,13 +35,11 @@ func (service AuthService) Login(cred entities.UserCredentials) (int, int, strin
 
 	token, err := service.sessioner.NewToken()
 	if err != nil {
-		fmt.Println(err)
 		return -1, -1, "", err // cannot create session token
 	}
 
 	tokenHash, err := service.hasher.HashString(token)
 	if err != nil {
-		fmt.Println(err)
 		return -1, -1, "", err // cannot hash session token
 	}
 
@@ -56,7 +49,6 @@ func (service AuthService) Login(cred entities.UserCredentials) (int, int, strin
 		ExpireAt: time.Now().Add(5 * time.Minute),
 	})
 	if err != nil {
-		fmt.Println(err)
 		return -1, -1, "", err // cannot save session token
 	}
 
@@ -80,25 +72,19 @@ func (service AuthService) Register(user entities.User) error {
 		return err
 	}
 
-	fmt.Println("auth service register ends job")
 	return nil
 }
 
 func (service AuthService) IsValidSession(sessionId int, token string) (int, error) {
 	session, err := service.repo.GetSession(sessionId)
 	if err != nil {
-		fmt.Println(err)
 		return -1, err // wrong token
 	}
 
 	if session.ExpireAt.Before(time.Now()) {
-
-		fmt.Println("expired")
-		fmt.Println(err)
 		err = errors.New("Expired token")
 		return -1, err // expired
 	}
-	fmt.Println("non expired")
 
 	err = service.hasher.CheckHash(token, session.Token)
 	if err != nil {

@@ -2,7 +2,6 @@ package wsadpt
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 
@@ -44,7 +43,7 @@ func (c *Client) readMessages() {
 	c.connection.SetReadLimit(512)
 
 	if err := c.connection.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		log.Println(err)
+		log.Fatalf("Error: %s", err)
 		return
 	}
 	// Configure how to handle Pong responses
@@ -59,26 +58,24 @@ func (c *Client) readMessages() {
 			// If Connection is closed, we will Recieve an error here
 			// We only want to log Strange errors, but simple Disconnection
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error reading message: %v", err)
+				log.Fatalf("Error: %s", err)
 			}
 			break // Break the loop to close conn & Cleanup
 		}
 		// Marshal incoming data into a Event struct
 		var request Event
 		if err := json.Unmarshal(payload, &request); err != nil {
-			log.Printf("error marshalling message: %v", err)
+			log.Fatalf("Error: %s", err)
 			break // Breaking the connection here might be harsh xD
 		}
 		// Route the Event
 		if err := c.manager.routeEvent(request, c); err != nil {
-			log.Println("Error handeling Message: ", err)
+			log.Fatalf("Error: %s", err)
 		}
 	}
 }
 
 func (c *Client) pongHandler(pongMsg string) error {
-	// Current time + Pong Wait time
-	//log.Println("pong")
 	return c.connection.SetReadDeadline(time.Now().Add(pongWait))
 }
 
@@ -94,29 +91,26 @@ func (c *Client) writeMessages() {
 	for {
 		select {
 		case message, ok := <-c.egress:
-			fmt.Println("message new")
 			// Ok will be false Incase the egress channel is closed
 			if !ok {
 				// Manager has closed this connection channel, so communicate that to frontend
 				if err := c.connection.WriteMessage(websocket.CloseMessage, nil); err != nil {
 					// Log that the connection is closed and the reason
-					log.Println("connection closed: ", err)
 				}
 				return // Return to close the goroutine
 			}
 
 			data, err := json.Marshal(message)
 			if err != nil {
-				log.Println(err)
+				log.Fatalf("Error: %s", err)
 				return // closes the connection, should we really
 			}
 
 			if err := c.connection.WriteMessage(websocket.TextMessage, data); err != nil {
-				log.Println(err)
+				log.Fatalf("Error: %s", err)
 			}
-			log.Println("sent message")
+			
 		case <-ticker.C:
-			//log.Println("ping")
 			if err := c.connection.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				log.Println("writemsg: ", err)
 				return // return to break this goroutine triggeing cleanup

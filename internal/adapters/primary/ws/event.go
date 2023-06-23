@@ -2,7 +2,7 @@ package wsadpt
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"real-time-forum/internal/domain/entities"
 	"strconv"
 	"strings"
@@ -48,13 +48,12 @@ type ChangeRoomEvent struct {
 func SendMessageHandler(event Event, c *Client) error {
 	var chatevent SendMessageEvent
 	if err := json.Unmarshal(event.Payload, &chatevent); err != nil {
-		return fmt.Errorf("bad payload in request: %v", err)
+		return err
 	}
-	fmt.Println(c.chatroom)
+
 	receiverId, err := strconv.Atoi(strings.Split(c.chatroom, "&")[1])
 	if err != nil {
-		//log
-		return nil
+		return err
 	}
 
 	var broadMessage NewMessageEvent
@@ -66,7 +65,7 @@ func SendMessageHandler(event Event, c *Client) error {
 
 	data, err := json.Marshal(broadMessage)
 	if err != nil {
-		return fmt.Errorf("failed to marshal broadcast message: %v", err)
+		return err
 	}
 
 	var outgoingEvent Event
@@ -95,7 +94,7 @@ func SendMessageHandler(event Event, c *Client) error {
 		SendTime:   broadMessage.Sent,
 	})
 	if err != nil {
-		//log ?
+		log.Fatalf("Error: %s", err)
 	}
 
 	return nil
@@ -104,7 +103,7 @@ func SendMessageHandler(event Event, c *Client) error {
 func ChatRoomHandler(event Event, c *Client) error {
 	var changeRoomEvent ChangeRoomEvent
 	if err := json.Unmarshal(event.Payload, &changeRoomEvent); err != nil {
-		return fmt.Errorf("bad payload in request: %v", err)
+		return err
 	}
 
 	c.chatroom = changeRoomEvent.Name

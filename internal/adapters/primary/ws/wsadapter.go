@@ -3,7 +3,6 @@ package wsadpt
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -84,8 +83,6 @@ func (m *Manager) routeEvent(event Event, c *Client) error {
 }
 
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
-	log.Println("New connection start")
-
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -100,7 +97,6 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request, userId int) {
 }
 
 func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
-	fmt.Println("get users starting")
 
 	//get unique user ids from manager client list
 	//TODO : is here not unique ids?
@@ -171,13 +167,6 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	fmt.Println("data user id ")
-	fmt.Println(data.UserID)
-	fmt.Println("data history page ")
-	fmt.Println(data.HistoryPage)
-	fmt.Println("first history msg ")
-	fmt.Println(data.FirstHistoryMsg)
-
 	// TODO : think, should it return error as well, in case of unsuccessful database request?
 	chatHistory := m.chatService.LoadChatHistory(userId, data.UserID)
 	length := len(chatHistory)
@@ -223,7 +212,6 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 }
 
 func (m *Manager) addClient(client *Client) {
-	fmt.Println("add client in process")
 
 	m.Lock()
 	defer m.Unlock()
@@ -247,7 +235,7 @@ func (m *Manager) addClient(client *Client) {
 
 	payloadBytes, err := json.Marshal(payloadData)
 	if err != nil {
-		fmt.Println("error with marshal")
+		log.Fatalf("Error: %s", err)
 		return
 	}
 
@@ -257,7 +245,7 @@ func (m *Manager) addClient(client *Client) {
 	for c := range m.Clients {
 		//TODO : fix next line, cuz object comparing
 		if client != c {
-			fmt.Println("sending")
+			log.Println("sending")
 			c.egress <- outgoingEvent
 		}
 	}
@@ -274,8 +262,7 @@ func (m *Manager) removeClient(client *Client) {
 
 	payloadBytes, err := json.Marshal(payloadData)
 	if err != nil {
-		fmt.Println("error with marshal")
-		//return
+		log.Fatalf("Error: %s", err)
 	}
 
 	outgoingEvent.Payload = payloadBytes
@@ -284,7 +271,6 @@ func (m *Manager) removeClient(client *Client) {
 	for c := range m.Clients {
 		//TODO : fix next line, cuz object comparing?
 		if client != c {
-			fmt.Println("sending")
 			c.egress <- outgoingEvent
 		}
 	}

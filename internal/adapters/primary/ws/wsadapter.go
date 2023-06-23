@@ -108,7 +108,7 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	isActiveUsersId := []int{}
 
 	for isActiveUser, _ := range m.Clients {
-		isActiveUsersId = append(isActiveUsersId, isActiveUser.userId)
+			isActiveUsersId = append(isActiveUsersId, isActiveUser.userId)
 	}
 
 	users, err := m.chatService.GetUsers(isActiveUsersId, userId)

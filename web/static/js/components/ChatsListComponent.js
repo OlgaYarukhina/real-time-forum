@@ -28,6 +28,13 @@ export async function CreateChatsList(callback) {
     user.setAttribute('data-link', '');
     user.href = `/chat:${returnedUsers.withmsg[i].user_id}`;
     user.textContent = returnedUsers.withmsg[i].nickname;
+    const iconSpan = document.createElement("span");
+    iconSpan.className = "icon-chat";
+    const icon = document.createElement("ion-icon");
+    icon.name = "mail-unread-outline";
+    iconSpan.appendChild(icon);
+    user.appendChild(iconSpan);
+    
     if (returnedUsers.withmsg[i].isactive === true) {
       user.className = "activ_user";
       //1. users online with unread letter
@@ -56,6 +63,7 @@ export async function CreateChatsList(callback) {
     user.setAttribute('data-link', '');
     user.href = `/chat:${returnedUsers.withoutmsg[i].user_id}`;
     user.textContent = returnedUsers.withoutmsg[i].nickname;
+
     if (returnedUsers.withoutmsg[i].isactive === true) {
       //5. Activ users without chats
       user.className = "activ_user";

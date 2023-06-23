@@ -22,13 +22,15 @@ export const register = async () => {
         body: JSON.stringify(formData)
       });
       const returnedError = await response.json();
+
+      console.log(returnedError.message)
   
       if (returnedError.message == "New user was created") {
         navigateTo('http://localhost:8080/login', "New user was created. Log in!")
       }
   
-      if (returnedError.message == "Email already exists") {
-        navigateTo('http://localhost:8080/login', "Email already exists.Try to Log in!");
+      if (returnedError.message == "Email already exist") {
+        navigateTo('http://localhost:8080/login', `Email ${formData.email} already exists.Try to Log in!`);
       }
   
       if (returnedError.message == "Nickname already exists") {

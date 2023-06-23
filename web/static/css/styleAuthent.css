@@ -65,7 +65,7 @@
 .input-box .error {
     margin-top: 3px;
     color: rgb(64, 217, 125);
-    font-size: 9px;
+    font-size: 15px;
     height: 13px;
 }
 
@@ -105,6 +105,12 @@
     font-size: 1.2em;
     color: black;
     line-height: 57px;
+}
+
+.icon-chat {
+    position: absolute;
+    right: 30px;
+    font-size: 1.5em;
 }
 
 

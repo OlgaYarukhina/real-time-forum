@@ -43,8 +43,8 @@ func (d *Database) SaveUser(user entities.User) error {
 func (d *Database) GetHashedPassword(email string) (int, string, error) {
 	var password string
 	var id int
-
-	err := d.db.QueryRow("SELECT user_id, password_hash FROM users WHERE email = ?", email).Scan(&id, &password)
+	stmt := "SELECT user_id, password_hash FROM users WHERE email = ?"
+	err := d.db.QueryRow(stmt, email).Scan(&id, &password)
 	if err == sql.ErrNoRows {
 		return id, password, err
 	}
@@ -77,7 +77,11 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 		if user.IsMessage == true {
 			user.LastMessage = d.GetLastMessageTime(currentUserID, user.UserID)
 		}
-		users = append(users, &user)
+
+		// get list without current user
+		if user.UserID != currentUserID {
+			users = append(users, &user)
+		}
 	}
 	return users, nil
 }
@@ -166,9 +170,6 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 // chat
 
 func (d *Database) SaveMsg(message entities.Message) error {
-	fmt.Println("Time")
-	fmt.Println(message.SendTime)
-
 	stmt := `INSERT INTO messages (sender_id, receiver_id, message_text, send_time)
     VALUES(?,?,?,?)`
 	_, err := d.db.Exec(stmt, &message.SenderID, &message.ReceiverID, &message.Body, &message.SendTime)
@@ -192,8 +193,6 @@ func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error
 	}
 	defer rows.Close()
 
-	fmt.Println(rows)
-
 	var messages []*entities.Message
 
 	for rows.Next() {
@@ -209,11 +208,11 @@ func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error
 }
 
 func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool) {
-
 	isUnreadCheck := 0
 	isMessage := true
 	var isUnread bool
-	if err := d.db.QueryRow("SELECT is_read FROM messages WHERE receiver_id = ? AND sender_id = ?", currentUser, user).Scan(&isUnreadCheck); err != nil {
+	stmt := "SELECT is_read FROM messages WHERE receiver_id = ? AND sender_id = ?"
+	if err := d.db.QueryRow(stmt, currentUser, user).Scan(&isUnreadCheck); err != nil {
 		if err == sql.ErrNoRows {
 			isMessage = false
 		} else {
@@ -314,7 +313,7 @@ func (d *Database) GetUserById(id int) string {
 	var nickname string
 	if err := d.db.QueryRow("SELECT nickname from users WHERE user_id = ?", id).Scan(&nickname); err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println(err)
+			//fmt.Println(err)
 		}
 		fmt.Println(err)
 	}
@@ -382,7 +381,6 @@ func (d *Database) GetLastMessageTime(currentUser, user int) time.Time {
 		}
 		fmt.Println(err)
 	}
-
 	return time
 }
 

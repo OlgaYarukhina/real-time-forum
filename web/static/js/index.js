@@ -136,11 +136,13 @@ class SendMessageEvent {
 }
 
 class NewMessageEvent {
-    constructor(message, from, sent, to) {
+    constructor(message, from, sent, to, fromnick) {
         this.message = message;
         this.from = from;
         this.sent = sent;
         this.to = to;
+        this.fromnick = fromnick;
+        this.tonick = tonick;
     }
 }
 
@@ -222,8 +224,8 @@ function appendChatMessage(messageEvent) {
     //alert("YO, new message from "+messageEvent.from);
     const notification = document.getElementById("aler")
     notification.style.display = "flex"
-    let user = document.getElementById(messageEvent.from);
-    notification.innerHTML = "YO, new message from "+user.innerHTML;
+    //let user = document.getElementById(messageEvent.from);
+    notification.innerHTML = "YO, new message from "+messageEvent.fromnick;
     if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to) {
         const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
         const message = document.createElement('div');

@@ -36,8 +36,10 @@ type SendMessageEvent struct {
 
 type NewMessageEvent struct {
 	SendMessageEvent
-	To   int       `json:"to"`
-	Sent time.Time `json:"sent"`
+	To       int       `json:"to"`
+	Sent     time.Time `json:"sent"`
+	ToNick   string    `json:"tonick"`
+	FromNick string    `json:"fromnick"`
 }
 
 type ChangeRoomEvent struct {
@@ -58,10 +60,15 @@ func SendMessageHandler(event Event, c *Client) error {
 
 	var broadMessage NewMessageEvent
 
+	tn, _ := c.manager.chatService.GetUserNicknameByID(receiverId)
+	fn, _ := c.manager.chatService.GetUserNicknameByID(chatevent.From)
+
 	broadMessage.Sent = time.Now()
 	broadMessage.Message = chatevent.Message
 	broadMessage.From = chatevent.From
 	broadMessage.To = receiverId
+	broadMessage.ToNick = tn
+	broadMessage.FromNick = fn
 
 	data, err := json.Marshal(broadMessage)
 	if err != nil {

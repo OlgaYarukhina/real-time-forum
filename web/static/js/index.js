@@ -94,6 +94,10 @@ const router = async () => {
         const view = new match.route.view(getParams(match));
         document.querySelector("#app").innerHTML = "";
         document.querySelector("#app").appendChild(await view.getHtml()); 
+        let el = document.getElementById('wrapper_display_messages');
+        if(el){
+            el.scrollTop = el.scrollHeight;
+        }
     }
     
 };
@@ -246,7 +250,7 @@ function appendChatMessage(messageEvent) {
         message.appendChild(createdAt);
         wrapperDisplayMessages.appendChild(message);
         wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
-        //moveChatList(chattingUserId)
+        moveChatList(chattingUserId)
     } 
 }
 

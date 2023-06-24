@@ -83,6 +83,8 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
     })
 
     wrapperChat.appendChild(wrapperWriteMessage);
+
+    wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
     return wrapperChat;
 }
 
@@ -97,13 +99,14 @@ function callbackCreateMessageWrap(id, f){
 function callbackLoadMoreWrap(id, fhm, f, hp = 1){
     let firstHistoryMsg = fhm;
     let historyPage = hp;
+
     return async function loadMoreMsgs(){
 
        let returnedMessages = await f(id, firstHistoryMsg.body, historyPage);
         if (returnedMessages != null) {
             const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
-            //let tempScroll = wrapperDisplayMessages.scrollTop;
-            
+            const previousScrollHeight = wrapperDisplayMessages.scrollHeight;
+
             for (let i = returnedMessages.length-1; i >= 0; i--) {
                 const message = document.createElement('div');
                 const body = document.createElement('p');
@@ -123,8 +126,10 @@ function callbackLoadMoreWrap(id, fhm, f, hp = 1){
                 //wrapperDisplayMessages.prepend(message);
                 wrapperDisplayMessages.prepend(message); // Use appendChild instead of prepend
             }
-            wrapperDisplayMessages.scrollTop = (wrapperDisplayMessages.scrollHeigh / historyPage+1) * (historyPage);
-            // Add this line
+            const newScrollHeight = wrapperDisplayMessages.scrollHeight;
+            const scrollDifference = newScrollHeight - previousScrollHeight;
+
+            wrapperDisplayMessages.scrollTop = scrollDifference;
         }
         historyPage = historyPage + 1;
     }

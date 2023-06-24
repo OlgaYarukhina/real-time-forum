@@ -76,16 +76,12 @@ export async function PostView (callback, callback1, id) {
         comment.classList.add('post_content');
         comment.textContent = returnedPost.comments[i].comment;
       
-      
         wrapperComment.appendChild(nickname);
         wrapperComment.appendChild(createdAt);
         wrapperComment.appendChild(comment);
-      
         wrapper.appendChild(wrapperComment);
       }
      }
-
-
     return wrapper;
   }
 

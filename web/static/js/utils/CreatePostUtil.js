@@ -17,7 +17,6 @@ export const validateInputs = () => {
     let check = false;
 
     const categories = document.getElementById('create_post');
-  
     let categoriesArr =[];
     document.querySelectorAll('[type="checkbox"]').forEach(item => {
       if(item.checked === true){

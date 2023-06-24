@@ -33,7 +33,7 @@ export const createPost = async () => {
       }
     
       if (returnedError.message == "Post was created") {
-        navigateTo('http://localhost:8080/', 'Post was created');
+        navigateTo('http://localhost:8080/');
       } else {
         navigateTo('http://localhost:8080/', 'Something wrong. Post was not created. Ask developers :)');
       }

@@ -23,7 +23,7 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
             body.classList.add('post_content');
             body.textContent = returnedMessages[i].body;
             const createdAt = document.createElement('div');
-            createdAt.classList.add('created_at');
+            createdAt.classList.add('created_at_chat');
             createdAt.textContent = returnedMessages[i].created_at.slice(11, 16);
             console.log(returnedMessages[i].created_at)
 

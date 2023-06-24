@@ -94,3 +94,11 @@
     border-color: none;
     outline: none;
 }
+
+.created_at_chat {
+    position: relative;
+    left: 400px;
+    color: rgb(150, 141, 128);
+    font-size: small;
+}
+

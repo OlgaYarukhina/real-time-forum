@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 	"real-time-forum/internal/domain/entities"
 	"strconv"
 	"time"
@@ -34,7 +34,6 @@ func (d *Database) SaveUser(user entities.User) error {
 	_, err := d.db.Exec(stmt, user.Email, user.Nickname, user.Age, user.Gender,
 		user.FirstName, user.LastName, []byte(user.PasswordHash))
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 	return nil
@@ -43,8 +42,8 @@ func (d *Database) SaveUser(user entities.User) error {
 func (d *Database) GetHashedPassword(email string) (int, string, error) {
 	var password string
 	var id int
-
-	err := d.db.QueryRow("SELECT user_id, password_hash FROM users WHERE email = ?", email).Scan(&id, &password)
+	stmt := "SELECT user_id, password_hash FROM users WHERE email = ?"
+	err := d.db.QueryRow(stmt, email).Scan(&id, &password)
 	if err == sql.ErrNoRows {
 		return id, password, err
 	}
@@ -77,7 +76,11 @@ func (d *Database) GetAllUsers(currentUserID int) ([]*entities.UserChatInfo, err
 		if user.IsMessage == true {
 			user.LastMessage = d.GetLastMessageTime(currentUserID, user.UserID)
 		}
-		users = append(users, &user)
+
+		// get list without current user
+		if user.UserID != currentUserID {
+			users = append(users, &user)
+		}
 	}
 	return users, nil
 }
@@ -166,14 +169,10 @@ func (d *Database) GetSession(sessionID int) (entities.Session, error) {
 // chat
 
 func (d *Database) SaveMsg(message entities.Message) error {
-	fmt.Println("Time")
-	fmt.Println(message.SendTime)
-
 	stmt := `INSERT INTO messages (sender_id, receiver_id, message_text, send_time)
     VALUES(?,?,?,?)`
 	_, err := d.db.Exec(stmt, &message.SenderID, &message.ReceiverID, &message.Body, &message.SendTime)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 	return nil
@@ -187,12 +186,9 @@ func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error
 	stmt := `SELECT sender_id, receiver_id, send_time, message_text FROM messages WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY send_time ASC LIMIT 200`
 	rows, err := d.db.Query(stmt, currentUser, user, user, currentUser)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
-
-	fmt.Println(rows)
 
 	var messages []*entities.Message
 
@@ -209,15 +205,15 @@ func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error
 }
 
 func (d *Database) CheckIsUnread(currentUser, user int) (bool, bool) {
-
 	isUnreadCheck := 0
 	isMessage := true
 	var isUnread bool
-	if err := d.db.QueryRow("SELECT is_read FROM messages WHERE receiver_id = ? AND sender_id = ?", currentUser, user).Scan(&isUnreadCheck); err != nil {
+	stmt := "SELECT is_read FROM messages WHERE receiver_id = ? AND sender_id = ?"
+	if err := d.db.QueryRow(stmt, currentUser, user).Scan(&isUnreadCheck); err != nil {
 		if err == sql.ErrNoRows {
 			isMessage = false
 		} else {
-			fmt.Println(err)
+			log.Fatal(err)
 		}
 	} else {
 		if isUnreadCheck == 1 {
@@ -256,7 +252,7 @@ func (d *Database) GetPost(postId entities.Post) (*entities.Post, error) {
 	post.Categories, err = d.getCategoryRelation(postId.PostID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("Post not found")
+			return nil, err
 		}
 		return nil, err
 	}
@@ -271,7 +267,6 @@ func (d *Database) SavePost(post entities.Post) error {
 
 	for _, category_id := range post.Categories {
 		cat_id, err := strconv.Atoi(category_id)
-		fmt.Println(cat_id)
 		stmt := `INSERT INTO categoryPostRelation (post_id, category_id) VALUES (?,?)`
 		_, err = d.db.Exec(stmt, id, cat_id)
 		if err != nil {
@@ -288,7 +283,6 @@ func (d *Database) GetComments(postId entities.Post) ([]*entities.Comment, error
 	stmt := `SELECT * FROM comments WHERE post_id = ? ORDER BY created_at ASC LIMIT 200`
 	rows, err := d.db.Query(stmt, postId.PostID)
 	if err != nil {
-		fmt.Println("Here1")
 		return nil, err
 	}
 	defer rows.Close()
@@ -304,7 +298,6 @@ func (d *Database) GetComments(postId entities.Post) ([]*entities.Comment, error
 		comments = append(comments, comment)
 	}
 	if err = rows.Err(); err != nil {
-		fmt.Println("Here3")
 		return nil, err
 	}
 	return comments, nil
@@ -314,9 +307,9 @@ func (d *Database) GetUserById(id int) string {
 	var nickname string
 	if err := d.db.QueryRow("SELECT nickname from users WHERE user_id = ?", id).Scan(&nickname); err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println(err)
+			//fmt.Println(err)
 		}
-		fmt.Println(err)
+		log.Fatalf(err.Error())
 	}
 	return nickname
 }
@@ -355,9 +348,9 @@ func (d *Database) getNameOfCategoryById(categoryId int) (string, error) {
 	var category string
 	if err := d.db.QueryRow("SELECT called FROM categories WHERE category_id = ?", categoryId).Scan(&category); err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println("Category was not found")
+			//log.Fatalf(err.Error())
 		} else {
-			fmt.Println(err)
+			log.Fatalf(err.Error())
 		}
 	}
 	return category, nil
@@ -370,19 +363,18 @@ func (d *Database) GetLastMessageTime(currentUser, user int) time.Time {
 	stmt := `SELECT id FROM messages WHERE receiver_id = ? AND sender_id = ? OR receiver_id = ? AND sender_id = ? ORDER BY id DESC LIMIT 1`
 	if err := d.db.QueryRow(stmt, currentUser, user, currentUser, user).Scan(&lastMessageId); err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println(err)
+			//log.Fatalf(err.Error())
 		}
-		fmt.Println(err)
+		log.Fatalf(err.Error())
 	}
 
 	stmt = `SELECT send_time FROM messages WHERE id = ?`
 	if err := d.db.QueryRow(stmt, lastMessageId).Scan(&time); err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println(err)
+		//	log.Fatalf(err.Error())
 		}
-		fmt.Println(err)
+		log.Fatalf(err.Error())
 	}
-
 	return time
 }
 

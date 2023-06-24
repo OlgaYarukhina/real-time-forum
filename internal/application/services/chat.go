@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"log"
 	"real-time-forum/internal/domain/entities"
 	"real-time-forum/internal/domain/interfaces"
@@ -14,7 +13,6 @@ type ChatService struct {
 }
 
 func NewChatService(repo interfaces.Repository) *ChatService {
-	fmt.Println("ChatService created and ready to use")
 
 	return &ChatService{
 		repo: repo,
@@ -22,7 +20,6 @@ func NewChatService(repo interfaces.Repository) *ChatService {
 }
 
 func (service ChatService) GetUsers(activeUserIds []int, currentUser int) (map[string]interface{}, error) {
-	fmt.Println("chat service works on getting users")
 
 	allUsers, err := service.repo.GetAllUsers(currentUser) // users with checked message status
 	if err != nil {

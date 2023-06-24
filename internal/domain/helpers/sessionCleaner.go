@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"real-time-forum/internal/domain/interfaces"
@@ -26,7 +26,7 @@ func (cleaner *SessionCleaner) StartCleaningSessions(interval time.Duration) {
 			case <-ticker.C:
 				err := cleaner.repo.RemoveExpiredSessions()
 				if err != nil {
-					fmt.Println("Error cleaning expired sessions:", err)
+					log.Fatalf("Error: %s", err)
 				}
 			}
 		}

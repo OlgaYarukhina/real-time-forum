@@ -55,7 +55,7 @@ export const addComment = async (id) => {
       }
 
     if (returnedError.message == "Comment was created") {
-      navigateTo('http://localhost:8080/login', "Email already exists.Try to Log in!");
+      navigateTo(`http://localhost:8080/view_post:${formData.post_id}`);
     } else {
 
     }
@@ -63,3 +63,5 @@ export const addComment = async (id) => {
     console.error(err);
   }
 }
+
+

@@ -18,7 +18,7 @@ const isValidNickname = userNickname => {
     const inputControl = element.parentElement;
     const errorDisplay = inputControl.querySelector('.error');
     errorDisplay.innerText = message;
-    inputControl.classList.add('error');
+    errorDisplay.classList.add('error');
   };
   
   const setSuccess = element => {

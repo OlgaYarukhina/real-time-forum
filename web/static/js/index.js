@@ -23,14 +23,14 @@ const getParams = match => {
 
 let alerMsg = "";
 
-const navigateTo =  (url, msg="") => {
+const navigateTo = (url, msg = "") => {
     alerMsg = msg;
     history.pushState(null, null, url);
     router();
 };
 
 const router = async () => {
-    console.log("routing to "+location.pathname);
+    console.log("routing to " + location.pathname);
     const routes = [
         { path: "/", view: Posts },
         { path: "/new_post", view: CreatePost },
@@ -59,18 +59,18 @@ const router = async () => {
             result: [location.pathname]
         };
     }
-    if (match.route.path === "/login" || match.route.path === "/register"){
+    if (match.route.path === "/login" || match.route.path === "/register") {
         document.getElementById("nav").style.display = 'none';
     } else {
         document.getElementById("nav").style.display = 'flex';
     }
 
-    if((localStorage.getItem("sessionToken") === null || localStorage.getItem("sessionId") === null) && 
-        !(match.route.path === "/login" || match.route.path === "/register" )){
+    if ((localStorage.getItem("sessionToken") === null || localStorage.getItem("sessionId") === null) &&
+        !(match.route.path === "/login" || match.route.path === "/register")) {
         navigateTo("http://localhost:8080/login")
     } else {
 
-        if (match.route.path === "/login" || match.route.path === "/register"){
+        if (match.route.path === "/login" || match.route.path === "/register") {
         } else {
             if (typeof websocket !== "undefined" && websocket.readyState === WebSocket.OPEN) {
                 console.log("WebSocket connection is open.");
@@ -81,7 +81,7 @@ const router = async () => {
             }
         }
 
-        if (alerMsg !== ""){
+        if (alerMsg !== "") {
             console.log("aler");
             document.getElementById("aler").innerHTML = alerMsg;
             alerMsg = "";
@@ -90,7 +90,7 @@ const router = async () => {
             document.getElementById("aler").innerHTML = '';
             document.getElementById("aler").classList.remove('active')
         }
-        
+
         const view = new match.route.view(getParams(match));
         document.querySelector("#app").innerHTML = "";
         document.querySelector("#app").appendChild(await view.getHtml()); 
@@ -99,7 +99,7 @@ const router = async () => {
             el.scrollTop = el.scrollHeight;
         }
     }
-    
+
 };
 
 window.addEventListener("popstate", router);
@@ -116,18 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 export { navigateTo, router };
-
-// TODO : add ws connection for receiving active users and its changes
-
-//connect to ws right here?
-//to be able to receive new msg notifications independently of a page
-//create section as in discord 
-//subscribe on events
-//if new msg and correct chat is open - display msg
-//is not add +1 unread to correct user
-//in both cases reorder chats section 
-
-
 
 //------
 // TODO : move to new file?
@@ -183,7 +171,7 @@ function routeEvent(event) {
             appendChatMessage(messageEvent);
             break;
         case "client_changes":
-          const clientChangesEvent = Object.assign(new ClientChangesEvent, event.payload);
+            const clientChangesEvent = Object.assign(new ClientChangesEvent, event.payload);
             applyClientChanges(clientChangesEvent)
             break;
         default:
@@ -194,22 +182,22 @@ function routeEvent(event) {
 }
 
 
-function applyClientChanges(clientChangesEvent){
-    if (clientChangesEvent.status === "online"){
-        const usercur = document.getElementById("online_user_"+clientChangesEvent.userId)
-        
+function applyClientChanges(clientChangesEvent) {
+    if (clientChangesEvent.status === "online") {
+        const usercur = document.getElementById("online_user_" + clientChangesEvent.userId)
+
         if (!usercur) {
             const wrapperOnlineUsers = document.getElementById("wrapperOnlineUsers");
             const user = document.createElement("div");
             user.className = "activ_user";
             user.setAttribute('data-link', '');
-            user.setAttribute('id', "online_user_"+clientChangesEvent.userId);
+            user.setAttribute('id', "online_user_" + clientChangesEvent.userId);
             user.href = `/chat:${clientChangesEvent.userId}`;
             user.textContent = clientChangesEvent.userNickname;
-            wrapperOnlineUsers.prepend(user);   
+            wrapperOnlineUsers.prepend(user);
         }
     } else {
-        const user = document.getElementById("online_user_"+clientChangesEvent.userId)
+        const user = document.getElementById("online_user_" + clientChangesEvent.userId)
         if (user) {
             user.parentNode.removeChild(user);
         }
@@ -219,9 +207,9 @@ function applyClientChanges(clientChangesEvent){
 var chattingUserId;
 //var historyPage = 0;
 
-export function loadMoreMsgs(){
-    console.log("chatting user id "+ chattingUserId)
-    console.log("history page "+ historyPage)
+export function loadMoreMsgs() {
+    console.log("chatting user id " + chattingUserId)
+    console.log("history page " + historyPage)
     let loadedMsgs = getChat(chattingUserId, historyPage);
     console.log(loadedMsgs);
     historyPage = historyPage + 1;
@@ -230,8 +218,8 @@ export function loadMoreMsgs(){
 
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
-    
-    if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to){
+
+    if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to) {
         const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
         const message = document.createElement('div');
         const body = document.createElement('p');
@@ -251,34 +239,26 @@ function appendChatMessage(messageEvent) {
         wrapperDisplayMessages.appendChild(message);
         wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
         moveChatList(chattingUserId)
-    } 
+    }
 }
 
-function moveChatList(chattingUserId){
-   const user = document.getElementById(chattingUserId);
-  
-   var userClassName = user.className;
-   var userNick = user.textContent;
-   user.remove();
-
+function moveChatList(chattingUserId) {
     var parent = document.getElementById('users_with_msg');
-    const userMove = document.createElement("div");
-    userMove.id = `${chattingUserId}`;
-    userMove.setAttribute('data-link', '');
-    user.href = `/chat:${chattingUserId}`;
-    userMove.textContent = userNick; 
-    userMove.className = userClassName;
-
+    const user = document.getElementById(chattingUserId);
+    const userMove = user;
+    user.remove();
+    //iconSpan.style.display = "none";
     parent.prepend(userMove);
 };
+   
 
 // TODO : move to "go to chat" component
 export function changeChatRoom(id) {
-    if (id !== chattingUserId){
+    if (id !== chattingUserId) {
         //historyPage = 0;
         chattingUserId = id;
-        console.log("id for room changing - "+id);
-        let changeEvent = new ChangeChatRoomEvent(localStorage.getItem("userId")+"&"+id);
+        console.log("id for room changing - " + id);
+        let changeEvent = new ChangeChatRoomEvent(localStorage.getItem("userId") + "&" + id);
         sendEvent("change_room", changeEvent);
     }
     return false;
@@ -288,7 +268,7 @@ export function changeChatRoom(id) {
 export function sendMessage(id) {
     var newmessage = document.getElementById('writeMessage');
     if (newmessage != null) {
-        let outgoingEvent = new SendMessageEvent(newmessage.value, parseInt(localStorage.getItem("userId"),10));
+        let outgoingEvent = new SendMessageEvent(newmessage.value, parseInt(localStorage.getItem("userId"), 10));
         sendEvent("send_message", outgoingEvent)
     }
     return false;
@@ -302,7 +282,7 @@ function sendEvent(eventName, payload) {
         console.log('WebSocket not open yet. Waiting and retrying...');
         setTimeout(sendEvent, 500, eventName, payload); // Retry after 0.5 seconds
     }
-  }
+}
 
 //---
 

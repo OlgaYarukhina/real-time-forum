@@ -4,7 +4,7 @@
 package httpadpt
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"real-time-forum/internal/domain/interfaces"
 	"strconv"
@@ -35,7 +35,7 @@ func (handler *HttpAdapter) SessionCheck(next func(http.ResponseWriter, *http.Re
 			return
 		}
 		if userId, err := handler.authService.IsValidSession(sessionId, sessionToken); err == nil {
-			fmt.Println("session is valid")
+			log.Println("session is valid")
 			next(w, r, userId)
 		} else {
 			w.WriteHeader(http.StatusUnauthorized)

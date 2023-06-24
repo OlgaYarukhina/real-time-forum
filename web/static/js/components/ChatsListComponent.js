@@ -63,6 +63,14 @@ export async function CreateChatsList(callback) {
     user.setAttribute('data-link', '');
     user.href = `/chat:${returnedUsers.withoutmsg[i].user_id}`;
     user.textContent = returnedUsers.withoutmsg[i].nickname;
+    const iconSpan = document.createElement("span");
+    iconSpan.id = "icon";
+    iconSpan.className = "icon-chat";
+    iconSpan.style.display = "none";
+    const icon = document.createElement("ion-icon");
+    icon.name = "mail-unread-outline";
+    iconSpan.appendChild(icon);
+    user.appendChild(iconSpan);
 
     if (returnedUsers.withoutmsg[i].isactive === true) {
       //5. Activ users without chats

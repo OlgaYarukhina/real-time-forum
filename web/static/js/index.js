@@ -255,8 +255,10 @@ function moveChatList(chattingUserId) {
     const user = document.getElementById(chattingUserId);
     const userMove = user;
     user.remove();
+    iconSpan.style.display = "none";
     parent.prepend(userMove);
-};
+    };
+   
 
 // TODO : move to "go to chat" component
 export function changeChatRoom(id) {

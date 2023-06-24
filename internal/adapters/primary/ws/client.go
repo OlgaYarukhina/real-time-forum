@@ -20,7 +20,7 @@ type Client struct {
 }
 
 var (
-	pongWait     = 5 * time.Minute
+	pongWait     = 45 * time.Minute
 	pingInterval = (pongWait * 9) / 10
 )
 
@@ -109,7 +109,7 @@ func (c *Client) writeMessages() {
 			if err := c.connection.WriteMessage(websocket.TextMessage, data); err != nil {
 				log.Fatalf("Error: %s", err)
 			}
-			
+
 		case <-ticker.C:
 			if err := c.connection.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				log.Println("writemsg: ", err)

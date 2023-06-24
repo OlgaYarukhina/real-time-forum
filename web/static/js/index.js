@@ -218,7 +218,12 @@ export function loadMoreMsgs() {
 
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
-
+    console.log("new msg")
+    //alert("YO, new message from "+messageEvent.from);
+    const notification = document.getElementById("aler")
+    notification.style.display = "flex"
+    let user = document.getElementById(messageEvent.from);
+    notification.innerHTML = "YO, new message from "+user.innerHTML;
     if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to) {
         const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
         const message = document.createElement('div');
@@ -226,7 +231,7 @@ function appendChatMessage(messageEvent) {
         body.classList.add('post_content');
         body.textContent = messageEvent.message;
         const createdAt = document.createElement('div');
-        createdAt.classList.add('created_at');
+        createdAt.classList.add('created_at_chat');
         createdAt.textContent = messageEvent.sent.slice(11, 16);
 
         if (messageEvent.to == chattingUserId) {
@@ -238,19 +243,27 @@ function appendChatMessage(messageEvent) {
         message.appendChild(createdAt);
         wrapperDisplayMessages.appendChild(message);
         wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
-        moveChatList(chattingUserId)
+        moveChatList(messageEvent)
     }
 }
 
-function moveChatList(chattingUserId) {
+function moveChatList(messageEvent) {
     var parent = document.getElementById('users_with_msg');
-    const icon = document.getElementById(`icon${chattingUserId}`);
-    icon.style.display = "inline";
+    const icon = document.getElementById(`icon${messageEvent.to}`);
+    if (icon){
+        icon.style.display = "inline";
+    }
+    const icon2 = document.getElementById(`icon${messageEvent.from}`);
+    if (icon2){
+        icon2.style.display = "inline";
+    }
     
-    const user = document.getElementById(chattingUserId);
+    let user = document.getElementById(messageEvent.to);
+    if(!user){
+        user = document.getElementById(messageEvent.from);
+    }
     const userMove = user;
     user.remove();
-    //iconSpan.style.display = "none";
     parent.prepend(userMove);
 };
    

@@ -64,7 +64,7 @@ export async function CreateChatsList(callback) {
     user.href = `/chat:${returnedUsers.withoutmsg[i].user_id}`;
     user.textContent = returnedUsers.withoutmsg[i].nickname;
     const iconSpan = document.createElement("span");
-    iconSpan.id = "icon";
+    iconSpan.id = `icon${returnedUsers.withoutmsg[i].user_id}`;
     iconSpan.className = "icon-chat";
     iconSpan.style.display = "none";
     const icon = document.createElement("ion-icon");

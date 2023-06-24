@@ -252,10 +252,12 @@ function appendChatMessage(messageEvent) {
 
 function moveChatList(chattingUserId) {
     var parent = document.getElementById('users_with_msg');
+    const icon = document.getElementById(`icon${chattingUserId}`);
+    icon.style.display = "inline";
+    
     const user = document.getElementById(chattingUserId);
     const userMove = user;
     user.remove();
-    iconSpan.style.display = "none";
     parent.prepend(userMove);
     };
    

@@ -40,7 +40,7 @@
 
 .sender{
     display: block;
-    width: 540px;
+    width: 500px;
     min-width: 350px;
     margin-top: 20px;
     margin-left: auto;
@@ -53,7 +53,7 @@
 
 .receiver{
     display: block;
-    width: 540px;
+    width: 500px;
     min-width: 350px;
     margin-top: 20px;
     background: rgb(64, 217, 125, 0.5);
@@ -95,11 +95,16 @@
     outline: none;
 }
 
+.message{
+    color:rgb(203, 203, 195);
+    margin-top: 5px;
+    font-size: 17px;
+}
+
 .created_at_chat {
     position: relative;
-    left: 400px;
-    color: rgb(150, 141, 128);
-    font-size: small;
-    
+    left: 420px;
+    color: rgb(177, 172, 164);
+    font-size: 13px;
 }
 

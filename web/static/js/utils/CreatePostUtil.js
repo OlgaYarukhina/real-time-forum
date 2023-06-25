@@ -1,11 +1,11 @@
-const setError = (element, message) => {
+export const setError = (element, message) => {
     const inputControl = element.parentElement;
     const errorDisplay = inputControl.querySelector('.error');
     errorDisplay.innerText = message;
     inputControl.classList.add('error');
   };
   
-  const setSuccess = element => {
+export const setSuccess = element => {
     const inputControl = element.parentElement;
     const errorDisplay = inputControl.querySelector('.error');
     errorDisplay.innerText = "";

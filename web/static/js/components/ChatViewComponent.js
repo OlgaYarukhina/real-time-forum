@@ -15,23 +15,26 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
     wrapperDisplayMessages.classList.add('wrapper_display_messages');
     wrapperDisplayMessages.setAttribute("id", "wrapper_display_messages");
 
-
     if (returnedMessages != null) {
         for (let i = returnedMessages.length-1; i >= 0; i--) {
             const message = document.createElement('div');
+            const nickname = document.createElement('h4');
             const body = document.createElement('p');
-            body.classList.add('post_content');
+            body.classList.add('message');
             body.textContent = returnedMessages[i].body;
-            const createdAt = document.createElement('div');
+            const createdAt = document.createElement('span');
             createdAt.classList.add('created_at_chat');
             createdAt.textContent = returnedMessages[i].created_at.slice(11, 16);
             console.log(returnedMessages[i].created_at)
 
             if (returnedMessages[i].receiver_id === parseInt(id.substr(1), 10)) {
                 message.classList.add('receiver');
+                nickname.textContent = returnedMessages[i].receiver
             } else {
                 message.classList.add('sender');
+                nickname.textContent = returnedMessages[i].receiver
             }
+            message.appendChild(nickname);
             message.appendChild(body);
             message.appendChild(createdAt);
             wrapperDisplayMessages.prepend(message);

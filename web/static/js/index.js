@@ -229,8 +229,9 @@ function appendChatMessage(messageEvent) {
     if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to) {
         const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
         const message = document.createElement('div');
+        const nickname = document.createElement('h4');
         const body = document.createElement('p');
-        body.classList.add('post_content');
+        body.classList.add('message');
         body.textContent = messageEvent.message;
         const createdAt = document.createElement('div');
         createdAt.classList.add('created_at_chat');
@@ -238,9 +239,12 @@ function appendChatMessage(messageEvent) {
 
         if (messageEvent.to == chattingUserId) {
             message.classList.add('sender');
+            nickname.textContent = messageEvent.fromnick;
         } else {
             message.classList.add('receiver');
+            nickname.textContent = messageEvent.fromnick
         }
+        message.appendChild(nickname);
         message.appendChild(body);
         message.appendChild(createdAt);
         wrapperDisplayMessages.appendChild(message);

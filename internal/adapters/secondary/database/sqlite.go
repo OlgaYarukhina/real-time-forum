@@ -198,6 +198,8 @@ func (d *Database) GetHistory(currentUser, user int) ([]*entities.Message, error
 		if err != nil {
 			return nil, err
 		}
+		message.Receiver = d.GetUserById(message.ReceiverID)
+		message.Sender = d.GetUserById(message.SenderID)
 		messages = append(messages, message)
 	}
 
@@ -307,7 +309,7 @@ func (d *Database) GetUserById(id int) string {
 	var nickname string
 	if err := d.db.QueryRow("SELECT nickname from users WHERE user_id = ?", id).Scan(&nickname); err != nil {
 		if err == sql.ErrNoRows {
-			//fmt.Println(err)
+			log.Println(err)
 		}
 		log.Fatalf(err.Error())
 	}

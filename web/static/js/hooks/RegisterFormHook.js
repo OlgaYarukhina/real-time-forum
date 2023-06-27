@@ -1,13 +1,13 @@
 import { navigateTo } from "../index.js";
-//import { setError } from "../utils/RegisterUtil.js"
+import { setError } from "../utils/RegisterUtil.js"
 
 
-const setError = (element, message) => {
-  const inputControl = element.parentElement;
-  const errorDisplay = inputControl.querySelector('.error');
-  errorDisplay.innerText = message;
-  inputControl.classList.add('error');
-};
+// const setError = (element, message) => {
+//   const inputControl = element.parentElement;
+//   const errorDisplay = inputControl.querySelector('.error');
+//   errorDisplay.innerText = message;
+//   errorDisplay.classList.add('error');
+// };
 
 
 export const register = async () => {
@@ -41,8 +41,7 @@ export const register = async () => {
       }
   
       if (returnedError.message == "Nickname already exist") {
-       setError(document.getElementById('newNickname'), `Nickname "<b>${formData.nickname}</b>" already exists`);
-        check = false;
+       setError(document.getElementById('newNickname'), `Nickname "${formData.nickname}" already exists`);
       }
     } catch (err) {
       console.error(err);

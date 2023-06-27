@@ -89,12 +89,13 @@ body {
 .nav_chats {
     position: relative;
     text-align: center;
-    margin: 20px 0px 10px 0px;
+    margin: 20px 0px 0px 0px;
     height: 90%;
     text-decoration: none;
     color: rgb(64, 217, 125);
     font-weight: 800;
     font-size: 22px;
+    overflow: scroll;
 }
 
 .chats_list{
@@ -102,6 +103,11 @@ body {
     font-size: 15px;
     margin-top: 10px;
     text-align: left;
+}
+
+.users_with_msg {
+
+
 }
 
 .nav_logout {

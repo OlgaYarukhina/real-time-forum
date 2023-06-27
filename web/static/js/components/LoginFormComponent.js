@@ -20,6 +20,8 @@ const emailInputBox = createInputBox("email", "Email", "at-outline");
 
 // Create the password input box
 const passwordInputBox = createInputBox("password", "Password", "key-outline");
+passwordInputBox.querySelector("input").type = "password";
+passwordInputBox.querySelector("input").size = "8";
 
 // Create the login button
 const loginButton = document.createElement("button");

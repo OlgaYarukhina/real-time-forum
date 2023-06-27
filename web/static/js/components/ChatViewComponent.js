@@ -70,8 +70,6 @@ export async function CreateChatBlocks(callbackGetMessage, callbackCreateMessage
     textarea.rows = '1';
     textarea.required = true;
     form.appendChild(textarea);
-
-
     wrapperWriteMessage.appendChild(form);
 
 

@@ -14,7 +14,7 @@ const isValidNickname = userNickname => {
     return rex.test(String(newEmail.toLowerCase()));
   };
   
-  const setError = (element, message) => {
+ export const setError = (element, message) => {
     const inputControl = element.parentElement;
     const errorDisplay = inputControl.querySelector('.error');
     errorDisplay.innerText = message;

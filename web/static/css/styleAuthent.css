@@ -53,9 +53,11 @@
     margin: 35px 0;
 }
 
+.input-box:-webkit-autofill,
+.input-box:-webkit-autofill:hover,
 .input-box:-webkit-autofill:focus{
-    background-color: none;
     -webkit-text-fill-color: none;
+    transition: background-color 5000s ease-in-out;
 }
 
 .input-box.error input {

@@ -81,6 +81,8 @@ export function CreateRegisterForm(callback){
     
     // Create the newPassword input box
     const newPasswordInputBox = createInputBox("newPassword", "Password", "lock-closed-outline");
+    newPasswordInputBox.querySelector("input").type = "password";
+    newPasswordInputBox.querySelector("input").size = "8";
     
     // Create the create account button
     const createAccountButton = document.createElement("button");

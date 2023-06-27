@@ -43,7 +43,7 @@ func (c *Client) readMessages() {
 	c.connection.SetReadLimit(512)
 
 	if err := c.connection.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		log.Fatalf("Error: %s", err)
+		//log.Fatalf("Error: %s", err)
 		return
 	}
 	// Configure how to handle Pong responses
@@ -58,19 +58,19 @@ func (c *Client) readMessages() {
 			// If Connection is closed, we will Recieve an error here
 			// We only want to log Strange errors, but simple Disconnection
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Fatalf("Error: %s", err)
+				//log.Fatalf("Error: %s", err)
 			}
 			break // Break the loop to close conn & Cleanup
 		}
 		// Marshal incoming data into a Event struct
 		var request Event
 		if err := json.Unmarshal(payload, &request); err != nil {
-			log.Fatalf("Error: %s", err)
+			//log.Fatalf("Error: %s", err)
 			break // Breaking the connection here might be harsh xD
 		}
 		// Route the Event
 		if err := c.manager.routeEvent(request, c); err != nil {
-			log.Fatalf("Error: %s", err)
+			//log.Fatalf("Error: %s", err)
 		}
 	}
 }
@@ -102,12 +102,12 @@ func (c *Client) writeMessages() {
 
 			data, err := json.Marshal(message)
 			if err != nil {
-				log.Fatalf("Error: %s", err)
+				//log.Fatalf("Error: %s", err)
 				return // closes the connection, should we really
 			}
 
 			if err := c.connection.WriteMessage(websocket.TextMessage, data); err != nil {
-				log.Fatalf("Error: %s", err)
+				//log.Fatalf("Error: %s", err)
 			}
 
 		case <-ticker.C:

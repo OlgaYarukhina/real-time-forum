@@ -2,7 +2,6 @@ package wsadpt
 
 import (
 	"encoding/json"
-	"log"
 	"real-time-forum/internal/domain/entities"
 	"strconv"
 	"strings"
@@ -80,9 +79,9 @@ func SendMessageHandler(event Event, c *Client) error {
 	outgoingEvent.Type = EventNewMessage
 
 	for client := range c.manager.Clients {
-		if client.chatroom == "" {
-			continue
-		}
+		// if client.chatroom == "" {
+		// 	continue
+		// }
 		//i, _ := strconv.Atoi(strings.Split(client.chatroom, "&")[1])
 		if client.chatroom == c.chatroom ||
 			client.userId == broadMessage.To { //&&
@@ -101,7 +100,7 @@ func SendMessageHandler(event Event, c *Client) error {
 		SendTime:   broadMessage.Sent,
 	})
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		//log.Fatalf("Error: %s", err)
 	}
 
 	return nil

@@ -136,7 +136,7 @@ class SendMessageEvent {
 }
 
 class NewMessageEvent {
-    constructor(message, from, sent, to, fromnick) {
+    constructor(message, from, sent, to, fromnick, tonick) {
         this.message = message;
         this.from = from;
         this.sent = sent;
@@ -220,14 +220,17 @@ export function loadMoreMsgs() {
 
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
-    console.log("new msg")
+    console.log("new msg ")
+    console.log(messageEvent)
     //alert("YO, new message from "+messageEvent.from);
     const notification = document.getElementById("aler")
     notification.style.display = "flex"
     //let user = document.getElementById(messageEvent.from);
     notification.innerHTML = "YO, new message from "+messageEvent.fromnick;
-    if (chattingUserId == messageEvent.from || chattingUserId == messageEvent.to) {
-        const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
+   // if (chattingUserId == parseInt(messageEvent.from) || chattingUserId == parseInt(messageEvent.to)) {
+    moveChatList(messageEvent)     
+   
+   const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
         const message = document.createElement('div');
         const nickname = document.createElement('h4');
         const body = document.createElement('p');
@@ -237,7 +240,7 @@ function appendChatMessage(messageEvent) {
         createdAt.classList.add('created_at_chat');
         createdAt.textContent = messageEvent.sent.slice(11, 16);
 
-        if (messageEvent.to == chattingUserId) {
+        if (parseInt(messageEvent.to) == chattingUserId) {
             message.classList.add('sender');
             nickname.textContent = messageEvent.fromnick;
         } else {
@@ -249,8 +252,8 @@ function appendChatMessage(messageEvent) {
         message.appendChild(createdAt);
         wrapperDisplayMessages.appendChild(message);
         wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
-        moveChatList(messageEvent)
-    }
+        
+  //  }
 }
 
 function moveChatList(messageEvent) {
@@ -263,10 +266,10 @@ function moveChatList(messageEvent) {
     if (icon2){
         icon2.style.display = "inline";
     }
-    
-    let user = document.getElementById(messageEvent.to);
+    console.log("new msg "+messageEvent)
+    let user = document.getElementById(parseInt(messageEvent.to));
     if(!user){
-        user = document.getElementById(messageEvent.from);
+        user = document.getElementById(parseInt(messageEvent.from));
     }
     const userMove = user;
     user.remove();

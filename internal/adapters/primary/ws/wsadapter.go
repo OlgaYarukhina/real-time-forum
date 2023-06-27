@@ -104,7 +104,7 @@ func (m *Manager) GetUsers(w http.ResponseWriter, r *http.Request, userId int) {
 	isActiveUsersId := []int{}
 
 	for isActiveUser, _ := range m.Clients {
-			isActiveUsersId = append(isActiveUsersId, isActiveUser.userId)
+		isActiveUsersId = append(isActiveUsersId, isActiveUser.userId)
 	}
 
 	users, err := m.chatService.GetUsers(isActiveUsersId, userId)
@@ -163,7 +163,7 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 
 	err := json.Unmarshal(response, &data)
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		//log.Fatalf("Error: %s", err)
 		return
 	}
 
@@ -205,7 +205,7 @@ func (m *Manager) LoadChatHistoryHandler(w http.ResponseWriter, r *http.Request,
 
 	jsonResp, err := json.Marshal(chatHistory)
 	if err != nil {
-		log.Fatalf("Err: %s", err)
+		//log.Fatalf("Err: %s", err)
 	}
 	w.Write(jsonResp)
 	return
@@ -235,7 +235,7 @@ func (m *Manager) addClient(client *Client) {
 
 	payloadBytes, err := json.Marshal(payloadData)
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		//log.Fatalf("Error: %s", err)
 		return
 	}
 
@@ -262,7 +262,7 @@ func (m *Manager) removeClient(client *Client) {
 
 	payloadBytes, err := json.Marshal(payloadData)
 	if err != nil {
-		log.Fatalf("Error: %s", err)
+		//log.Fatalf("Error: %s", err)
 	}
 
 	outgoingEvent.Payload = payloadBytes

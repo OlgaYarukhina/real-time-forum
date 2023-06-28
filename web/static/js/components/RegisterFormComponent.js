@@ -150,12 +150,6 @@ export function CreateRegisterForm(callback){
     
       return inputBox;
     }
-    
-    // Append the wrapper_register div to the desired parent element
-    // For example:
-    // const parentElement = document.getElementById("parent-element-id");
-    // parentElement.appendChild(wrapperRegister);
-
 
 let selectGender = function () {
     let selectHeader = document.querySelectorAll('.select_header');

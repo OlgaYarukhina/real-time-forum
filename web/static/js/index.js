@@ -9,6 +9,7 @@ import ChatsList from "./views/ChatsList.js";
 import { getChat } from "./hooks/ChatViewHook.js";
 
 var websocket;
+let alerMsg = "";
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
@@ -20,8 +21,6 @@ const getParams = match => {
         return [key, values[i]];
     }));
 };
-
-let alerMsg = "";
 
 const navigateTo = (url, msg = "") => {
     alerMsg = msg;
@@ -35,8 +34,6 @@ const router = async () => {
         { path: "/", view: Posts },
         { path: "/new_post", view: CreatePost },
         { path: "/view_post:id", view: PostView },
-        //different login in place where ws connection creates
-        //{ path: "/chats", view: Chats },
         { path: "/chat:id", view: ChatView },
         { path: "/login", view: Login },
         { path: "/register", view: Register }
@@ -51,7 +48,6 @@ const router = async () => {
     });
 
     let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
-
     if (!match) {
         // TODO : add 404 page
         match = {
@@ -69,7 +65,6 @@ const router = async () => {
         !(match.route.path === "/login" || match.route.path === "/register")) {
         navigateTo("http://localhost:8080/login")
     } else {
-
         if (match.route.path === "/login" || match.route.path === "/register") {
         } else {
             if (typeof websocket !== "undefined" && websocket.readyState === WebSocket.OPEN) {
@@ -93,17 +88,15 @@ const router = async () => {
 
         const view = new match.route.view(getParams(match));
         document.querySelector("#app").innerHTML = "";
-        document.querySelector("#app").appendChild(await view.getHtml()); 
+        document.querySelector("#app").appendChild(await view.getHtml());
         let el = document.getElementById('wrapper_display_messages');
-        if(el){
+        if (el) {
             el.scrollTop = el.scrollHeight;
         }
     }
-
 };
 
-window.addEventListener("popstate", router);
-
+window.addEventListener("popstate", router)
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
         if (e.target.matches("[data-link]")) {
@@ -111,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
             navigateTo(e.target.href);
         }
     });
-
     router();
 });
 
@@ -180,14 +172,12 @@ function routeEvent(event) {
             alert("unsupported message type");
             break;
     }
-
 }
 
 
 function applyClientChanges(clientChangesEvent) {
     if (clientChangesEvent.status === "online") {
         const usercur = document.getElementById("online_user_" + clientChangesEvent.userId)
-
         if (!usercur) {
             const wrapperOnlineUsers = document.getElementById("wrapperOnlineUsers");
             const user = document.createElement("div");
@@ -207,75 +197,72 @@ function applyClientChanges(clientChangesEvent) {
 }
 
 var chattingUserId;
-//var historyPage = 0;
 
 export function loadMoreMsgs() {
-    console.log("chatting user id " + chattingUserId)
-    console.log("history page " + historyPage)
-    let loadedMsgs = getChat(chattingUserId, historyPage);
-    console.log(loadedMsgs);
+    let loadedMsgs = getChat(chattingUserId, historyPage)
     historyPage = historyPage + 1;
 }
 
 
 // TODO : move to chat view component
 function appendChatMessage(messageEvent) {
-    console.log("new msg ")
-    console.log(messageEvent)
-    //alert("YO, new message from "+messageEvent.from);
-    const notification = document.getElementById("aler")
-    notification.style.display = "flex"
-    //let user = document.getElementById(messageEvent.from);
-    notification.innerHTML = "YO, new message from "+messageEvent.fromnick;
-   // if (chattingUserId == parseInt(messageEvent.from) || chattingUserId == parseInt(messageEvent.to)) {
-    moveChatList(messageEvent)     
-   
-   const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
-        const message = document.createElement('div');
-        const nickname = document.createElement('h4');
-        const body = document.createElement('p');
-        body.classList.add('message');
-        body.textContent = messageEvent.message;
-        const createdAt = document.createElement('div');
-        createdAt.classList.add('created_at_chat');
-        createdAt.textContent = messageEvent.sent.slice(11, 16);
+    // notification about new msg
+    if (parseInt(messageEvent.to) != chattingUserId) {
+        const notification = document.getElementById("aler")
+        notification.style.display = "flex"
+        notification.innerHTML = "YO, new message from " + messageEvent.fromnick;
+        setTimeout(() => notification.style.display = "none", 2500);
+    }
 
-        if (parseInt(messageEvent.to) == chattingUserId) {
-            message.classList.add('sender');
-            nickname.textContent = messageEvent.fromnick;
-        } else {
-            message.classList.add('receiver');
-            nickname.textContent = messageEvent.fromnick
-        }
-        message.appendChild(nickname);
-        message.appendChild(body);
-        message.appendChild(createdAt);
-        wrapperDisplayMessages.appendChild(message);
-        wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
-        
-  //  }
+
+    // if (chattingUserId == parseInt(messageEvent.from) || chattingUserId == parseInt(messageEvent.to)) {
+    moveChatList(messageEvent)
+
+    const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');
+    const message = document.createElement('div');
+    const nickname = document.createElement('h4');
+    const body = document.createElement('p');
+    body.classList.add('message');
+    body.textContent = messageEvent.message;
+    const createdAt = document.createElement('div');
+    createdAt.classList.add('created_at_chat');
+    createdAt.textContent = messageEvent.sent.slice(11, 16);
+
+    if (parseInt(messageEvent.to) == chattingUserId) {
+        message.classList.add('sender');
+        nickname.textContent = messageEvent.fromnick;
+    } else {
+        message.classList.add('receiver');
+        nickname.textContent = messageEvent.fromnick
+    }
+    message.appendChild(nickname);
+    message.appendChild(body);
+    message.appendChild(createdAt);
+    wrapperDisplayMessages.appendChild(message);
+    wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;
+
+    //  }
 }
 
 function moveChatList(messageEvent) {
     var parent = document.getElementById('users_with_msg');
     const icon = document.getElementById(`icon${messageEvent.to}`);
-    if (icon){
+    if (icon) {
         icon.style.display = "inline";
     }
     const icon2 = document.getElementById(`icon${messageEvent.from}`);
-    if (icon2){
+    if (icon2) {
         icon2.style.display = "inline";
     }
-    console.log("new msg "+messageEvent)
     let user = document.getElementById(parseInt(messageEvent.to));
-    if(!user){
+    if (!user) {
         user = document.getElementById(parseInt(messageEvent.from));
     }
     const userMove = user;
     user.remove();
     parent.prepend(userMove);
 };
-   
+
 
 // TODO : move to "go to chat" component
 export function changeChatRoom(id) {

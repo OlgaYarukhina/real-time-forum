@@ -42,7 +42,7 @@
     display: block;
     width: 500px;
     min-width: 350px;
-    margin-bottom: 20px;
+    margin-top: 20px;
     margin-left: auto;
     margin-bottom: auto;
     background: rgb(86, 96, 161, 0.7);
@@ -76,7 +76,7 @@
 }
 
 .wrapper_display_messages{
-    overflow: scroll;
+    overflow-y: scroll;
     height: 80%;
     /* display: flex; Add this line */
     /* flex-direction: column-reverse; Add this line */

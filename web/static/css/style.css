@@ -21,7 +21,7 @@ body {
     min-height: 100vh;
     flex-wrap: wrap;
     justify-content: center;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 .aler {

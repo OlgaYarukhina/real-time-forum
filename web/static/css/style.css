@@ -132,6 +132,7 @@ body {
 .nav_logout:hover {
     background: rgb(64, 217, 125);
     color: rgb(55, 39, 100);
+    cursor: pointer;
 }
 
 /*Select category */

@@ -11,6 +11,7 @@
 .activ_user:hover {
     background: rgb(64, 217, 125);
     color: rgb(249, 248, 251);
+    cursor: pointer;
 }
 
 .unactiv_user {
@@ -25,6 +26,7 @@
 .unactiv_user:hover {
     background: rgb(85, 67, 134);
     color: rgb(249, 248, 251);
+    cursor: pointer;
 }
 
 

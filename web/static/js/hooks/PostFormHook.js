@@ -3,11 +3,11 @@ import { navigateTo } from "../index.js";
 
 export const createPost = async () => {
     let categories =[];
-    document.querySelectorAll('[type="checkbox"]').forEach(item => {
-      if(item.checked === true){
-        categories.push(item.value)
-      }
-    });
+    // document.querySelectorAll('[type="checkbox"]').forEach(item => {
+    //   if(item.checked === true){
+    //     categories.push(item.value)
+    //   }
+    // });
 
     let formData = {
       title: document.getElementById('postTitle').value,

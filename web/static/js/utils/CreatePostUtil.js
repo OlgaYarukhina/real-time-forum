@@ -18,19 +18,20 @@ export const validateInputs = () => {
 
     const categories = document.getElementById('create_post');
     let categoriesArr =[];
-    document.querySelectorAll('[type="checkbox"]').forEach(item => {
-      if(item.checked === true){
-        categoriesArr.push(item.value)
-      }
-    });
+    // document.querySelectorAll('[type="checkbox"]').forEach(item => {
+    //   if(item.checked === true){
+    //     categoriesArr.push(item.value)
+    //   }
+    // });
 
 
-    if (categoriesArr.length === 0) {
-      setError(categories, "Choose at least one category");
-    } else {
-      setSuccess(categories);
-      check = true;
-    }
+    // if (categoriesArr.length === 0) {
+    //   setError(categories, "Choose at least one category");
+    // } else {
+    //   setSuccess(categories);
+    //   check = true;
+    // }
+    setSuccess(categories);
     console.log(check)
-    return check;
+    return true;
   };

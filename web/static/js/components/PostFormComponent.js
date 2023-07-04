@@ -50,29 +50,29 @@ textarea.rows = '18';
 textarea.required = true;
 
 // Create the block_checkbox element
-const blockCheckbox = document.createElement('div');
-blockCheckbox.classList.add('block_checkbox');
+// const blockCheckbox = document.createElement('div');
+// blockCheckbox.classList.add('block_checkbox');
 
 // Create the checkboxes for the categories
-const categories = ['Category1', 'Category2', 'Category3'];
-for (let i = 0; i < categories.length; i++) {
-const checkboxDiv = document.createElement('div');
-checkboxDiv.classList.add('checkbox');
+// const categories = ['Category1', 'Category2', 'Category3'];
+// for (let i = 0; i < categories.length; i++) {
+// const checkboxDiv = document.createElement('div');
+// checkboxDiv.classList.add('checkbox');
 
-const labelCheckbox = document.createElement('label');
-labelCheckbox.textContent = categories[i];
+// const labelCheckbox = document.createElement('label');
+// labelCheckbox.textContent = categories[i];
 
-const checkbox = document.createElement('input');
-checkbox.type = 'checkbox';
-checkbox.classList.add('checkbox');
-checkbox.name = `namecheckbox_${i + 1}`;
-checkbox.value = `${i + 1}`;
+// const checkbox = document.createElement('input');
+// checkbox.type = 'checkbox';
+// checkbox.classList.add('checkbox');
+// checkbox.name = `namecheckbox_${i + 1}`;
+// checkbox.value = `${i + 1}`;
 
-checkboxDiv.appendChild(labelCheckbox);
-checkboxDiv.appendChild(checkbox);
+// checkboxDiv.appendChild(labelCheckbox);
+// checkboxDiv.appendChild(checkbox);
 
-blockCheckbox.appendChild(checkboxDiv);
-}
+// blockCheckbox.appendChild(checkboxDiv);
+// }
 
 const errorDiv = document.createElement("div");
 errorDiv.className = "error";
@@ -88,7 +88,7 @@ submitButton.textContent = 'Create post';
 form.appendChild(inputBox);
 form.appendChild(textarea);
 form.appendChild(document.createElement('br'));
-form.appendChild(blockCheckbox);
+//form.appendChild(blockCheckbox);
 form.appendChild(errorDiv);
 form.appendChild(submitButton);
 

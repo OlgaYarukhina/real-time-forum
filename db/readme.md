@@ -1,5 +1,11 @@
 To init database though command line:
 
+Fast way: 
+* Run from root folder
+`
+bash sh_scripts/create_database.sh
+`
+
 1. Open the terminal in root folder
 2. Init database with command:
 `

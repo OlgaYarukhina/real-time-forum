@@ -50,6 +50,11 @@ bash sh_scripts/run.sh
 
 2. Open http://localhost:8080/ in your browser
 
+3. Test users logins (pass same for all - 12345678). 
+Chat between test users contains more than 20 messages:
+- tj@gmail.com
+- js@gmail.com
+
 ## License 
 
 (MIT)[https://opensource.org/license/mit/]

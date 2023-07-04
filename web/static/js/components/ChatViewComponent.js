@@ -114,8 +114,8 @@ function callbackLoadMoreWrap(id, fhm, f, hp = 1){
                 body.classList.add('post_content');
                 body.textContent = returnedMessages[i].body;
                 const createdAt = document.createElement('div');
-                createdAt.classList.add('created_at');
-                createdAt.textContent = returnedMessages[i].created_at;
+                createdAt.classList.add('created_at_chat');
+                createdAt.textContent = returnedMessages[i].created_at.slice(11, 16);
     
                 if (returnedMessages[i].receiver_id === parseInt(id.substr(1), 10)) {
                     message.classList.add('receiver');

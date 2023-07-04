@@ -259,6 +259,7 @@ function appendChatMessage(messageEvent) {
         }
         message.appendChild(nickname);
         message.appendChild(body);
+        
         message.appendChild(createdAt);
         wrapperDisplayMessages.appendChild(message);
         wrapperDisplayMessages.scrollTop = wrapperDisplayMessages.scrollHeight;

@@ -230,6 +230,12 @@ function appendChatMessage(messageEvent) {
         notification.style.display = "flex"
         //let user = document.getElementById(messageEvent.from);
         notification.innerHTML = "YO, new message from "+messageEvent.fromnick;
+        setTimeout(function() {
+            console.log("clearing");
+            const notification = document.getElementById("aler")
+            notification.style.display = "none"
+            notification.innerHTML = ""
+          }, 3000);
     // if (chattingUserId == parseInt(messageEvent.from) || chattingUserId == parseInt(messageEvent.to)) {
     }
     moveChatList(messageEvent)     

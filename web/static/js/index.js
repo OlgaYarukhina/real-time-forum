@@ -222,12 +222,16 @@ export function loadMoreMsgs() {
 function appendChatMessage(messageEvent) {
     console.log("new msg ")
     console.log(messageEvent)
-    //alert("YO, new message from "+messageEvent.from);
-    const notification = document.getElementById("aler")
-    notification.style.display = "flex"
-    //let user = document.getElementById(messageEvent.from);
-    notification.innerHTML = "YO, new message from "+messageEvent.fromnick;
-   // if (chattingUserId == parseInt(messageEvent.from) || chattingUserId == parseInt(messageEvent.to)) {
+    console.log("chattingUserId : "+ chattingUserId)
+    let user = document.getElementById(parseInt(messageEvent.from));
+    if (user){
+        //alert("YO, new message from "+messageEvent.from);
+        const notification = document.getElementById("aler")
+        notification.style.display = "flex"
+        //let user = document.getElementById(messageEvent.from);
+        notification.innerHTML = "YO, new message from "+messageEvent.fromnick;
+    // if (chattingUserId == parseInt(messageEvent.from) || chattingUserId == parseInt(messageEvent.to)) {
+    }
     moveChatList(messageEvent)     
    
    const wrapperDisplayMessages = document.getElementById('wrapper_display_messages');

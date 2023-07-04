@@ -21,7 +21,7 @@ body {
     min-height: 100vh;
     flex-wrap: wrap;
     justify-content: center;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 .aler {
@@ -132,6 +132,7 @@ body {
 .nav_logout:hover {
     background: rgb(64, 217, 125);
     color: rgb(55, 39, 100);
+    cursor: pointer;
 }
 
 /*Select category */
